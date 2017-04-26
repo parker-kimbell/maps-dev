@@ -1,0 +1,18 @@
+{
+  "name": "maps_app",
+  "version": "0.0.1",
+  "description": "Dev'ing against an express server",
+  "main": "none",
+  "scripts": {
+    "test": "none"
+  },
+  "repository": {
+    "type": "git",
+    "url": "leave me alone"
+  },
+  "keywords": [
+    "stahp"
+  ],
+  "author": "who?",
+  "license": "UNLICENSED"
+}
