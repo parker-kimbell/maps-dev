@@ -3,6 +3,10 @@
 // TODO: This needs to be configurable
 var CMS_URL = "https://pwc.downstreamlabs.com";
 var stage;
+var backgroundLayer;
+var pinLayer;
+
+var lastTouchedPin;
 
 function initMapsApp(mapsPayload) {
   var width = window.innerWidth;
@@ -89,23 +93,29 @@ function initMapsApp(mapsPayload) {
                   y: ((floor.FloorImage.height * scaleY)* pinData.PositionY) - offsetY,
                   fill: 'rgb(232,66,102)',
                   text: '\uf041',
+                  stroke : 'white',
+                  strokeWidth : '2',
+                  strokeEnabled : false,
                   fontSize: fontSize,
                   fontFamily: 'FontAwesome',
-                  stroke : 'white',
-                  strokeWidth: 2,
                   shadowColor: 'black',
                   shadowBlur: 10,
                   shadowOffset: {x : 5, y : 5},
                   shadowOpacity: 0.5,
                   layerid: pinData.LayerId
               });
-              // This will, on tap or click, expose the pin data to the user
+              // Expose the pin data and highlight the pin on pin tap,
+              // Also de-highlight the last pin
               pin.on('tap click', function(e) {
-                  var p = e.target;
-                  $('.layer_name').html(pinData.Title);
-                  $('.panel_body').html(pinData.Body);
-                  $('.panel_location').html(pinData.Location);
-                  $('#floatingmenu').addClass('open');
+                var touchedPin = e.target;
+                if (lastTouchedPin) lastTouchedPin.strokeEnabled(false);
+                touchedPin.strokeEnabled(true);
+                lastTouchedPin = touchedPin;
+                backgroundLayer.draw();
+                $('.layer_name').html(pinData.Title);
+                $('.panel_body').html(pinData.Body);
+                $('.panel_location').html(pinData.Location);
+                $('#floatingmenu').addClass('open');
               });
               // Add this new pin to the Konva pinGroup, so that we can place them as one action
               pinGroup.add(pin);
@@ -132,7 +142,7 @@ function initMapsApp(mapsPayload) {
                 }
 
             });
-
+            // TODO: don't think this pinLayer is getting added, daz prolly a bug
             pinLayer.add(pinGroup);
 
             stage.add(backgroundLayer);
@@ -215,7 +225,6 @@ function setupEventHandlers(mapsPayload) {
       });
 
       $('.category').on('click', function() {
-        debugger;
           //console.log( $(this).data('categoryid') );
           if( $(this).parent().hasClass('on') ) {
               $(this).parent().removeClass('on');
