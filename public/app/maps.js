@@ -1,31 +1,36 @@
-//TODO turn this into an IFFE so we know we're not conflictin
+//TODO turn this into an IIFE so we know we're not conflictin
+
+// TODO: This needs to be configurable
+var CMS_URL = "https://pwc.downstreamlabs.com";
+var stage;
 
 function initMapsApp(mapsPayload) {
   var width = window.innerWidth;
   var height = window.innerHeight;
-  var stage;
   $(window).on('hashchange',function() {
     var payload = mapsPayload;
 
-    console.log('Location hash, sucka', location.hash);
+    console.log('Location hash', location.hash);
     var hash = location.hash.replace('#','');
     var parts = hash.split('.');
 
     var config = { floor: Number(parts[0]), pin: (parts[1] == undefined ? 0 : Number(parts[1]))  };
-    debugger;
     $('#floor_select').val(config.floor);
 
     var scaleX = 0;
     var scaleY = 0;
 
     $('#map').empty();
-
-    $.each(mapsPayload.layers, function(i, floor) {
-        //console.log(floor.Id + ' ' + config.floor);
+    // TODO: At this point it's expected that we have the location (Melb, Brisbane, etc.) and
+    // This loops over the floors for that location and finds the one extracted from the hash above.
+    // So ultimately, get that data to this code, and remove the hardcoded value on the next line.
+    var brisbaneFloorData = mapsPayload.building_data[0].Floor;
+    $.each(brisbaneFloorData, function(i, floor) {
+        console.log(floor.Id + ' ' + config.floor);
         var payload = mapsPayload;
         console.log('floor: ', floor);
         if(floor.Id === config.floor) {
-            //console.log(floor);
+            console.log(floor);
 
             $('#name').html(floor.Name);
 
@@ -38,9 +43,7 @@ function initMapsApp(mapsPayload) {
               height: height
             });
 
-            backgroundLayer = new Konva.Layer({
-
-            });
+            backgroundLayer = new Konva.Layer();
             pinLayer = new Konva.Layer();
 
             var base = new Konva.Image({
@@ -60,7 +63,7 @@ function initMapsApp(mapsPayload) {
               backgroundLayer.draw();
             };
 
-            imageObj.src = '/repository/resources/'+floor.FloorImage.image;
+            imageObj.src = CMS_URL + floor.FloorImage.image;
 
 
             var pinGroup = new Konva.Group({
@@ -69,11 +72,14 @@ function initMapsApp(mapsPayload) {
                 y: 0
             });
 
-
-            $.each(floor.Pin, function(i,v) {
+            // Loop through each pin that has been placed on the floor,
+            // and places it in the appropriate spot on the floor map,
+            // hiding each pin by default
+            $.each(floor.Pin, function(i,pinData) {
+              // Build the pin icon that we'll place on the Konva layer
               var pin = new Konva.Text({
-                  x: ((floor.FloorImage.width * scaleX)* v.PositionX) - 5,
-                  y: ((floor.FloorImage.height * scaleY)* v.PositionY) - 25,
+                  x: ((floor.FloorImage.width * scaleX)* pinData.PositionX) - 5,
+                  y: ((floor.FloorImage.height * scaleY)* pinData.PositionY) - 25,
                   fill: 'rgb(232,66,102)',
                   text: '\uf041',
                   fontSize: 30,
@@ -82,28 +88,32 @@ function initMapsApp(mapsPayload) {
                   shadowBlur: 10,
                   shadowOffset: {x : 5, y : 5},
                   shadowOpacity: 0.5,
-                  layerid: v.LayerId
+                  layerid: pinData.LayerId
               });
+              // This will, on tap or click, expose the pin data to the user
               pin.on('tap click', function(e) {
                   var p = e.target;
-                  $('.layer_name').html(v.Layer.Name);
-                  $('.panel_body').html(v.Body);
-                  $('.panel_location').html(v.Location);
+                  $('.layer_name').html(pinData.Layer.Name);
+                  $('.panel_body').html(pinData.Body);
+                  $('.panel_location').html(pinData.Location);
                   $('#floatingmenu').addClass('open');
               });
+              // Add this new pin to the Konva pinGroup, so that we can place them as one action
               pinGroup.add(pin);
-              pin.hide();
+              // TODO: renable this pin hiding
+              // Hide the pin by default
+              //pin.hide();
 
-              if(v.Id === config.pin) {
+              if(pinData.Id === config.pin) {
                   pin.show();
-                  $('.layer_name').html(v.Layer.Name);
-                  $('.panel_body').html(v.Body);
-                  $('.panel_location').html(v.Location);
+                  $('.layer_name').html(pinData.Layer.Name);
+                  $('.panel_body').html(pinData.Body);
+                  $('.panel_location').html(pinData.Location);
                   $('#floatingmenu').addClass('open');
               }
 
               backgroundLayer.add(pin);
-            });
+            }); // End pin each
 
             // close the panel if the map is tapped
             stage.on('tap click', function(e) {
@@ -120,14 +130,116 @@ function initMapsApp(mapsPayload) {
             stage.add(backgroundLayer);
 
         }
-    }); // end $.each
-  }); // $.onHashChange
+    }); // end $.each floorData
+
+    $('.category').each(function(i,ele) {
+      if($(ele).parent().hasClass('on')) {
+        var catid = $(ele).data('categoryid');
+        var allpins = stage.find('Text');
+        allpins.each(function(p) {
+            if(p.attrs.layerid == catid) {
+                p.show();
+            }
+        });
+      }
+    });
+
+  }).trigger('hashchange'); // $.onHashChange
+}
+
+function buildLayersModal(layers) {
+  var category_list = $('.category_list');
+  $.each(layers, function(i, layer) {
+    category_list.append(buildLayerIcon(layer))
+  });
+}
+
+function buildLayerIcon(layer) {
+  return $([
+    "<li>",
+    "  <div class='category' data-categoryid=" + layer.Id + "style='no-repeat; background-position: 50% 20%; background-size: 35px 35px;'",
+    "  <p>" + layer.Name,
+    "  </p>",
+    "  </div>",
+    "</li>"
+  ].join("\n"));
+}
+//TODO: this was blowing up when building icons, needs to be fixed background: url(" + layer.Icon.getDownloadUrl() + ")
+
+function setupEventHandlers(mapsPayload) {
+  $(function () {
+
+      if(location.hash.length === 0) {
+          if(mapsPayload.length > 0) {
+              window.location.hash = '#'+mapsPayload[0].Id;
+          }
+      }
+
+      $('.filter_close').on('click', function() {
+          $('.filter').velocity({
+              opacity: 0
+          }, {
+              display: 'none',
+              delay: 500,
+              duration: 200
+          });
+      });
+
+      $('.panel_close').on('click', function() {
+        $('#floatingmenu').removeClass('open');
+      });
+
+      $('#floor_select').on('change', function() {
+          var optionSelected = $("option:selected", this);
+          document.location.href = '/mobile/building/' + $(optionSelected).data('locationid') + '#' + $(optionSelected).data('floorid');
+      });
+
+      $('#btn_amenities').on('click', function() {
+          $('#floatingmenu').removeClass('open');
+          $('.filter').velocity({
+              opacity: 1
+          }, {
+              display: 'block',
+              delay: 250,
+              duration: 200
+          });
+      });
+
+      $('.category').on('click', function() {
+          //console.log( $(this).data('categoryid') );
+          if( $(this).parent().hasClass('on') ) {
+              $(this).parent().removeClass('on');
+              var catid = $(this).data('categoryid');
+              //var allpins = stage.find('Circle');
+              var allpins = stage.find('Text');
+              allpins.each(function(p) {
+                  if(p.attrs.layerid == catid) {
+                      p.hide();
+                  }
+              });
+              stage.draw();
+          } else {
+              $(this).parent().addClass('on');
+              var catid = $(this).data('categoryid');
+              //var allpins = stage.find('Circle');
+              var allpins = stage.find('Text');
+              allpins.each(function(p) {
+                  if(p.attrs.layerid == catid) {
+                      p.show();
+                  }
+              });
+              stage.draw();
+          }
+      });
+  });
 }
 
 function init() {
   var request = new XMLHttpRequest();
   request.addEventListener("load", function() {
     var mapsPayload = JSON.parse(this.responseText);
+    buildLayersModal(mapsPayload.layers);
+    setupEventHandlers(mapsPayload)
     initMapsApp(mapsPayload);
   });
   request.open("GET", "http://localhost:3000/getMaps");
