@@ -100,9 +100,8 @@ function initMapsApp(mapsPayload) {
               });
               // Add this new pin to the Konva pinGroup, so that we can place them as one action
               pinGroup.add(pin);
-              // TODO: renable this pin hiding
               // Hide the pin by default
-              pin.hide();
+              //pin.hide();
 
               if(pinData.Id === config.pin) {
                   pin.show();
@@ -155,10 +154,9 @@ function buildLayersModal(layers) {
 }
 
 function buildLayerIcon(layer) {
-  debugger;
   return $([
     "<li>",
-    "  <div class='category' data-categoryid=" + layer.Id + " style='no-repeat; background-position: 50% 20%; background-size: 35px 35px;'",
+    "  <div class='category' data-categoryid=" + layer.Id + " style='background: url(" + layer.Icon + ") no-repeat; background-position: 50% 20%; background-size: 70%;'",
     "  <p>" + layer.Name,
     "  </p>",
     "  </div>",
