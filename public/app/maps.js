@@ -93,7 +93,7 @@ function initMapsApp(mapsPayload) {
               // This will, on tap or click, expose the pin data to the user
               pin.on('tap click', function(e) {
                   var p = e.target;
-                  $('.layer_name').html(pinData.Layer.Name);
+                  $('.layer_name').html(pinData.Title);
                   $('.panel_body').html(pinData.Body);
                   $('.panel_location').html(pinData.Location);
                   $('#floatingmenu').addClass('open');
@@ -102,7 +102,7 @@ function initMapsApp(mapsPayload) {
               pinGroup.add(pin);
               // TODO: renable this pin hiding
               // Hide the pin by default
-              //pin.hide();
+              pin.hide();
 
               if(pinData.Id === config.pin) {
                   pin.show();
@@ -155,9 +155,10 @@ function buildLayersModal(layers) {
 }
 
 function buildLayerIcon(layer) {
+  debugger;
   return $([
     "<li>",
-    "  <div class='category' data-categoryid=" + layer.Id + "style='no-repeat; background-position: 50% 20%; background-size: 35px 35px;'",
+    "  <div class='category' data-categoryid=" + layer.Id + " style='no-repeat; background-position: 50% 20%; background-size: 35px 35px;'",
     "  <p>" + layer.Name,
     "  </p>",
     "  </div>",
@@ -191,7 +192,6 @@ function setupEventHandlers(mapsPayload) {
 
       $('#floor_select').on('change', function() {
           var optionSelected = $("option:selected", this);
-          debugger;
           // TODO: removed this since we don't know our route yet but it will need to be put back in '/mobile/building/' + $(optionSelected).data('locationid') +
           document.location.href = '#' + $(optionSelected).data('floorid');
       });
@@ -208,6 +208,7 @@ function setupEventHandlers(mapsPayload) {
       });
 
       $('.category').on('click', function() {
+        debugger;
           //console.log( $(this).data('categoryid') );
           if( $(this).parent().hasClass('on') ) {
               $(this).parent().removeClass('on');
@@ -258,7 +259,6 @@ function init() {
   request.addEventListener("load", function() {
     var mapsPayload = JSON.parse(this.responseText);
     buildLayersModal(mapsPayload.layers);
-    debugger;
     buildFloorSelect(mapsPayload)
     setupEventHandlers(mapsPayload)
     initMapsApp(mapsPayload);
