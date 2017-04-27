@@ -191,7 +191,9 @@ function setupEventHandlers(mapsPayload) {
 
       $('#floor_select').on('change', function() {
           var optionSelected = $("option:selected", this);
-          document.location.href = '/mobile/building/' + $(optionSelected).data('locationid') + '#' + $(optionSelected).data('floorid');
+          debugger;
+          // TODO: removed this since we don't know our route yet but it will need to be put back in '/mobile/building/' + $(optionSelected).data('locationid') +
+          document.location.href = '#' + $(optionSelected).data('floorid');
       });
 
       $('#btn_amenities').on('click', function() {
@@ -234,11 +236,30 @@ function setupEventHandlers(mapsPayload) {
   });
 }
 
+function buildFloorSelect(mapsPayload) {
+  // TODO: Again for this code, it looks like the location is already known, so I've backed in the Brisbane
+  // floor, but it will need to be derived at run-time, ultimately
+  var brisbaneFloorData = mapsPayload.building_data[0].Floor;
+  var floorSelect = $('#floor_select');
+  $.each(brisbaneFloorData, function(i, floor) {
+      floorSelect.append(buildFloorOption(floor));
+  });
+}
+
+function buildFloorOption(floor) {
+  return $([
+    "<option value=" + floor.Id + " data-locationid=" + floor.LocationId + " data-floorid=" + floor.Id + ">" + floor.Name,
+    "</option>"
+  ].join("\n"));
+}
+
 function init() {
   var request = new XMLHttpRequest();
   request.addEventListener("load", function() {
     var mapsPayload = JSON.parse(this.responseText);
     buildLayersModal(mapsPayload.layers);
+    debugger;
+    buildFloorSelect(mapsPayload)
     setupEventHandlers(mapsPayload)
     initMapsApp(mapsPayload);
   });
