@@ -77,13 +77,22 @@ function initMapsApp(mapsPayload) {
             // hiding each pin by default
             $.each(floor.Pin, function(i,pinData) {
               // Build the pin icon that we'll place on the Konva layer
+
+              // These calculations try to scale the position of the icon based on its size, this will also be related to the original icon used, in this case \uf041
+              var fontSize = 50;
+              var offsetX = fontSize - (fontSize * 0.7);
+              var offsetY = fontSize - (fontSize * 0.3);
+              // end calculations
+
               var pin = new Konva.Text({
-                  x: ((floor.FloorImage.width * scaleX)* pinData.PositionX) - 5,
-                  y: ((floor.FloorImage.height * scaleY)* pinData.PositionY) - 25,
+                  x: ((floor.FloorImage.width * scaleX)* pinData.PositionX) - offsetX,
+                  y: ((floor.FloorImage.height * scaleY)* pinData.PositionY) - offsetY,
                   fill: 'rgb(232,66,102)',
                   text: '\uf041',
-                  fontSize: 30,
+                  fontSize: fontSize,
                   fontFamily: 'FontAwesome',
+                  stroke : 'white',
+                  strokeWidth: 2,
                   shadowColor: 'black',
                   shadowBlur: 10,
                   shadowOffset: {x : 5, y : 5},
