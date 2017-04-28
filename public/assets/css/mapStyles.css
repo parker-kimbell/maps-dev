@@ -71,15 +71,14 @@ body {
     width: 100%;
     word-break:break-word;
 }
+.curr-amen-icon {
+  height : 10%;
+  width: auto;
+  float: left;
+}
 button {
     width: 45%;
     margin: 3px;
-}
-img
-{
-    max-width: 100%;
-    min-width: 300px;
-    height: auto;
 }
 #floors {
     padding: 0px 4px 0px 4px;
@@ -147,11 +146,16 @@ h4 {
   border : 1px solid #7A7676;
 }
 
-#btn_amenities:before {
+.amn-icon:before {
   font-family : 'FontAwesome';
   content: "\f041";
   float : left;
 }
+/*#btn_amenities:before {
+  font-family : 'FontAwesome';
+  content: "\f041";
+  float : left;
+}*/
 
 select {
   -webkit-appearance: none;

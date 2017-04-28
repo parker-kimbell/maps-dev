@@ -261,12 +261,12 @@ function setupEventHandlers(mapsPayload) {
       });
 
       $('.category').on('click tap', function() {
-        if ($(this).parent().hasClass('on')) {
+        if ($(this).parent().hasClass('on')) { // Case: we're turning off all amenities
           $(this).parent().removeClass('on');
-          var category = $(this).data('categoryid');
-          hidePinsOf(category);
+          var categoryId = $(this).data('categoryid');
+          hidePinsOf(categoryId);
           setAmenitiesButtonTo(null); // Clear the amenities button
-        } else { // Case: we're turning on an amenties category that wasn't on previously. Clear the map and amenities state
+        } else { // Case: we're turning on an amenties category that wasn't on previously. Clear the map and amenities state, and apply the new amenities filter
           $('.category').parent().removeClass('on');
           $('.category').each(function(i, category) {
             var categoryId = $(category).data('categoryid');
@@ -291,8 +291,16 @@ function setupEventHandlers(mapsPayload) {
   });
 }
 
-function setAmenitiesButtonTo(category) {
-  
+function setAmenitiesButtonTo(categoryId) {
+  if (categoryId) { // Case: We're showing an amenity category
+    $('#btn_amenities').addClass('showing-amenities');
+    $('.amn-icon').hide();
+    $('#btn_amenities').prepend($(layerIcons[categoryId]).clone().addClass('curr-amen-icon'));
+  } else { // Case: We're not showing an amenity categories
+    $('#btn_amenities').removeClass('showing-amenities');
+    $('.amn-icon').show();
+    //$('amn_icon').before();
+  }
 }
 
 function hidePinsOf(category) {
