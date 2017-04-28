@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/assets/css/animate.css">
     <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
     <link rel="stylesheet" href="/assets/css/mapStyles.css">
+
     <link rel="stylesheet" href="/assets/custom_fonts/css/pwcmobileappicons.css">
     <script src="/assets/js/jquery-prod.js"></script>
     <script src="/assets/js/jquery-migrate-1.2.1.js"></script>
@@ -18,7 +19,6 @@
     <script src="/assets/js/konva.js"></script>
   </head>
   <body style="font-family: FontAwesome;">
-    <i class="icon icon-icon_pin_generic"></i>Search
     <div style="font-family: pwcmobileappicons; position: absolute; left: -1000px;">.</div>
     <div class="app">
         <div class="filter">
@@ -29,7 +29,10 @@
         <div class="buttons">
             <select id="floor_select">
             </select>
-            <button id="btn_amenities">Amenities</button>
+            <button style="amenities-btn" id="btn_amenities">
+              <div style="amn_icon"></div>
+              Amenities
+            </button>
         </div>
         <div id="floor">
             <div id="map"></div>
@@ -43,7 +46,6 @@
 
     </div>
     <div id="root">
-      Here's some html!
     </div>
     <script src="app/maps.js"></script>
   </body>

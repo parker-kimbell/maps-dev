@@ -1,14 +1,14 @@
 @font-face {
     font-family: 'FontAwesome';
-    src: url('/fonts/fontawesome-webfont.ttf');
+    src: url('/assets/fonts/fontawesome-webfont.ttf');
 }
 @font-face {
     font-family: 'CharterITCPro-BlackItalic';
-    src: url('/fonts/pwc/CharterITCPro-BlackItalic.ttf');
+    src: url('/assets/fonts/CharterITCPro-BlackItalic.ttf');
 }
 @font-face {
     font-family: 'ProximaNova-Regular';
-    src: url('/fonts/pwc/ProximaNova-Regular.ttf');
+    src: url('/assets/fonts/ProximaNova-Regular.ttf');
 }
 html, body {
     height: 100%;
@@ -135,15 +135,22 @@ h4 {
 }
 
 #btn_amenities {
-  font-family: CharterITCPro-BlackItalic;
-  border: none;
-  background-color: #000;
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  padding: 0px;
-  width: 25%;
-  outline: none;
+  background-color: #22252B;
+  color : 'white';
+  width : 50%;
+  max-width : 300em;
+  font-size : 30px;
+  font-family: 'ProximaNova-Regular';
+  float : right;
+  margin : 10px;
+  border-radius : 2px;
+  border : 1px solid #7A7676;
+}
+
+#btn_amenities:before {
+  font-family : 'FontAwesome';
+  content: "\f041";
+  float : left;
 }
 
 select {

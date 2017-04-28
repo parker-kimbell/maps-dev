@@ -35,7 +35,6 @@ function initMapsApp(mapsPayload) {
         var payload = mapsPayload;
         console.log('floor: ', floor);
         if(floor.Id === config.floor) {
-            console.log(floor);
 
             $('#name').html(floor.Name);
 
@@ -87,10 +86,10 @@ function initMapsApp(mapsPayload) {
               // INCREASING / DECREASING ICON SIZE? Try just changing the fontSize value
               var fontSize = 80;
 
-
               var image = layerIcons[pinData.LayerId];
               var offsetXImage = fontSize - (fontSize * 0.61);
               var offsetYImage = fontSize - (fontSize * 0.4);
+
               var pinIcon = new Konva.Image({
                 x: ((floor.FloorImage.width * scaleX)* pinData.PositionX) - offsetXImage,
                 y: ((floor.FloorImage.height * scaleY)* pinData.PositionY) - offsetYImage,
@@ -109,7 +108,7 @@ function initMapsApp(mapsPayload) {
                   fill: 'rgb(232,66,102)',
                   text: '\ue807',
                   stroke : 'white',
-                  strokeWidth : '2',
+                  strokeWidth : '3',
                   strokeEnabled : false,
                   fontSize: fontSize,
                   fontFamily: 'pwcmobileappicons',
@@ -120,8 +119,6 @@ function initMapsApp(mapsPayload) {
                   pinIcon : pinIcon,
                   layerid: pinData.LayerId
               });
-
-
 
               pinIcon.on('tap click', function(event) {
                 event.evt.stopPropagation();
@@ -211,7 +208,6 @@ function buildLayerIcon(layer) {
 //TODO: this was blowing up when building icons, needs to be fixed background: url(" + layer.Icon.getDownloadUrl() + ")
 
 function closeFloatingMenu() {
-  debugger;
   $('#floatingmenu').removeClass('open');
   clearLastTouchedPin();
 }
@@ -264,19 +260,39 @@ function setupEventHandlers(mapsPayload) {
           });
       });
 
-      $('.category').on('click', function() {
-          //console.log( $(this).data('categoryid') );
-          if( $(this).parent().hasClass('on') ) { // We're
-              $(this).parent().removeClass('on');
-              var category = $(this).data('categoryid');
-              hidePinsOf(category);
-          } else {
-              $(this).parent().addClass('on');
-              var category = $(this).data('categoryid');
-              showPinsOf(category);
-          }
+      $('.category').on('click tap', function() {
+        if ($(this).parent().hasClass('on')) {
+          $(this).parent().removeClass('on');
+          var category = $(this).data('categoryid');
+          hidePinsOf(category);
+          setAmenitiesButtonTo(null); // Clear the amenities button
+        } else { // Case: we're turning on an amenties category that wasn't on previously. Clear the map and amenities state
+          $('.category').parent().removeClass('on');
+          $('.category').each(function(i, category) {
+            var categoryId = $(category).data('categoryid');
+            hidePinsOf(categoryId);
+          });
+          $(this).parent().addClass('on');
+          var categoryId = $(this).data('categoryid');
+          showPinsOf(categoryId);
+          setAmenitiesButtonTo(categoryId);
+        }
+
+          // if( $(this).parent().hasClass('on') ) {
+          //     $(this).parent().removeClass('on');
+          //     var category = $(this).data('categoryid');
+          //     hidePinsOf(category);
+          // } else {
+          //     $(this).parent().addClass('on');
+          //     var category = $(this).data('categoryid');
+          //     showPinsOf(category);
+          // }
       });
   });
+}
+
+function setAmenitiesButtonTo(category) {
+  
 }
 
 function hidePinsOf(category) {
