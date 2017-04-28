@@ -7,6 +7,7 @@ var backgroundLayer;
 var pinLayer;
 
 var lastTouchedPin;
+var layerIcons = {}; // Holds the images for different pin layers. Initialized at app launch when we get the data payload from the CMS
 
 function initMapsApp(mapsPayload) {
   var width = window.innerWidth;
@@ -283,10 +284,18 @@ function buildFloorOption(floor) {
   ].join("\n"));
 }
 
+function initLayerIcons(layers) {
+  $.each(layers, function(i, layer) {
+    layerIcons[layer.Name] = new Image();
+    layerIcons[layer.Name].src = layer.Icon;
+  });
+}
+
 function init() {
   var request = new XMLHttpRequest();
   request.addEventListener("load", function() {
     var mapsPayload = JSON.parse(this.responseText);
+    initLayerIcons(mapsPayload.layers);
     buildLayersModal(mapsPayload.layers);
     buildFloorSelect(mapsPayload)
     setupEventHandlers(mapsPayload)
