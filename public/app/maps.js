@@ -83,15 +83,29 @@ function initMapsApp(mapsPayload) {
             $.each(floor.Pin, function(i,pinData) {
               // Build the pin icon that we'll place on the Konva layer
 
-              // These calculations try to scale the position of the icon based on its size, this will also be related to the original icon used, in this case \uf041
-              var fontSize = 50;
-              var offsetX = fontSize - (fontSize * 0.5);
-              var offsetY = fontSize - (fontSize * 0.3);
-              // end calculations
-              var testd = mapsPayload;
+              // These offset/scaling calculations try to scale the position of the icon based on its size, this will also be related to the original icon used, in this case \uf041
+              // INCREASING / DECREASING ICON SIZE? Try just changing the fontSize value
+              var fontSize = 80;
+
+
+              var image = layerIcons[pinData.LayerId];
+              var offsetXImage = fontSize - (fontSize * 0.61);
+              var offsetYImage = fontSize - (fontSize * 0.4);
+              var pinIcon = new Konva.Image({
+                x: ((floor.FloorImage.width * scaleX)* pinData.PositionX) - offsetXImage,
+                y: ((floor.FloorImage.height * scaleY)* pinData.PositionY) - offsetYImage,
+                image: layerIcons[pinData.LayerId],
+                scaleX : fontSize / 100,
+                scaleY : fontSize / 100,
+                icon : true
+              });
+
+              var offsetXPin = fontSize - (fontSize * 0.5);
+              var offsetYPin = fontSize - (fontSize * 0.3);
+
               var pin = new Konva.Text({
-                  x: ((floor.FloorImage.width * scaleX)* pinData.PositionX) - offsetX,
-                  y: ((floor.FloorImage.height * scaleY)* pinData.PositionY) - offsetY,
+                  x: ((floor.FloorImage.width * scaleX)* pinData.PositionX) - offsetXPin,
+                  y: ((floor.FloorImage.height * scaleY)* pinData.PositionY) - offsetYPin,
                   fill: 'rgb(232,66,102)',
                   text: '\ue807',
                   stroke : 'white',
@@ -103,8 +117,17 @@ function initMapsApp(mapsPayload) {
                   shadowBlur: 10,
                   shadowOffset: {x : 5, y : 5},
                   shadowOpacity: 0.5,
+                  pinIcon : pinIcon,
                   layerid: pinData.LayerId
               });
+
+
+
+              pinIcon.on('tap click', function(event) {
+                event.evt.stopPropagation();
+                pin.fire(event.type, pin);
+              });
+
               // Expose the pin data and highlight the pin on pin tap,
               // Also de-highlight the last pin
               pin.on('tap click', function(e) {
@@ -123,7 +146,7 @@ function initMapsApp(mapsPayload) {
               // Hide the pin by default
               //pin.hide();
 
-              if(pinData.Id === config.pin) {
+              if (pinData.Id === config.pin) {
                   pin.show();
                   $('.layer_name').html(pinData.Layer.Name);
                   $('.panel_body').html(pinData.Body);
@@ -132,13 +155,14 @@ function initMapsApp(mapsPayload) {
               }
 
               backgroundLayer.add(pin);
+              backgroundLayer.add(pinIcon);
             }); // End pin each
 
             // close the panel if the map is tapped
             stage.on('tap click', function(e) {
 
                 var node = e.target;
-                if(node.className === 'Image') {
+                if(node.className === 'Image' && !node.attrs.icon) {
                     closeFloatingMenu();
                 }
 
@@ -151,17 +175,18 @@ function initMapsApp(mapsPayload) {
         }
     }); // end $.each floorData
 
-    $('.category').each(function(i,ele) {
-      if($(ele).parent().hasClass('on')) {
-        var catid = $(ele).data('categoryid');
-        var allpins = stage.find('Text');
-        allpins.each(function(p) {
-            if(p.attrs.layerid == catid) {
-                p.show();
-            }
-        });
-      }
-    });
+    // TODO: Might need to re-enable this
+    // $('.category').each(function(i,ele) {
+    //   if($(ele).parent().hasClass('on')) {
+    //     var catid = $(ele).data('categoryid');
+    //     var allpins = stage.find('Text');
+    //     allpins.each(function(p) {
+    //         if(p.attrs.layerid == catid) {
+    //             p.show();
+    //         }
+    //     });
+    //   }
+    // });
 
   }).trigger('hashchange'); // $.onHashChange
 }
@@ -186,6 +211,7 @@ function buildLayerIcon(layer) {
 //TODO: this was blowing up when building icons, needs to be fixed background: url(" + layer.Icon.getDownloadUrl() + ")
 
 function closeFloatingMenu() {
+  debugger;
   $('#floatingmenu').removeClass('open');
   clearLastTouchedPin();
 }
@@ -240,31 +266,39 @@ function setupEventHandlers(mapsPayload) {
 
       $('.category').on('click', function() {
           //console.log( $(this).data('categoryid') );
-          if( $(this).parent().hasClass('on') ) {
+          if( $(this).parent().hasClass('on') ) { // We're
               $(this).parent().removeClass('on');
-              var catid = $(this).data('categoryid');
-              //var allpins = stage.find('Circle');
-              var allpins = stage.find('Text');
-              allpins.each(function(p) {
-                  if(p.attrs.layerid === catid) {
-                      p.hide();
-                  }
-              });
-              stage.draw();
+              var category = $(this).data('categoryid');
+              hidePinsOf(category);
           } else {
               $(this).parent().addClass('on');
-              var catid = $(this).data('categoryid');
-              //var allpins = stage.find('Circle');
-              var allpins = stage.find('Text');
-              allpins.each(function(p) {
-                  if(p.attrs.layerid === catid) {
-                      p.show();
-                  }
-              });
-              stage.draw();
+              var category = $(this).data('categoryid');
+              showPinsOf(category);
           }
       });
   });
+}
+
+function hidePinsOf(category) {
+  var allpins = stage.find('Text');
+  allpins.each(function(p) {
+      if(p.attrs.layerid === category) {
+          p.hide();
+          p.attrs.pinIcon.hide();
+      }
+  });
+  stage.draw();
+}
+
+function showPinsOf(category) {
+  var allpins = stage.find('Text');
+  allpins.each(function(p) {
+      if(p.attrs.layerid === category) {
+          p.show();
+          p.attrs.pinIcon.show();
+      }
+  });
+  stage.draw();
 }
 
 function buildFloorSelect(mapsPayload) {
@@ -286,8 +320,8 @@ function buildFloorOption(floor) {
 
 function initLayerIcons(layers) {
   $.each(layers, function(i, layer) {
-    layerIcons[layer.Name] = new Image();
-    layerIcons[layer.Name].src = layer.Icon;
+    layerIcons[layer.Id] = new Image();
+    layerIcons[layer.Id].src = layer.Icon;
   });
 }
 
