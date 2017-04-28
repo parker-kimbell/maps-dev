@@ -87,7 +87,7 @@ function initMapsApp(mapsPayload) {
               var offsetX = fontSize - (fontSize * 0.7);
               var offsetY = fontSize - (fontSize * 0.3);
               // end calculations
-
+              var testd = mapsPayload;
               var pin = new Konva.Text({
                   x: ((floor.FloorImage.width * scaleX)* pinData.PositionX) - offsetX,
                   y: ((floor.FloorImage.height * scaleY)* pinData.PositionY) - offsetY,
