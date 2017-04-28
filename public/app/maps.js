@@ -84,7 +84,7 @@ function initMapsApp(mapsPayload) {
 
               // These calculations try to scale the position of the icon based on its size, this will also be related to the original icon used, in this case \uf041
               var fontSize = 50;
-              var offsetX = fontSize - (fontSize * 0.7);
+              var offsetX = fontSize - (fontSize * 0.5);
               var offsetY = fontSize - (fontSize * 0.3);
               // end calculations
               var testd = mapsPayload;
@@ -92,12 +92,12 @@ function initMapsApp(mapsPayload) {
                   x: ((floor.FloorImage.width * scaleX)* pinData.PositionX) - offsetX,
                   y: ((floor.FloorImage.height * scaleY)* pinData.PositionY) - offsetY,
                   fill: 'rgb(232,66,102)',
-                  text: '\uf041',
+                  text: '\ue807',
                   stroke : 'white',
                   strokeWidth : '2',
                   strokeEnabled : false,
                   fontSize: fontSize,
-                  fontFamily: 'FontAwesome',
+                  fontFamily: 'pwcmobileappicons',
                   shadowColor: 'black',
                   shadowBlur: 10,
                   shadowOffset: {x : 5, y : 5},
@@ -138,7 +138,7 @@ function initMapsApp(mapsPayload) {
 
                 var node = e.target;
                 if(node.className === 'Image') {
-                    $('#floatingmenu').removeClass('open');
+                    closeFloatingMenu();
                 }
 
             });
@@ -184,6 +184,19 @@ function buildLayerIcon(layer) {
 }
 //TODO: this was blowing up when building icons, needs to be fixed background: url(" + layer.Icon.getDownloadUrl() + ")
 
+function closeFloatingMenu() {
+  $('#floatingmenu').removeClass('open');
+  clearLastTouchedPin();
+}
+
+function clearLastTouchedPin() {
+  if (lastTouchedPin && backgroundLayer) { // Clear the highlighted appearance of the last touched pin
+    lastTouchedPin.strokeEnabled(false);
+    backgroundLayer.draw();
+    lastTouchedPin = false;
+  }
+}
+
 function setupEventHandlers(mapsPayload) {
   $(function () {
 
@@ -204,7 +217,7 @@ function setupEventHandlers(mapsPayload) {
       });
 
       $('.panel_close').on('click', function() {
-        $('#floatingmenu').removeClass('open');
+        closeFloatingMenu();
       });
 
       $('#floor_select').on('change', function() {
@@ -214,7 +227,7 @@ function setupEventHandlers(mapsPayload) {
       });
 
       $('#btn_amenities').on('click', function() {
-          $('#floatingmenu').removeClass('open');
+          closeFloatingMenu();
           $('.filter').velocity({
               opacity: 1
           }, {
@@ -232,7 +245,7 @@ function setupEventHandlers(mapsPayload) {
               //var allpins = stage.find('Circle');
               var allpins = stage.find('Text');
               allpins.each(function(p) {
-                  if(p.attrs.layerid == catid) {
+                  if(p.attrs.layerid === catid) {
                       p.hide();
                   }
               });
@@ -243,7 +256,7 @@ function setupEventHandlers(mapsPayload) {
               //var allpins = stage.find('Circle');
               var allpins = stage.find('Text');
               allpins.each(function(p) {
-                  if(p.attrs.layerid == catid) {
+                  if(p.attrs.layerid === catid) {
                       p.show();
                   }
               });
