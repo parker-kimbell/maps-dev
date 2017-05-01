@@ -71,11 +71,6 @@ body {
     width: 100%;
     word-break:break-word;
 }
-.curr-amen-icon {
-  height : 10%;
-  width: auto;
-  float: left;
-}
 button {
     width: 45%;
     margin: 3px;
@@ -133,8 +128,7 @@ h4 {
     font-size: 12px;
 }
 
-#btn_amenities {
-  background-color: #22252B;
+.btn-amenities {
   color : 'white';
   width : 50%;
   max-width : 300em;
@@ -146,16 +140,31 @@ h4 {
   border : 1px solid #7A7676;
 }
 
+.no-amenities {
+  background-color: #22252B;
+}
+
+.showing-amenities {
+    background-color: #EE3D64;
+}
+
+.amenities_text {
+  color : #D8D8D8;
+  float : left;
+  margin-left : 10px;
+}
+
+.curr-amen-icon {
+  height : 1.5em;
+  width: auto;
+  float: left;
+}
+
 .amn-icon:before {
   font-family : 'FontAwesome';
   content: "\f041";
   float : left;
 }
-/*#btn_amenities:before {
-  font-family : 'FontAwesome';
-  content: "\f041";
-  float : left;
-}*/
 
 select {
   -webkit-appearance: none;

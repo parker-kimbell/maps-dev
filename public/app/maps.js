@@ -292,11 +292,15 @@ function setupEventHandlers(mapsPayload) {
 }
 
 function setAmenitiesButtonTo(categoryId) {
+  // Always clear any existing amenities button icon before displaying a new one
+  $('#btn_amenities .curr-amen-icon').remove();
   if (categoryId) { // Case: We're showing an amenity category
     $('#btn_amenities').addClass('showing-amenities');
+    $('#btn_amenities').removeClass('no-amenities');
     $('.amn-icon').hide();
     $('#btn_amenities').prepend($(layerIcons[categoryId]).clone().addClass('curr-amen-icon'));
   } else { // Case: We're not showing an amenity categories
+    $('#btn_amenities').addClass('no-amenities');
     $('#btn_amenities').removeClass('showing-amenities');
     $('.amn-icon').show();
     //$('amn_icon').before();
