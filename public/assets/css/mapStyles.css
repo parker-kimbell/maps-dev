@@ -67,9 +67,12 @@ body {
 .filter ul li div p {
     position: absolute;
     bottom: 0;
+    font-size: 2.5em;
+    font-family: 'ProximaNova-Regular';
     text-align: center;
     width: 100%;
     word-break:break-word;
+    line-height: normal;
 }
 button {
     width: 45%;
