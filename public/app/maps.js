@@ -9,31 +9,40 @@ var pinLayer;
 var lastTouchedPin;
 var layerIcons = {}; // Holds the images for different pin layers. Initialized at app launch when we get the data payload from the CMS
 
+var lastLocation;
+
 function initMapsApp(mapsPayload) {
   var width = window.innerWidth;
   var height = window.innerHeight;
   $(window).on('hashchange',function() {
     var payload = mapsPayload;
 
-    console.log('Location hash', location.hash);
     var hash = location.hash.replace('#','');
     var parts = hash.split('.');
 
-    var config = { floor: Number(parts[0]), pin: (parts[1] == undefined ? 0 : Number(parts[1]))  };
-    $('#floor_select').val(config.floor);
+    var config = {
+      location: Number(parts[0]),
+      floor: (parts[1] == undefined ? 0 : Number(parts[1]))
+    };
 
+    $('#location_select').val(config.location);
+    $('#floor_select').val(config.floor);
+    
+    var locationFloorData = getFloorDataFromLocation(mapsPayload.building_data, config.location)
+    if (!locationFloorData) throw new Error('In initMap. Could not find location in mapsPayload corresponding to given Id. Given Id: ' + locationId);
+
+    if (lastLocation !== config.location) { // Case: our location has changed, so clear all floor data and build the floor data for the new locaion
+      clearFloorOptions();
+      buildFloorSelect(locationFloorData);
+    }
+    lastLocation = config.location;
     var scaleX = 0;
     var scaleY = 0;
 
     $('#map').empty();
-    // TODO: At this point it's expected that we have the location (Melb, Brisbane, etc.) and
-    // This loops over the floors for that location and finds the one extracted from the hash above.
-    // So ultimately, get that data to this code, and remove the hardcoded value on the next line.
-    var brisbaneFloorData = mapsPayload.building_data[0].Floor;
-    $.each(brisbaneFloorData, function(i, floor) {
-        console.log(floor.Id + ' ' + config.floor);
+
+    $.each(locationFloorData, function(i, floor) {
         var payload = mapsPayload;
-        console.log('floor: ', floor);
         if(floor.Id === config.floor) {
 
             $('#name').html(floor.Name);
@@ -259,7 +268,6 @@ function buildLayerIcon(layer) {
     "</li>"
   ].join("\n"));
 }
-//TODO: this was blowing up when building icons, needs to be fixed background: url(" + layer.Icon.getDownloadUrl() + ")
 
 function closeFloatingMenu() {
   $('#floatingmenu').removeClass('open');
@@ -275,7 +283,6 @@ function clearLastTouchedPin() {
 }
 
 function updateSelectionHash() {
-  debugger;
   var selectedFloor = $("#floor_select option:selected");
   var selectedLocation = $("#location_select option:selected");
   document.location.href = '#' + selectedLocation.data('buildingid') + "." + $(selectedFloor).data('floorid');
@@ -362,14 +369,30 @@ function showPinsOf(category) {
   stage.draw();
 }
 
-function buildFloorSelect(mapsPayload) {
+function buildFloorSelect(floorData) {
   // TODO: Again for this code, it looks like the location is already known, so I've backed in the Brisbane
   // floor, but it will need to be derived at run-time, ultimately
-  var brisbaneFloorData = mapsPayload.building_data[0].Floor;
   var floorSelect = $('#floor_select');
-  $.each(brisbaneFloorData, function(i, floor) {
+  $.each(floorData, function(i, floor) {
       floorSelect.append(buildFloorOption(floor));
   });
+}
+
+function clearFloorOptions() {
+  $('#floor_select option').remove();
+}
+
+// Loop through all available locations and return
+// the one that corresponds to the given Id.
+// Returns false if we couldn't find the the location given
+function getFloorDataFromLocation(locationData, locationId) {
+  for (var i = 0; i < locationData.length; i++) {
+    var location = locationData[i];
+    if (location.Id === locationId) { // Case: we've found the building that corresponds to our given Id, return it
+      return location.Floor;
+    }
+  }
+  return false;
 }
 
 function buildFloorOption(floor) {
@@ -409,9 +432,8 @@ function init() {
   request.addEventListener("load", function() {
     var mapsPayload = JSON.parse(this.responseText);
     initLayerIcons(mapsPayload);
-    buildLocationSelect(mapsPayload)
-    buildFloorSelect(mapsPayload)
-    setupEventHandlers(mapsPayload)
+    buildLocationSelect(mapsPayload);
+    setupEventHandlers(mapsPayload);
     initMapsApp(mapsPayload);
   });
   request.open("GET", "http://localhost:3000/getMaps");
