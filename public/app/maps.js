@@ -198,6 +198,41 @@ function buildLayersModalForFloor(layers, floorPins) {
       category_list.append(buildLayerIcon(layer));
     }
   });
+
+  // Initialize click handlers for category buttons
+  $('.category').on('click tap', function() {
+    if ($(this).parent().hasClass('on')) { // Case: we're turning off all amenities
+      $(this).parent().removeClass('on');
+      var categoryId = $(this).data('categoryid');
+      hidePinsOf(categoryId);
+      setAmenitiesButtonTo(null); // Clear the amenities button
+    } else { // Case: we're turning on an amenties category that wasn't on previously. Clear the map and amenities state, and apply the new amenities filter
+      $('.category').parent().removeClass('on');
+      $('.category').each(function(i, category) {
+        var categoryId = $(category).data('categoryid');
+        hidePinsOf(categoryId);
+      });
+      $(this).parent().addClass('on');
+      var categoryId = $(this).data('categoryid');
+      showPinsOf(categoryId);
+      setAmenitiesButtonTo(categoryId);
+    }
+  });
+}
+
+function setAmenitiesButtonTo(categoryId) {
+  // Always clear any existing amenities button icon before displaying a new one
+  $('#btn_amenities .curr-amen-icon').remove();
+  if (categoryId) { // Case: We're showing an amenity category
+    $('#btn_amenities').addClass('showing-amenities');
+    $('#btn_amenities').removeClass('no-amenities');
+    $('.amn-icon').hide();
+    $('#btn_amenities').prepend($(layerIcons[categoryId]).clone().addClass('curr-amen-icon'));
+  } else { // Case: We're not showing an amenity categories
+    $('#btn_amenities').addClass('no-amenities');
+    $('#btn_amenities').removeClass('showing-amenities');
+    $('.amn-icon').show();
+  }
 }
 
 // Loops through all the pins for a given floor.
@@ -248,19 +283,11 @@ function setupEventHandlers(mapsPayload) {
           }
       }
 
-      $('.filter_close').on('click', function() {
-          $('.filter').velocity({
-              opacity: 0
-          }, {
-              display: 'none',
-              delay: 500,
-              duration: 200
-          });
-      });
-
       $('.panel_close').on('click', function() {
         closeFloatingMenu();
       });
+
+
 
       $('#floor_select').on('change', function() {
           var optionSelected = $("option:selected", this);
@@ -268,8 +295,22 @@ function setupEventHandlers(mapsPayload) {
           document.location.href = '#' + $(optionSelected).data('floorid');
       });
 
+      $('.amenities-modal-close').on('tap click', function(event) {
+        event.stopPropagation();
+        $('.amenities-modal-close').hide();
+        $('.filter').velocity({
+            opacity: 0
+        }, {
+            display: 'none',
+            delay: 500,
+            duration: 200
+        });
+
+      });
+
       $('#btn_amenities').on('click', function() {
           closeFloatingMenu();
+          $('.amenities-modal-close').show();
           $('.filter').velocity({
               opacity: 1
           }, {
@@ -278,51 +319,7 @@ function setupEventHandlers(mapsPayload) {
               duration: 200
           });
       });
-
-      $('.category').on('click tap', function() {
-        if ($(this).parent().hasClass('on')) { // Case: we're turning off all amenities
-          $(this).parent().removeClass('on');
-          var categoryId = $(this).data('categoryid');
-          hidePinsOf(categoryId);
-          setAmenitiesButtonTo(null); // Clear the amenities button
-        } else { // Case: we're turning on an amenties category that wasn't on previously. Clear the map and amenities state, and apply the new amenities filter
-          $('.category').parent().removeClass('on');
-          $('.category').each(function(i, category) {
-            var categoryId = $(category).data('categoryid');
-            hidePinsOf(categoryId);
-          });
-          $(this).parent().addClass('on');
-          var categoryId = $(this).data('categoryid');
-          showPinsOf(categoryId);
-          setAmenitiesButtonTo(categoryId);
-        }
-
-          // if( $(this).parent().hasClass('on') ) {
-          //     $(this).parent().removeClass('on');
-          //     var category = $(this).data('categoryid');
-          //     hidePinsOf(category);
-          // } else {
-          //     $(this).parent().addClass('on');
-          //     var category = $(this).data('categoryid');
-          //     showPinsOf(category);
-          // }
-      });
   });
-}
-
-function setAmenitiesButtonTo(categoryId) {
-  // Always clear any existing amenities button icon before displaying a new one
-  $('#btn_amenities .curr-amen-icon').remove();
-  if (categoryId) { // Case: We're showing an amenity category
-    $('#btn_amenities').addClass('showing-amenities');
-    $('#btn_amenities').removeClass('no-amenities');
-    $('.amn-icon').hide();
-    $('#btn_amenities').prepend($(layerIcons[categoryId]).clone().addClass('curr-amen-icon'));
-  } else { // Case: We're not showing an amenity categories
-    $('#btn_amenities').addClass('no-amenities');
-    $('#btn_amenities').removeClass('showing-amenities');
-    $('.amn-icon').show();
-  }
 }
 
 function hidePinsOf(category) {
@@ -332,6 +329,15 @@ function hidePinsOf(category) {
           p.hide();
           p.attrs.pinIcon.hide();
       }
+  });
+  stage.draw();
+}
+
+function hideAllPins() {
+  var allpins = stage.find('Text');
+  allpins.each(function(p) {
+    p.hide();
+    p.attrs.pinIcon.hide();
   });
   stage.draw();
 }
