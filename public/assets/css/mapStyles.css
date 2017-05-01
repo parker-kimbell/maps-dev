@@ -79,6 +79,29 @@ body {
   float : right;
   display : none;
 }
+.dropdown-container {
+  font-size: 1.4em;
+  font-family: 'ProximaNova-Regular';
+}
+.dropdown {
+  -webkit-appearance: none;
+  border: none;
+  color: #fff;
+  margin-top: 10px;
+  margin-left: 10px;
+  padding-right: 30px;
+  outline: none;
+  background-color: transparent;
+  background-image: url("/assets/chevron-down.png");
+  background-size: contain;
+  background-repeat:no-repeat;
+  background-position: right;
+}
+.dropdown::before {
+  font-family : 'FontAwesome';
+  content: "\f041";
+  float : left;
+}
 button {
     width: 45%;
     margin: 3px;
@@ -172,18 +195,6 @@ h4 {
   font-family : 'FontAwesome';
   content: "\f041";
   float : left;
-}
-
-select {
-  -webkit-appearance: none;
-  border: none;
-  font-family: "CharterITCPro-BlackItalic";
-  font-size: 24px;
-  background-color: transparent;
-  color: #fff;
-  margin-top: 10px;
-  margin-left: 10px;
-  outline: none;
 }
 
 .filter_close {

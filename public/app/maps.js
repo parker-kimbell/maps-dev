@@ -29,9 +29,8 @@ function initMapsApp(mapsPayload) {
     $('#floor_select').val(config.floor);
 
     var locationFloorData = getFloorDataFromLocation(mapsPayload.building_data, config.location)
-    if (!locationFloorData) throw new Error('In initMap. Could not find location in mapsPayload corresponding to given Id. Given Id: ' + locationId);
-    debugger;
-    if (lastLocation !== config.location) { // Case: our location has changed, so clear all floor data and build the floor data for the new locaion
+    if (!locationFloorData) throw new Error('In initMap. Could not find location in mapsPayload corresponding to given Id. Given Id: ' + config.location);
+    if (lastLocation !== config.location) { // Case: our location has changed, so clear all floor data and build the floor data for the new location
       clearFloorOptions();
       buildFloorSelect(locationFloorData);
       $('#floor_select').trigger('change');
