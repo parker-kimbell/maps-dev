@@ -76,6 +76,8 @@ function initMapsApp(mapsPayload) {
                 y: 0
             });
 
+            buildLayersModalForFloor(mapsPayload.layers, floor.Pin);
+
             // Loop through each pin that has been placed on the floor,
             // and places it in the appropriate spot on the floor map,
             // hiding each pin by default
@@ -188,11 +190,28 @@ function initMapsApp(mapsPayload) {
   }).trigger('hashchange'); // $.onHashChange
 }
 
-function buildLayersModal(layers) {
+function buildLayersModalForFloor(layers, floorPins) {
   var category_list = $('.category_list');
+  $('.category_list li').remove(); // Since we're changing floors, clear all previous amenity buttons
   $.each(layers, function(i, layer) {
-    category_list.append(buildLayerIcon(layer))
+    if (floorHasThisLayer(floorPins, layer)) { // Case: this floor has a pin corresponding to the given/layer amenity, build that layer button
+      category_list.append(buildLayerIcon(layer));
+    }
   });
+}
+
+// Loops through all the pins for a given floor.
+// If any pin matches the given layer, return true indicating that we should give
+// that amenity option.
+// Else return false, indicating that that layer/amenity button should not be constructed
+function floorHasThisLayer(floorPins, layer) {
+  for (var i = 0; i < floorPins.length; i++) {
+    var pin = floorPins[i];
+    if (pin.LayerId === layer.Id) { // Case: the current floor has a pin corresponding to the given amenity/layer , return true
+      return true;
+    }
+  }
+  return false;
 }
 
 function buildLayerIcon(layer) {
@@ -303,7 +322,6 @@ function setAmenitiesButtonTo(categoryId) {
     $('#btn_amenities').addClass('no-amenities');
     $('#btn_amenities').removeClass('showing-amenities');
     $('.amn-icon').show();
-    //$('amn_icon').before();
   }
 }
 
@@ -346,7 +364,8 @@ function buildFloorOption(floor) {
   ].join("\n"));
 }
 
-function initLayerIcons(layers) {
+function initLayerIcons(mapsPayload) {
+  var layers = mapsPayload.layers;
   $.each(layers, function(i, layer) {
     layerIcons[layer.Id] = new Image();
     layerIcons[layer.Id].src = layer.Icon;
@@ -357,8 +376,7 @@ function init() {
   var request = new XMLHttpRequest();
   request.addEventListener("load", function() {
     var mapsPayload = JSON.parse(this.responseText);
-    initLayerIcons(mapsPayload.layers);
-    buildLayersModal(mapsPayload.layers);
+    initLayerIcons(mapsPayload);
     buildFloorSelect(mapsPayload)
     setupEventHandlers(mapsPayload)
     initMapsApp(mapsPayload);
