@@ -17,6 +17,7 @@
     <script src="/assets/js/jquery-migrate-1.2.1.js"></script>
     <script src="/assets/js/velocity.js"></script>
     <script src="/assets/js/konva.js"></script>
+    <script src="/app/maps.js"></script>
   </head>
   <body style="font-family: FontAwesome;">
     <div style="font-family: pwcmobileappicons; position: absolute; left: -1000px;">.</div>
@@ -27,11 +28,16 @@
         </div>
         <div class="buttons">
           <div class="dropdown-container">
-            <select id="location_select" class="dropdown">
-            </select>
-            <select id="floor_select" class="dropdown">
-            </select>
+            <div>
+              <select id="location_select" class="dropdown">
+              </select>
+            </div>
+            <div>
+              <select id="floor_select" class="dropdown">
+              </select>
+            </div>
           </div>
+          <div class='amenities-container'>
             <button id="btn_amenities" class="btn-amenities no-amenities">
               <div class="amn-icon"></div>
               <div class="amenities_text">
@@ -40,6 +46,7 @@
               <div class="fa fa-times amenities-modal-close">
               </div>
             </button>
+          </div>
         </div>
         <div id="floor">
             <div id="map"></div>
@@ -54,6 +61,5 @@
     </div>
     <div id="root">
     </div>
-    <script src="app/maps.js"></script>
   </body>
 </html>

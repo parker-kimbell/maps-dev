@@ -95,7 +95,7 @@ function initMapsApp(mapsPayload) {
 
               // These offset/scaling calculations try to scale the position of the icon based on its size, this will also be related to the original icon used, in this case \uf041
               // INCREASING / DECREASING ICON SIZE? Try just changing the fontSize value
-              var fontSize = 80;
+              var fontSize = 40;
 
               var image = layerIcons[pinData.LayerId];
               var offsetXImage = fontSize - (fontSize * 0.61);
@@ -105,12 +105,12 @@ function initMapsApp(mapsPayload) {
                 x: ((floor.FloorImage.width * scaleX)* pinData.PositionX) - offsetXImage,
                 y: ((floor.FloorImage.height * scaleY)* pinData.PositionY) - offsetYImage,
                 image: layerIcons[pinData.LayerId],
-                scaleX : fontSize / 100,
-                scaleY : fontSize / 100,
+                scaleX : fontSize / 90,
+                scaleY : fontSize / 90,
                 icon : true
               });
 
-              var offsetXPin = fontSize - (fontSize * 0.5);
+              var offsetXPin = fontSize - (fontSize * 0.55);
               var offsetYPin = fontSize - (fontSize * 0.3);
 
               var pin = new Konva.Text({
@@ -436,7 +436,7 @@ function init() {
     setupEventHandlers(mapsPayload);
     initMapsApp(mapsPayload);
   });
-  request.open("GET", "http://localhost:3000/getMaps");
+  request.open("GET", "https://e9affc90.ngrok.io/getMaps");
   request.setRequestHeader('Authorization', 'Bearer ff779ee219d7be0549c971d6ba2311d5');
   request.setRequestHeader('Content-Type', 'application/json');
   request.setRequestHeader('Accept', 'application/json');

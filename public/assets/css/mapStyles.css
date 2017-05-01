@@ -24,6 +24,7 @@ body {
     position:  relative;
     min-height: 100%;
     overflow: hidden;
+    background-image: radial-gradient(circle at 50% 30%, #5c5cce 0%, #102176 10%, #102139 50%, black 75%)
 }
 .filter {
     position: absolute;
@@ -67,12 +68,17 @@ body {
 .filter ul li div p {
     position: absolute;
     bottom: 0;
-    font-size: 2.5em;
+    font-size: 1.2em;
     font-family: 'ProximaNova-Regular';
     text-align: center;
     width: 100%;
     word-break:break-word;
     line-height: normal;
+}
+.amenities-container {
+  display: inline-block;
+  width: 50%;
+  float : right;
 }
 .amenities-modal-close {
   font-size: 1.2em;
@@ -80,6 +86,7 @@ body {
   display : none;
 }
 .dropdown-container {
+  display: inline-block;
   font-size: 1.4em;
   font-family: 'ProximaNova-Regular';
 }
@@ -87,9 +94,7 @@ body {
   -webkit-appearance: none;
   border: none;
   color: #fff;
-  margin-top: 10px;
-  margin-left: 10px;
-  padding-right: 30px;
+  padding-right : 1.25em;
   outline: none;
   background-color: transparent;
   background-image: url("/assets/chevron-down.png");
@@ -97,6 +102,7 @@ body {
   background-repeat:no-repeat;
   background-position: right;
 }
+
 .dropdown::before {
   font-family : 'FontAwesome';
   content: "\f041";
@@ -145,7 +151,10 @@ h4 {
     font-size: 16px;
     border-top: 1px solid rgb(76,78,85);
 }
-
+.buttons {
+  display: inline-block;
+  width: 100%;
+}
 #floatingmenu.open {
     bottom:0px;
     -webkit-transition: all 300ms ease;
@@ -161,12 +170,11 @@ h4 {
 
 .btn-amenities {
   color : 'white';
-  width : 50%;
+  width: 100%;
   max-width : 300em;
-  font-size : 30px;
+  font-size : 1.2em;
   font-family: 'ProximaNova-Regular';
   float : right;
-  margin : 10px;
   border-radius : 2px;
   border : 1px solid #7A7676;
 }
