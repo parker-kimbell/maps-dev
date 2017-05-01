@@ -274,12 +274,19 @@ function clearLastTouchedPin() {
   }
 }
 
+function updateSelectionHash() {
+  debugger;
+  var selectedFloor = $("#floor_select option:selected");
+  var selectedLocation = $("#location_select option:selected");
+  document.location.href = '#' + selectedLocation.data('buildingid') + "." + $(selectedFloor).data('floorid');
+}
+
 function setupEventHandlers(mapsPayload) {
   $(function () {
 
       if(location.hash.length === 0) {
           if(mapsPayload.length > 0) {
-              window.location.hash = '#'+mapsPayload[0].Id;
+              window.location.hash = '#' + mapsPayload[0].Id;
           }
       }
 
@@ -290,9 +297,11 @@ function setupEventHandlers(mapsPayload) {
 
 
       $('#floor_select').on('change', function() {
-          var optionSelected = $("option:selected", this);
-          // TODO: removed this since we don't know our route yet but it will need to be put back in '/mobile/building/' + $(optionSelected).data('locationid') +
-          document.location.href = '#' + $(optionSelected).data('floorid');
+          updateSelectionHash();
+      });
+
+      $('#location_select').on('change', function() {
+          updateSelectionHash();
       });
 
       $('.amenities-modal-close').on('tap click', function(event) {
@@ -370,6 +379,23 @@ function buildFloorOption(floor) {
   ].join("\n"));
 }
 
+function buildLocationSelect(mapsPayload) {
+  // TODO: Again for this code, it looks like the location is already known, so I've backed in the Brisbane
+  // floor, but it will need to be derived at run-time, ultimately
+  var buildingData = mapsPayload.building_data;
+  var buildingSelect = $('#location_select');
+  $.each(buildingData, function(i, building) {
+      buildingSelect.append(buildLocationOption(building));
+  });
+}
+
+function buildLocationOption(building) {
+  return $([
+    "<option value=" + building.Id + " data-buildingid=" + building.Id + ">" + building.Name,
+    "</option>"
+  ].join("\n"));
+}
+
 function initLayerIcons(mapsPayload) {
   var layers = mapsPayload.layers;
   $.each(layers, function(i, layer) {
@@ -383,6 +409,7 @@ function init() {
   request.addEventListener("load", function() {
     var mapsPayload = JSON.parse(this.responseText);
     initLayerIcons(mapsPayload);
+    buildLocationSelect(mapsPayload)
     buildFloorSelect(mapsPayload)
     setupEventHandlers(mapsPayload)
     initMapsApp(mapsPayload);
