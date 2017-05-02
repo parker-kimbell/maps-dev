@@ -12,7 +12,6 @@ var layerIcons = {}; // Holds the images for different pin layers. Initialized a
 var lastLocation;
 
 function initMapsApp(mapsPayload) {
-  debugger;
   var width = window.innerWidth;
   var height = window.innerHeight - $('.buttons').height();
   $(window).on('hashchange',function() {
@@ -146,7 +145,7 @@ function initMapsApp(mapsPayload) {
                 lastTouchedPin = touchedPin;
                 backgroundLayer.draw();
                 $('.layer_name').html(pinData.Title + "text text text text text text text text text text text text text  text text text text text tex");
-                $('.panel_body').html(pinData.Body + "text text text text text text text text text text text text text  t text text text text text  text text tex t text text text text text  text text tex text text text text text text text text text text text text text text text text text text text text text text text text text ");
+                $('.panel_body').html(pinData.Body + "text text text text text text text text text text text text text  t text text text text text  text text tex t text text text text text  text text tex  text text text text text text text text text text text text text text text text text text text text text text text text text ");
                 $('#floatingmenu').addClass('open');
               });
               // Add this new pin to the Konva pinGroup, so that we can place them as one action
@@ -297,12 +296,22 @@ function setupEventHandlers(mapsPayload) {
       }
 
       $('#floor_select').on('change', function() {
-          updateSelectionHash();
+        $(this).blur();
+        updateSelectionHash();
       });
 
       $('#location_select').on('change', function() {
-          updateSelectionHash();
+        $(this).blur();
+        updateSelectionHash();
       });
+      //TODO: remove this if select:focus is working fine on Android
+      // $('#location_select').on('click tap', function(event) {
+      //   event.stopPropagation();
+      // });
+      //
+      // $('#floor_select').on('click tap', function(event) {
+      //   event.stopPropagation();
+      // });
 
       $('.amenities-modal-close').on('tap click', function(event) {
         event.stopPropagation();
@@ -328,6 +337,11 @@ function setupEventHandlers(mapsPayload) {
               duration: 200
           });
       });
+      //TODO: remove this if select:focus is working fine on Android
+      // $('body').on('click tap', function() {
+      //   $('#location_select').blur();
+      //   $('#floor_select').blur();
+      // });
   });
 }
 
