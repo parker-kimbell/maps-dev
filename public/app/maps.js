@@ -344,12 +344,27 @@ function setupEventHandlers(mapsPayload) {
         $('.active-search-container').show();
         $('#active_search_input').focus();
       });
+      $('#active_search_input').on('input', filteredSearch);
       //TODO: remove this if select:focus is working fine on Android
       // $('body').on('click tap', function() {
       //   $('#location_select').blur();
       //   $('#floor_select').blur();
       // });
   });
+}
+
+function filteredSearch() {
+  var currVal = $('#active_search_input').val().toUpperCase();
+  var searchTableCells = $('.dark-table tr td');
+  
+  for (var i = 0; i < searchTableCells.length; i++) {
+    var cell = $(searchTableCells[i]);
+    if (cell.html().toUpperCase().indexOf(currVal) > -1) {
+      cell.show();
+    } else {
+      cell.hide();
+    }
+  }
 }
 
 function hidePinsOf(category) {
