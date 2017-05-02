@@ -11,6 +11,37 @@ var layerIcons = {}; // Holds the images for different pin layers. Initialized a
 
 var lastLocation;
 
+/*
+TODO SCAFFOLDING: ultimately we'll receive the meeting payload from a PwC endpoint (I think)
+in the meantime we derive the data from what's on the CMS now, and build the necessary code against that
+*/
+var meetingRoomData = {};
+var MEETING_ROOMS = "Meeting Spaces";
+// TODO: this will probably change depending on the order layers were added. Need to find this dynamically.
+
+// TODO: need to do this for Location -> Floor whenever that changes
+var MEETING_LAYERID = 5;
+function buildMeetingData(mapsPayload) {
+
+  var searchTable = $('.dark-table tbody');
+  searchTable.children().remove()
+
+  $.each(mapsPayload.building_data, function(i, building) {
+    var locationName = building.Name;
+    $.each(building.Floor, function(j, floor) {
+      var floorName = floor.Name;
+      var pins = floor.Pin;
+      $.each(pins, function(k, pin) {
+        if (pin.LayerId === MEETING_LAYERID) {
+          console.log(pin.Title);
+          debugger;
+          searchTable.append('<tr><td>' + pin.Title + '</td></tr>')
+        }
+      });
+    });
+  });
+}
+
 function initMapsApp(mapsPayload) {
   var width = window.innerWidth;
   var height = window.innerHeight - $('.buttons').height();
@@ -44,7 +75,10 @@ function initMapsApp(mapsPayload) {
     $.each(locationFloorData, function(i, floor) {
         var payload = mapsPayload;
         if(floor.Id === config.floor) {
-
+          // Clear any existing search data, as we'll be creating
+          // new content for this floor
+            var searchTable = $('.dark-table tbody');
+            searchTable.children().remove();
             $('#name').html(floor.Name);
 
             scaleX = width/floor.FloorImage.width;
@@ -130,6 +164,20 @@ function initMapsApp(mapsPayload) {
                   pinIcon : pinIcon,
                   layerid: pinData.LayerId
               });
+              if (pinData.LayerId === MEETING_LAYERID) {
+                newCell = $('<tr><td>' + pinData.Title + '</td></tr>');
+                searchTable.append(newCell);
+                newCell.on('click tap', function() {
+                  hideAllPins();
+                  $('.buttons').css('visibility', 'visible');;
+                  $('#map').css('visibility', 'visible');;
+                  $('.active-search-container').hide();
+                  pin.show();
+                  pinIcon.show();
+                  backgroundLayer.draw();
+                  pin.fire('tap');
+                });
+              }
 
               pinIcon.on('tap click', function(event) {
                 event.evt.stopPropagation();
@@ -356,7 +404,7 @@ function setupEventHandlers(mapsPayload) {
 function filteredSearch() {
   var currVal = $('#active_search_input').val().toUpperCase();
   var searchTableCells = $('.dark-table tr td');
-  
+
   for (var i = 0; i < searchTableCells.length; i++) {
     var cell = $(searchTableCells[i]);
     if (cell.html().toUpperCase().indexOf(currVal) > -1) {
@@ -471,5 +519,44 @@ function init() {
   request.setRequestHeader('Accept', 'application/json');
   request.send();
 }
+
+/*
+Color
+:
+"#5bc0de"
+Icon
+:
+"https://pwc.downstreamlabs.com/repository/resources/57b1fc63e495a.png"
+Id
+:
+5
+ImageId
+:
+552
+ImageId_cropdata
+:
+"{"x1":"0","y1":"0","x2":"64","y2":"64","width":"64","height":"64","dirty":"0","mediaid":"68","mediatype":"i"}"
+ImageId_mediaid
+:
+68
+Name
+:
+"Meeting Spaces"
+Navlayer
+:
+true
+Visible
+:
+true
+created_at
+:
+"2016-07-14 13:38:13"
+sort_order
+:
+3
+updated_at
+:
+"2016-08-15 17:31:15"
+*/
 
 init();
