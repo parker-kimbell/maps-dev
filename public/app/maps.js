@@ -21,26 +21,6 @@ var MEETING_ROOMS = "Meeting Spaces";
 
 // TODO: need to do this for Location -> Floor whenever that changes
 var MEETING_LAYERID = 5;
-function buildMeetingData(mapsPayload) {
-
-  var searchTable = $('.dark-table tbody');
-  searchTable.children().remove()
-
-  $.each(mapsPayload.building_data, function(i, building) {
-    var locationName = building.Name;
-    $.each(building.Floor, function(j, floor) {
-      var floorName = floor.Name;
-      var pins = floor.Pin;
-      $.each(pins, function(k, pin) {
-        if (pin.LayerId === MEETING_LAYERID) {
-          console.log(pin.Title);
-          debugger;
-          searchTable.append('<tr><td>' + pin.Title + '</td></tr>')
-        }
-      });
-    });
-  });
-}
 
 function initMapsApp(mapsPayload) {
   var width = window.innerWidth;
