@@ -222,23 +222,23 @@ h4 {
   display : none;
   height : 100%;
   width : 90%;
-}
-.active-search-bar-container {
   position: absolute;
   margin-left: auto;
   margin-right: auto;
   left: 0;
   right: 0;
-  top: 15px;
-  width : 90%;
+  font-family: 'ProximaNova-Regular';
+  font-size : 1.3em;
+}
+.active-search-bar-container {
   height : 8%;
   max-height : 16%;
   background-color: #22252B;
   padding-left: 10px;
   padding-right: 10px;
   font-family: 'ProximaNova-Regular';
-  font-size : 1.3em;
   border : 1px solid #7A7676;
+  margin-bottom: 30px;
 }
 .active-search-icon {
   height : 20%;
@@ -273,11 +273,7 @@ input:focus { outline: none; }
 .dark-table {
   background-color: #22252B;
   border : 1px solid #7A7676;
-  position: absolute;
-  margin-left: auto;
-  margin-right: auto;
-  left: 0;
-  right: 0;
+
 }
 
 #search_text {
