@@ -22,49 +22,69 @@
   <body style="font-family: FontAwesome;">
     <div style="font-family: pwcmobileappicons; position: absolute; left: -1000px;">.</div>
     <div class="app">
-        <div class="filter">
-            <ul class="category_list">
-            </ul>
-        </div>
-        <div class="buttons">
-          <div class="dropdown-container">
-            <div>
-              <select id="location_select" class="dropdown">
-              </select>
-            </div>
-            <div>
-              <select id="floor_select" class="dropdown">
-              </select>
+      <div class="active-search-container">
+        <div class="active-search-bar-container">
+          <div class="fa fa-search active-search-icon">
+          </div>
+          <input id="active_search_input" type="search" />
+          <div class="fa fa-times cancel-search">
+            <div class="cancel-search-text">
+              CANCEL
             </div>
           </div>
-          <div class='amenities-container'>
-            <button id="btn_amenities" class="btn-amenities no-amenities">
-              <div class="amn-icon"></div>
-              <div class="amenities_text">
-                Amenities
-              </div>
-              <div class="fa fa-times amenities-modal-close">
-              </div>
-            </button>
-            <button id="btn_search" class="btn-search">
-              <div class="fa fa-search">
-              </div>
-              <div id="search_text">
-                Meeting spaces
-              </div>
-            </button>
+        </div>
+        <table class="table dark-table">
+          <tr>
+            <td>16.01 - Clifford Room</td>
+          </tr>
+          <tr>
+            <td>16.02 - Fairfield Room</td>
+          </tr>
+          <tr>
+            <td>16.01 - Summons Room</td>
+          </tr>
+        </table>
+      </div>
+      <div class="filter">
+          <ul class="category_list">
+          </ul>
+      </div>
+      <div class="buttons">
+        <div class="dropdown-container">
+          <div>
+            <select id="location_select" class="dropdown">
+            </select>
+          </div>
+          <div>
+            <select id="floor_select" class="dropdown">
+            </select>
           </div>
         </div>
-        <div id="floor">
-            <div id="map"></div>
+        <div class='amenities-container'>
+          <button id="btn_amenities" class="btn-amenities no-amenities">
+            <div class="amn-icon"></div>
+            <div class="amenities_text">
+              Amenities
+            </div>
+            <div class="fa fa-times amenities-modal-close">
+            </div>
+          </button>
+          <button id="btn_search" class="btn-search">
+            <div class="fa fa-search">
+            </div>
+            <div id="search_text">
+              Meeting spaces
+            </div>
+          </button>
         </div>
-        <div id="floatingmenu">
-            <h4 class="layer_name"></h4>
-            <div class="panel_body"></div>
-        </div>
-
-    </div>
-    <div id="root">
+      </div>
+      <div id="floor">
+          <div id="map"></div>
+      </div>
+      <div id="floatingmenu">
+          <h4 class="layer_name"></h4>
+          <div class="panel_body"></div>
+      </div>
     </div>
   </body>
 </html>

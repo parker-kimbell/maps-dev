@@ -326,7 +326,7 @@ function setupEventHandlers(mapsPayload) {
 
       });
 
-      $('#btn_amenities').on('click', function() {
+      $('#btn_amenities').on('click tap', function() {
           closeFloatingMenu();
           $('.amenities-modal-close').show();
           $('.filter').velocity({
@@ -336,6 +336,13 @@ function setupEventHandlers(mapsPayload) {
               delay: 250,
               duration: 200
           });
+      });
+
+      $('#btn_search').on('click tap', function() {
+        $('.buttons').css('visibility', 'hidden');;
+        $('#map').css('visibility', 'hidden');;
+        $('.active-search-container').show();
+        $('#active_search_input').focus();
       });
       //TODO: remove this if select:focus is working fine on Android
       // $('body').on('click tap', function() {
