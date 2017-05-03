@@ -385,7 +385,7 @@ function setupEventHandlers(mapsPayload) {
 
       $('#active_search_input').on('input', function() {
         revertSearchDisplay();
-        filteredSearch();
+        searchTable();
       });
 
       $('#active_search_input').on('change', function() {
@@ -442,7 +442,7 @@ function showMapAndButtonStage() {
 function hideAndClearSearch() {
   $('.active-search-container').hide();
   $('#active_search_input').val("");
-  filteredSearch(); // Revert data table to initial state
+  searchTable(); // Revert data table to initial state
   $('.dark-table').show();
 }
 
@@ -464,6 +464,24 @@ function highlightFirstSearchRow() {
 
 }
 
+function checkAndHandleNoResults() {
+  var firstVisibleCell = $('.dark-table tr').filter(function() {
+    return $(this).css('display') !== 'none';}
+  )[0];
+  debugger;
+  if (!firstVisibleCell) {
+    $('.dark-table').prepend("<tr id='no_results'><td>No results</td></tr>")
+  } else {
+    $('#no_results').remove();
+  }
+}
+
+function searchTable() {
+  filteredSearch();
+  highlightFirstSearchRow();
+  checkAndHandleNoResults();
+}
+
 function filteredSearch() {
   var currVal = $('#active_search_input').val().toUpperCase();
   var searchTableCells = $('.dark-table tr td div');
@@ -476,7 +494,6 @@ function filteredSearch() {
       cell.closest('tr').hide();
     }
   }
-  highlightFirstSearchRow();
 }
 
 function hidePinsOf(category) {
