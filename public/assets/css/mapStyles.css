@@ -318,6 +318,10 @@ input:focus { outline: none; }
   margin : 0;
 }
 
+option, select {
+  font-size: 1.4em;
+}
+
 .search-text {
   display: inline-block;;
   color : #D8D8D8;
