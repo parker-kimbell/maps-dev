@@ -229,6 +229,7 @@ function buildLayersModalForFloor(layers, floorPins) {
   var category_list = $('.category_list');
   $('.category_list li').remove(); // Since we're changing floors, clear all previous amenity buttons
   $.each(layers, function(i, layer) {
+    if (layer.Name === MEETING_ROOMS) return; // Do not add meeting rooms to the amenity selectins. These are accessed exclusively through search
     if (floorHasThisLayer(floorPins, layer)) { // Case: this floor has a pin corresponding to the given/layer amenity, build that layer button
       category_list.append(buildLayerIcon(layer));
     }
@@ -393,6 +394,18 @@ function filteredSearch() {
       cell.hide();
     }
   }
+  debugger;
+  // $($('.dark-table tr:visible')[0]).css('background-color', '#EE3D64');
+  var firstVisibleCell = $($('.dark-table tr td').filter(function() {
+    return $(this).css('display') !== 'none';}
+  )[0]).parent().css('background-color', '#EE3D64');
+
+  $('.dark-table tr').each(function(i, tr) {
+    debugger;
+    if (!$(tr).is(firstVisibleCell)) {
+      $(tr).css('background-color', 'transparent');
+    }
+  });
 }
 
 function hidePinsOf(category) {
