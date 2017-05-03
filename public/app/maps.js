@@ -376,9 +376,14 @@ function setupEventHandlers(mapsPayload) {
         showAndFocusSearch();
       });
 
+      $('.cancel-search').on('click tap', function() {
+        showMapStage();
+        hideAndClearSearch();
+        hideAllPins();
+      });
+
       $('#active_search_input').on('input', filteredSearch);
       $('#active_search_input').on('change', function() {
-        debugger;
         $($('.dark-table tr:visible td:first-child')[0]).trigger('tap');
       });
       //TODO: remove this if select:focus is working fine on Android

@@ -289,16 +289,27 @@ input:focus { outline: none; }
 }
 .cancel-search {
   vertical-align: middle;
+  display : inline-block;
   height : 89%;
   margin-left : -5px;
   font-size : inherit;
   border-bottom : 1.5px solid #404041;
+}
+.cancel-search > p {
+  margin-left : 10px;
+  font-size: 1.6em;
+  margin : 0;
+  margin-top: 10px;
 }
 .cancel-search-text {
   height : 100%;
   font-size : inherit;
   font-family: 'ProximaNova-Regular';
   display: inline-block;
+}
+.meeting-room-container {
+  overflow-y: scroll;
+  height : 70%;
 }
 .dark-table {
   background-color: #22252B;
