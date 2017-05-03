@@ -372,7 +372,6 @@ option, select {
   font-size: 24px;
   line-height: 24px;
 }
-
 .panel_close {
   position: absolute;
   right: 0px;
@@ -381,4 +380,44 @@ option, select {
   height: 20px;
   font-size: 24px;
   line-height: 24px;
+}
+.meeting-room-display {
+  position:absolute;
+  left : 0;
+  right : 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 95%;
+  height : 15%;
+  top: 10px;
+  border : 1px solid #7A7676;
+  background-color: #22252B;
+  z-index: 10;
+}
+
+.meeting-room-display > div {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 90%;
+  margin : auto;
+  border-bottom: 1px solid #404041;
+  text-align: center;
+}
+
+.meeting-room-display > div {
+  text-align: left;
+}
+
+.meeting-room-display > div > div {
+  font-size: 1.5em;
+  font-family: 'ProximaNova-Regular';
+  display: inline-block;
+}
+
+.meeting-room-display > div > i {
+  float : right;
+  font-size: 1.5em;
+  font-family: 'ProximaNova-Regular';
+  display: inline-block;
 }

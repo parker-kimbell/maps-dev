@@ -152,9 +152,7 @@ function initMapsApp(mapsPayload) {
                   pin.show();
                   pinIcon.show();
                   backgroundLayer.draw();
-                  showMapStage();
-                  hideAndClearSearch();
-                  setAmenitiesButtonTo(null);
+                  prepareForRoomDisplay();
                   pin.fire('tap');
                 });
               }
@@ -347,18 +345,22 @@ function setupEventHandlers(mapsPayload) {
         closeAmenitiesModal();
       });
 
+      $('.cancel-meeting-room').on('tap click', function(event) {
+        revertSearchDisplay();
+      });
+
       $('#btn_amenities').on('click tap', function() {
-          closeFloatingMenu();
-          if (!$('.filter').is(':visible')) { // Case: our amenities menu is not already open.
-            $('.amenities-modal-close').show();
-            $('.filter').velocity({
-                opacity: 1
-            }, {
-                display: 'block',
-                delay: 250,
-                duration: 200
-            });
-          }
+        closeFloatingMenu();
+        if (!$('.filter').is(':visible')) { // Case: our amenities menu is not already open.
+          $('.amenities-modal-close').show();
+          $('.filter').velocity({
+              opacity: 1
+          }, {
+              display: 'block',
+              delay: 250,
+              duration: 200
+          });
+        }
       });
 
       $('body').on('click tap', function() {
@@ -389,6 +391,20 @@ function setupEventHandlers(mapsPayload) {
       //   $('#floor_select').blur();
       // });
   });
+}
+
+function prepareForRoomDisplay() {
+  showMapStage();
+  hideAndClearSearch();
+  setAmenitiesButtonTo(null);
+}
+
+function expandAndUpdateMeetingRoomDisplay() {
+
+}
+
+function revertSearchDisplay() {
+  $('.meeting-room-display').hide();
 }
 
 function closeAllModals() {
