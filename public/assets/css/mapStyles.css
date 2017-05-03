@@ -89,7 +89,7 @@ select:focus {
   float : right;
 }
 .amenities-modal-close {
-  font-size: 1.2em;
+  font-size: 6vh;
   float : right;
   display : none;
 }
@@ -201,6 +201,7 @@ h4 {
   color : white;
   width: 100%;
   height: 50%;
+  text-align: left;
   font-size : 1.2em;
   font-family: 'ProximaNova-Regular';
   float : right;
@@ -293,20 +294,27 @@ input:focus { outline: none; }
 
 .amenities_text {
   color : #D8D8D8;
-  float : left;
   margin-left : 10px;
+  display : inline-block;
+  font-size: 4vh;
 }
 
 .curr-amen-icon {
   height : 1.5em;
   width: auto;
   float: left;
+  font-size : 6vh;
+}
+
+.amn-icon {
+  display: inline-block;
 }
 
 .amn-icon:before {
+  display: inline-block;
+  font-size: 6vh;
   font-family : 'FontAwesome';
   content: "\f041";
-  float : left;
 }
 
 .filter_close {

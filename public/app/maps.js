@@ -145,7 +145,7 @@ function initMapsApp(mapsPayload) {
                   layerid: pinData.LayerId
               });
               if (pinData.LayerId === MEETING_LAYERID) {
-                newCell = $('<tr><td>' + pinData.Title + '</td></tr>');
+                newCell = $('<tr><td><div>' + pinData.Title + '</div></td></tr>');
                 searchTable.append(newCell);
                 newCell.on('click tap', function() {
                   hideAllPins();
@@ -384,24 +384,22 @@ function setupEventHandlers(mapsPayload) {
 
 function filteredSearch() {
   var currVal = $('#active_search_input').val().toUpperCase();
-  var searchTableCells = $('.dark-table tr td');
+  var searchTableCells = $('.dark-table tr td div');
 
   for (var i = 0; i < searchTableCells.length; i++) {
     var cell = $(searchTableCells[i]);
     if (cell.html().toUpperCase().indexOf(currVal) > -1) {
-      cell.show();
+      cell.closest('tr').show();
     } else {
-      cell.hide();
+      cell.closest('tr').hide();
     }
   }
-  debugger;
   // $($('.dark-table tr:visible')[0]).css('background-color', '#EE3D64');
-  var firstVisibleCell = $($('.dark-table tr td').filter(function() {
+  var firstVisibleCell = $($('.dark-table tr').filter(function() {
     return $(this).css('display') !== 'none';}
-  )[0]).parent().css('background-color', '#EE3D64');
+  )[0]).css('background-color', '#EE3D64');
 
   $('.dark-table tr').each(function(i, tr) {
-    debugger;
     if (!$(tr).is(firstVisibleCell)) {
       $(tr).css('background-color', 'transparent');
     }
