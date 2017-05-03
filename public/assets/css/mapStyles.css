@@ -13,7 +13,6 @@
 
 html, body {
   height: 100%;
-  font-size : 12px;
 }
 
 body {
@@ -22,6 +21,22 @@ body {
     padding: 0;
     margin: 0;
     color: #fff;
+    font-size : 16px;
+}
+
+@media screen and (min-width:480px) and (max-width:800px) {
+  /* Target landscape smartphones, portrait tablets, narrow desktops */
+    body {
+         font-size: 14px;
+    }
+}
+
+@media screen and (max-width:479px) {
+  /* Target portrait smartphones */
+
+    body {
+         font-size: 10px;
+    }
 }
 select:focus {
   background-color: #EE3D64;
@@ -280,10 +295,6 @@ input:focus { outline: none; }
   border : 1px solid #7A7676;
 }
 
-#search_text {
-  display: inline-block;;
-}
-
 .no-amenities {
   background-color: #22252B;
 }
@@ -292,11 +303,24 @@ input:focus { outline: none; }
   background-color: #EE3D64;
 }
 
-.amenities_text {
+.amenities-text {
   color : #D8D8D8;
-  margin-left : 10px;
   display : inline-block;
-  font-size: 4vh;
+}
+
+.amenities-container > button {
+  margin: 3px;
+}
+
+.amenities-container > button > p {
+  margin-left : 10px;
+  font-size: 1.6em;
+  margin : 0;
+}
+
+.search-text {
+  display: inline-block;;
+  color : #D8D8D8;
 }
 
 .curr-amen-icon {
