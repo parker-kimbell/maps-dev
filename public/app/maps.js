@@ -148,13 +148,13 @@ function initMapsApp(mapsPayload) {
                 newCell = $('<tr><td><div>' + pinData.Title + '</div></td></tr>');
                 searchTable.append(newCell);
                 newCell.on('click tap', function() {
-                  debugger;
                   hideAllPins();
                   pin.show();
                   pinIcon.show();
                   backgroundLayer.draw();
                   showMapStage();
                   hideAndClearSearch();
+                  setAmenitiesButtonTo(null);
                   pin.fire('tap');
                 });
               }
@@ -247,10 +247,7 @@ function buildLayersModalForFloor(layers, floorPins) {
       setAmenitiesButtonTo(null); // Clear the amenities button
     } else { // Case: we're turning on an amenties category that wasn't on previously. Clear the map and amenities state, and apply the new amenities filter
       $('.category').parent().removeClass('on');
-      $('.category').each(function(i, category) {
-        var categoryId = $(category).data('categoryid');
-        hidePinsOf(categoryId);
-      });
+      hideAllPins();
       $(this).parent().addClass('on');
       var categoryId = $(this).data('categoryid');
       showPinsOf(categoryId);
