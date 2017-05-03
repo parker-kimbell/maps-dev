@@ -23,11 +23,17 @@ body {
     color: #fff;
     font-size : 16px;
 }
+.filter ul li div {
+    font-size: 24px;
+}
 
 @media screen and (min-width:480px) and (max-width:800px) {
   /* Target landscape smartphones, portrait tablets, narrow desktops */
     body {
          font-size: 14px;
+    }
+    .filter ul li div {
+        font-size: 18px;
     }
 }
 
@@ -36,6 +42,9 @@ body {
 
     body {
          font-size: 10px;
+    }
+    .filter ul li div {
+        font-size: 8px;
     }
 }
 select:focus {
@@ -85,15 +94,16 @@ select:focus {
     position: absolute;
     height: 100%;
     width: 100%;
-    font-size: 12px;
 }
 .filter ul li div p {
     position: absolute;
     bottom: 0;
-    font-size: 1.2em;
+    font-size: 1.3em;
     font-family: 'ProximaNova-Regular';
     text-align: center;
     width: 100%;
+    -webkit-margin-before: 0;
+    -webkit-margin-after: 0;
     word-break:break-word;
     line-height: normal;
 }

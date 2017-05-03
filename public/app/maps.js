@@ -148,13 +148,13 @@ function initMapsApp(mapsPayload) {
                 newCell = $('<tr><td><div>' + pinData.Title + '</div></td></tr>');
                 searchTable.append(newCell);
                 newCell.on('click tap', function() {
+                  debugger;
                   hideAllPins();
-                  $('.buttons').css('visibility', 'visible');;
-                  $('#map').css('visibility', 'visible');;
-                  $('.active-search-container').hide();
                   pin.show();
                   pinIcon.show();
                   backgroundLayer.draw();
+                  showMapStage();
+                  hideAndClearSearch();
                   pin.fire('tap');
                 });
               }
@@ -227,7 +227,9 @@ function initMapsApp(mapsPayload) {
 
 function buildLayersModalForFloor(layers, floorPins) {
   var category_list = $('.category_list');
-  $('.category_list li').remove(); // Since we're changing floors, clear all previous amenity buttons
+
+  $('.category_list li').remove(); // Since we're changing floors, or init'ing the app, clear all previous amenity buttons
+
   $.each(layers, function(i, layer) {
     if (layer.Name === MEETING_ROOMS) return; // Do not add meeting rooms to the amenity selectins. These are accessed exclusively through search
     if (floorHasThisLayer(floorPins, layer)) { // Case: this floor has a pin corresponding to the given/layer amenity, build that layer button
@@ -236,7 +238,8 @@ function buildLayersModalForFloor(layers, floorPins) {
   });
 
   // Initialize click handlers for category buttons
-  $('.category').on('click tap', function() {
+  $('.category').on('click tap', function(event) {
+    event.stopPropagation();
     if ($(this).parent().hasClass('on')) { // Case: we're turning off all amenities
       $(this).parent().removeClass('on');
       var categoryId = $(this).data('categoryid');
@@ -344,42 +347,78 @@ function setupEventHandlers(mapsPayload) {
 
       $('.amenities-modal-close').on('tap click', function(event) {
         event.stopPropagation();
-        $('.amenities-modal-close').hide();
-        $('.filter').velocity({
-            opacity: 0
-        }, {
-            display: 'none',
-            delay: 500,
-            duration: 200
-        });
-
+        closeAmenitiesModal();
       });
 
       $('#btn_amenities').on('click tap', function() {
           closeFloatingMenu();
-          $('.amenities-modal-close').show();
-          $('.filter').velocity({
-              opacity: 1
-          }, {
-              display: 'block',
-              delay: 250,
-              duration: 200
-          });
+          if (!$('.filter').is(':visible')) { // Case: our amenities menu is not already open.
+            $('.amenities-modal-close').show();
+            $('.filter').velocity({
+                opacity: 1
+            }, {
+                display: 'block',
+                delay: 250,
+                duration: 200
+            });
+          }
+      });
+
+      $('body').on('click tap', function() {
+        if ($('.filter').is(':visible')) {
+          closeAmenitiesModal();
+        }
       });
 
       $('#btn_search').on('click tap', function() {
-        $('.buttons').css('visibility', 'hidden');;
-        $('#map').css('visibility', 'hidden');;
+        closeAllModals();
+        hideMapStage();
         $('.active-search-container').show();
         $('#active_search_input').focus();
       });
+
       $('#active_search_input').on('input', filteredSearch);
+      $('#active_search_input').on('change', function() {
+        debugger;
+        $($('.dark-table tr:visible td:first-child')[0]).trigger('tap');
+      });
       //TODO: remove this if select:focus is working fine on Android
       // $('body').on('click tap', function() {
       //   $('#location_select').blur();
       //   $('#floor_select').blur();
       // });
   });
+}
+
+function closeAllModals() {
+  closeFloatingMenu();
+  closeAmenitiesModal();
+}
+
+function closeAmenitiesModal() {
+  $('.amenities-modal-close').hide();
+  $('.filter').velocity({
+      opacity: 0
+  }, {
+      display: 'none',
+      delay: 0,
+      duration: 200
+  });
+}
+
+function hideMapStage() {
+  $('.buttons').css('visibility', 'hidden');
+  $('#map').css('visibility', 'hidden');
+}
+
+function showMapStage() {
+  $('.buttons').css('visibility', 'visible');
+  $('#map').css('visibility', 'visible');
+}
+
+function hideAndClearSearch() {
+  $('.active-search-container').hide();
+  $('#active_search_input').val("");
 }
 
 function filteredSearch() {
@@ -510,44 +549,5 @@ function init() {
   request.setRequestHeader('Accept', 'application/json');
   request.send();
 }
-
-/*
-Color
-:
-"#5bc0de"
-Icon
-:
-"https://pwc.downstreamlabs.com/repository/resources/57b1fc63e495a.png"
-Id
-:
-5
-ImageId
-:
-552
-ImageId_cropdata
-:
-"{"x1":"0","y1":"0","x2":"64","y2":"64","width":"64","height":"64","dirty":"0","mediaid":"68","mediatype":"i"}"
-ImageId_mediaid
-:
-68
-Name
-:
-"Meeting Spaces"
-Navlayer
-:
-true
-Visible
-:
-true
-created_at
-:
-"2016-07-14 13:38:13"
-sort_order
-:
-3
-updated_at
-:
-"2016-08-15 17:31:15"
-*/
 
 init();
