@@ -152,6 +152,7 @@ function initMapsApp(mapsPayload) {
                   pin.show();
                   pinIcon.show();
                   backgroundLayer.draw();
+                  $('#active_search_input').val(pinData.Title);
                   prepareForRoomDisplay();
                   pin.fire('tap');
                 });
@@ -376,14 +377,20 @@ function setupEventHandlers(mapsPayload) {
       });
 
       $('.cancel-search').on('click tap', function() {
+        closeAllModals();
+        hideAllPins();
         showMapAndButtonStage();
         hideAndClearSearch();
-        hideAllPins();
       });
 
-      $('#active_search_input').on('input', filteredSearch);
+      $('#active_search_input').on('input', function() {
+        revertSearchDisplay();
+        filteredSearch();
+      });
+
       $('#active_search_input').on('change', function() {
         $($('.dark-table tr:visible td:first-child')[0]).trigger('tap');
+        $('#active_search_input').blur();
       });
       //TODO: remove this if select:focus is working fine on Android
       // $('body').on('click tap', function() {
@@ -401,7 +408,9 @@ function prepareForRoomDisplay() {
 }
 
 function revertSearchDisplay() {
-  $('.meeting-room-display').hide();
+  $('#map').css('visibility', 'hidden');
+  $('.dark-table').show();
+  closeFloatingMenu();
 }
 
 function closeAllModals() {
@@ -433,6 +442,8 @@ function showMapAndButtonStage() {
 function hideAndClearSearch() {
   $('.active-search-container').hide();
   $('#active_search_input').val("");
+  filteredSearch(); // Revert data table to initial state
+  $('.dark-table').show();
 }
 
 function showAndFocusSearch() {
