@@ -373,8 +373,7 @@ function setupEventHandlers(mapsPayload) {
       $('#btn_search').on('click tap', function() {
         closeAllModals();
         hideMapStage();
-        $('.active-search-container').show();
-        $('#active_search_input').focus();
+        showAndFocusSearch();
       });
 
       $('#active_search_input').on('input', filteredSearch);
@@ -421,6 +420,24 @@ function hideAndClearSearch() {
   $('#active_search_input').val("");
 }
 
+function showAndFocusSearch() {
+  $('.active-search-container').show();
+  $('#active_search_input').focus();
+}
+
+function highlightFirstSearchRow() {
+  var firstVisibleCell = $($('.dark-table tr').filter(function() {
+    return $(this).css('display') !== 'none';}
+  )[0]).css('background-color', '#EE3D64');
+
+  $('.dark-table tr').each(function(i, tr) {
+    if (!$(tr).is(firstVisibleCell)) {
+      $(tr).css('background-color', 'transparent');
+    }
+  });
+
+}
+
 function filteredSearch() {
   var currVal = $('#active_search_input').val().toUpperCase();
   var searchTableCells = $('.dark-table tr td div');
@@ -433,16 +450,7 @@ function filteredSearch() {
       cell.closest('tr').hide();
     }
   }
-  // $($('.dark-table tr:visible')[0]).css('background-color', '#EE3D64');
-  var firstVisibleCell = $($('.dark-table tr').filter(function() {
-    return $(this).css('display') !== 'none';}
-  )[0]).css('background-color', '#EE3D64');
-
-  $('.dark-table tr').each(function(i, tr) {
-    if (!$(tr).is(firstVisibleCell)) {
-      $(tr).css('background-color', 'transparent');
-    }
-  });
+  highlightFirstSearchRow();
 }
 
 function hidePinsOf(category) {
