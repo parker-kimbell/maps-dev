@@ -376,7 +376,7 @@ function setupEventHandlers(mapsPayload) {
       });
 
       $('.cancel-search').on('click tap', function() {
-        showMapStage();
+        showMapAndButtonStage();
         hideAndClearSearch();
         hideAllPins();
       });
@@ -394,13 +394,10 @@ function setupEventHandlers(mapsPayload) {
 }
 
 function prepareForRoomDisplay() {
-  showMapStage();
-  hideAndClearSearch();
+  $('#map').css('visibility', 'visible');
+  // hideAndClearSearch();
   setAmenitiesButtonTo(null);
-}
-
-function expandAndUpdateMeetingRoomDisplay() {
-
+  $('.dark-table').hide();
 }
 
 function revertSearchDisplay() {
@@ -428,7 +425,7 @@ function hideMapStage() {
   $('#map').css('visibility', 'hidden');
 }
 
-function showMapStage() {
+function showMapAndButtonStage() {
   $('.buttons').css('visibility', 'visible');
   $('#map').css('visibility', 'visible');
 }
