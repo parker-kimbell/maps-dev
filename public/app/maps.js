@@ -17,10 +17,12 @@ in the meantime we derive the data from what's on the CMS now, and build the nec
 */
 var meetingRoomData = {};
 var MEETING_ROOMS = "Meeting Spaces";
+var ELEVATORS = "Elevators";
 // TODO: this will probably change depending on the order layers were added. Need to find this dynamically.
 
 // TODO: need to do this for Location -> Floor whenever that changes
-var MEETING_LAYERID = 5;
+var MEETING_LAYERID;
+var ELEVATORS_LAYERID;
 
 function initMapsApp(mapsPayload) {
   var width = window.innerWidth;
@@ -148,7 +150,6 @@ function initMapsApp(mapsPayload) {
                 newCell = $('<tr><td><div>' + pinData.Title + '</div></td></tr>');
                 searchTable.append(newCell);
                 newCell.on('click tap', function() {
-                  console.log('firing with title', pinData.Title);
                   hideAllPins();
                   pin.show();
                   pinIcon.show();
@@ -231,7 +232,14 @@ function buildLayersModalForFloor(layers, floorPins) {
   $('.category_list li').remove(); // Since we're changing floors, or init'ing the app, clear all previous amenity buttons
 
   $.each(layers, function(i, layer) {
-    if (layer.Name === MEETING_ROOMS) return; // Do not add meeting rooms to the amenity selectins. These are accessed exclusively through search
+    if (layer.Name === ELEVATORS) {
+      ELEVATORS_LAYERID = layer.Id;
+      return; // Do not add elevators to the amenity menu, as they are always on
+    }
+    if (layer.Name === MEETING_ROOMS) {
+      MEETING_LAYERID = layer.Id;
+      return; // Do not add meeting rooms to the amenity selections. These are accessed exclusively through search
+    }
     if (floorHasThisLayer(floorPins, layer)) { // Case: this floor has a pin corresponding to the given/layer amenity, build that layer button
       category_list.append(buildLayerIcon(layer));
     }
@@ -365,8 +373,9 @@ function setupEventHandlers(mapsPayload) {
         }
       });
 
-      $('body').on('click tap', function() {
+      $('body').on('click tap', function(event) {
         if ($('.filter').is(':visible')) {
+          event.stopPropagation();
           closeAmenitiesModal();
         }
       });
@@ -389,11 +398,6 @@ function setupEventHandlers(mapsPayload) {
         searchTable();
       });
 
-      $('#active_search_input').on('change', function() {
-        console.log('firing ')
-        // $($('.dark-table tr:visible td:first-child')[0]).trigger('tap');
-        // $('#active_search_input').blur();
-      });
       //TODO: remove this if select:focus is working fine on Android
       // $('body').on('click tap', function() {
       //   $('#location_select').blur();
@@ -453,19 +457,6 @@ function showAndFocusSearch() {
   $('#active_search_input').focus();
 }
 
-function highlightFirstSearchRow() {
-  var firstVisibleCell = $($('.dark-table tr').filter(function() {
-    return $(this).css('display') !== 'none';}
-  )[0]).css('background-color', '#EE3D64');
-
-  $('.dark-table tr').each(function(i, tr) {
-    if (!$(tr).is(firstVisibleCell)) {
-      $(tr).css('background-color', 'transparent');
-    }
-  });
-
-}
-
 function checkAndHandleNoResults() {
   var firstVisibleCell = $('.dark-table tr').filter(function() {
     return $(this).css('display') !== 'none';}
@@ -479,7 +470,6 @@ function checkAndHandleNoResults() {
 
 function searchTable() {
   filteredSearch();
-  highlightFirstSearchRow();
   checkAndHandleNoResults();
 }
 
@@ -511,6 +501,10 @@ function hidePinsOf(category) {
 function hideAllPins() {
   var allpins = stage.find('Text');
   allpins.each(function(p) {
+    debugger;
+    if (p.attrs.layerid === ELEVATORS_LAYERID) { // Case: we're dealing with an elevator pin. Elevator pins are always on so skip them;
+      return;
+    }
     p.hide();
     p.attrs.pinIcon.hide();
   });
