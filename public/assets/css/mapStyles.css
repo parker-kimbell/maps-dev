@@ -30,10 +30,10 @@ body {
 @media screen and (min-width:480px) and (max-width:800px) {
   /* Target landscape smartphones, portrait tablets, narrow desktops */
     body {
-         font-size: 14px;
+      font-size: 14px;
     }
     .filter ul li div {
-        font-size: 18px;
+      font-size: 18px;
     }
 }
 
@@ -59,7 +59,7 @@ select:focus {
 }
 .filter {
     position: absolute;
-    top: 7.5%;
+    top: 10%;
     bottom: 0px;
     left: 0px;
     right: 0px;
@@ -121,6 +121,7 @@ button {
 }
 #map {
   margin-top: 10px;
+  z-index: 1000;
 }
 h3 {
     font-family: "CharterITCPro-BlackItalic";
@@ -283,7 +284,7 @@ input:focus { outline: none; }
   width: 45%;
   height: 100%;
   text-align: left;
-  font-size : 1.2em;
+  font-size : 1.0em;
   font-family: 'ProximaNova-Regular';
   border-radius : 2px;
   display: inline-block;
@@ -293,7 +294,7 @@ input:focus { outline: none; }
   color : white;
   height: 100%;
   width: 45%;
-  font-size : 1.2em;
+  font-size : 1.0em;
   border-radius : 2px;
   border : 1px solid #7A7676;
   font-family: 'ProximaNova-Regular';
@@ -334,10 +335,14 @@ input:focus { outline: none; }
 }
 
 .amenities-container > button > p {
-  margin-left : 10px;
+  height : auto;
+  max-height: 100%;
   font-size: 1.6em;
   margin : 0;
   vertical-align: middle;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 option, select {

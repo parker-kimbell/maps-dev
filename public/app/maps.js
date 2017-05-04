@@ -322,6 +322,7 @@ function clearLastTouchedPin() {
 function updateSelectionHash() {
   var selectedFloor = $("#floor_select option:selected");
   var selectedLocation = $("#location_select option:selected");
+  setAmenitiesButtonTo(null);
   document.location.href = '#' + selectedLocation.data('buildingid') + "." + $(selectedFloor).data('floorid');
 }
 
@@ -361,7 +362,7 @@ function setupEventHandlers(mapsPayload) {
         revertSearchDisplay();
       });
 
-      $('#btn_amenities').on('click tap', function() {
+      $('#btn_amenities').on('click tap', function(event) {
         closeFloatingMenu();
         if (!$('.filter').is(':visible')) { // Case: our amenities menu is not already open.
           $('.amenities-modal-close').show();
@@ -376,6 +377,13 @@ function setupEventHandlers(mapsPayload) {
       });
 
       $('body').on('click tap', function(event) {
+        if ($('.filter').is(':visible')) {
+          event.stopPropagation();
+          closeAmenitiesModal();
+        }
+      });
+
+      $('.filter').on('click tap', function(event) {
         if ($('.filter').is(':visible')) {
           event.stopPropagation();
           closeAmenitiesModal();
