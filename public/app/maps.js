@@ -148,6 +148,7 @@ function initMapsApp(mapsPayload) {
                 newCell = $('<tr><td><div>' + pinData.Title + '</div></td></tr>');
                 searchTable.append(newCell);
                 newCell.on('click tap', function() {
+                  console.log('firing with title', pinData.Title);
                   hideAllPins();
                   pin.show();
                   pinIcon.show();
@@ -389,8 +390,9 @@ function setupEventHandlers(mapsPayload) {
       });
 
       $('#active_search_input').on('change', function() {
-        $($('.dark-table tr:visible td:first-child')[0]).trigger('tap');
-        $('#active_search_input').blur();
+        console.log('firing ')
+        // $($('.dark-table tr:visible td:first-child')[0]).trigger('tap');
+        // $('#active_search_input').blur();
       });
       //TODO: remove this if select:focus is working fine on Android
       // $('body').on('click tap', function() {
@@ -468,7 +470,6 @@ function checkAndHandleNoResults() {
   var firstVisibleCell = $('.dark-table tr').filter(function() {
     return $(this).css('display') !== 'none';}
   )[0];
-  debugger;
   if (!firstVisibleCell) {
     $('.dark-table').prepend("<tr id='no_results'><td>No results</td></tr>")
   } else {
