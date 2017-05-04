@@ -501,7 +501,6 @@ function hidePinsOf(category) {
 function hideAllPins() {
   var allpins = stage.find('Text');
   allpins.each(function(p) {
-    debugger;
     if (p.attrs.layerid === ELEVATORS_LAYERID) { // Case: we're dealing with an elevator pin. Elevator pins are always on so skip them;
       return;
     }
