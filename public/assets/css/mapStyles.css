@@ -342,6 +342,9 @@ input:focus { outline: none; }
 
 option, select {
   font-size: 1.4em;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .search-text {
