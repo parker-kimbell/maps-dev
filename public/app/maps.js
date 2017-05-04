@@ -179,8 +179,6 @@ function initMapsApp(mapsPayload) {
               });
               // Add this new pin to the Konva pinGroup, so that we can place them as one action
               pinGroup.add(pin);
-              // Hide the pin by default
-              //pin.hide();
 
               if (pinData.Id === config.pin) {
                   pin.show();
@@ -206,6 +204,10 @@ function initMapsApp(mapsPayload) {
             pinLayer.add(pinGroup);
 
             stage.add(backgroundLayer);
+
+            // Hide the pin by default
+            //TODO: re-enable this,
+            //hideAllPins();
 
         }
     }); // end $.each floorData
