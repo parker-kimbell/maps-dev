@@ -328,7 +328,6 @@ function updateSelectionHash() {
 
 function setupEventHandlers(mapsPayload) {
   $(function () {
-
       if(location.hash.length === 0) {
           if(mapsPayload.length > 0) {
               window.location.hash = '#' + mapsPayload[0].Id;
@@ -397,14 +396,12 @@ function setupEventHandlers(mapsPayload) {
       });
 
       $('.cancel-search').on('click tap', function() {
-        debugger;
         if ($('.dark-table').is(':visible')) {
           transitionOutOfMeetingRoomSearch();
         } else {
           revertSearchDisplay();
           searchTable();
         }
-
       });
 
       $('#active_search_input').on('input', function() {
