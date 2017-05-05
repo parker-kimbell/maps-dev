@@ -173,7 +173,7 @@ function initMapsApp(mapsPayload) {
                 touchedPin.strokeEnabled(true);
                 lastTouchedPin = touchedPin;
                 backgroundLayer.draw();
-                $('.layer_name').html(pinData.Title + "text text text text text text text text text text text text text  text text text text text tex");
+                $('.layer_name div').html(pinData.Title + "text text text text text text text text text text text text text  text text text text text tex");
                 $('.panel_body').html(pinData.Body + "text text text text text text text text text text text text text  t text text text text text  text text tex t text text text text text  text text tex  text text text text text text text text text text text text text text text text text text text text text text text text text ");
                 $('#floatingmenu').addClass('open');
               });
@@ -182,7 +182,7 @@ function initMapsApp(mapsPayload) {
 
               if (pinData.Id === config.pin) {
                   pin.show();
-                  $('.layer_name').html(pinData.Layer.Name);
+                  $('.layer_name div').html(pinData.Layer.Name);
                   $('.panel_body').html(pinData.Body);
                   $('#floatingmenu').addClass('open');
               }
@@ -409,11 +409,9 @@ function setupEventHandlers(mapsPayload) {
         searchTable();
       });
 
-      //TODO: remove this if select:focus is working fine on Android
-      // $('body').on('click tap', function() {
-      //   $('#location_select').blur();
-      //   $('#floor_select').blur();
-      // });
+      $('.layer_name i').on('click tap', function() {
+        closeFloatingMenu();
+      });
   });
 }
 
