@@ -227,6 +227,7 @@ h4 {
     height : 82%;
     border-bottom: 1px solid #404041;
     display: flex;
+    justify-content: flex-end;
     flex-direction: row;
     align-items: center;
 }
@@ -246,20 +247,14 @@ input:focus { outline: none; }
   flex : 2;
 }
 .cancel-search {
-  /*vertical-align: middle;
-  display : inline-block;
-  height : 89%;
-  margin-left : -5px;
-  font-size : inherit;
-  border-bottom : 1.5px solid #404041;*/
   padding-left: 10px;
   flex : 1;
 }
-.cancel-search > p {
-  margin-left : 10px;
-  font-size: 1.6em;
-  margin : 0;
-  margin-top: 10px;
+.cancel-search > i {
+  background-image: url(/assets/cancel-action-grey.svg);
+  background-size: 100% 100%;
+  height: inherit;
+  width: 18%;
 }
 .cancel-search-text {
   height : 100%;
