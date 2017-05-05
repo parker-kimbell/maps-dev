@@ -155,7 +155,7 @@ function initMapsApp(mapsPayload) {
                   pinIcon.show();
                   backgroundLayer.draw();
                   $('#active_search_input').val(pinData.Title);
-                  prepareForRoomDisplay();
+                  prepareForMeetingRoomDisplay();
                   pin.fire('tap');
                 });
               }
@@ -397,10 +397,14 @@ function setupEventHandlers(mapsPayload) {
       });
 
       $('.cancel-search').on('click tap', function() {
-        closeAllModals();
-        hideAllPins();
-        showMapAndButtonStage();
-        hideAndClearSearch();
+        debugger;
+        if ($('.dark-table').is(':visible')) {
+          transitionOutOfMeetingRoomSearch();
+        } else {
+          revertSearchDisplay();
+          searchTable();
+        }
+
       });
 
       $('#active_search_input').on('input', function() {
@@ -416,9 +420,17 @@ function setupEventHandlers(mapsPayload) {
   });
 }
 
-function prepareForRoomDisplay() {
+function transitionOutOfMeetingRoomSearch() {
+  closeAllModals();
+  hideAllPins();
+  showMapAndButtonStage();
+  hideAndClearSearch();
+}
+
+function prepareForMeetingRoomDisplay() {
   $('#map').css('visibility', 'visible');
   // hideAndClearSearch();
+  // $('.cancel-search div').toggle({ effect: "scale", direction: "vertical" });
   setAmenitiesButtonTo(null);
   $('.dark-table').hide();
 }
@@ -426,6 +438,7 @@ function prepareForRoomDisplay() {
 function revertSearchDisplay() {
   $('#map').css('visibility', 'hidden');
   $('.dark-table').show();
+  // $('.cancel-search div').toggle({ effect: "scale", direction: "vertical" });
   closeFloatingMenu();
 }
 

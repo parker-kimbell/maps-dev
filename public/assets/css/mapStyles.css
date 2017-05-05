@@ -155,10 +155,10 @@ h4 {
     margin-left: auto;
     margin-right: auto;
     z-index:99999;
-    -webkit-transition: all 400ms ease;
     -moz-transition: all 400ms ease;
     -ms-transition: all 400ms ease;
     -o-transition: all 400ms ease;
+    -webkit-transition: all 400ms ease;
     transition: all 400ms ease;
     border: 1px solid #7A7676;
 }
@@ -188,6 +188,7 @@ h4 {
   padding: 8px;
   font-size: 1.6em;
   max-height: 80%;
+  font-family: 'ProximaNova-Regular';
   overflow-y: scroll;
 }
 
