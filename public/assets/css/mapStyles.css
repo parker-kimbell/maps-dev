@@ -186,7 +186,7 @@ h4 {
 
 .panel_body {
   padding: 8px;
-  font-size: 1.2em;
+  font-size: 1.6em;
   max-height: 80%;
   overflow-y: scroll;
 }
@@ -226,7 +226,6 @@ h4 {
     display : inline-block;
     height : 82%;
     border-bottom: 1px solid #404041;
-    padding-bottom: 10px;
     display: flex;
     flex-direction: row;
     align-items: center;

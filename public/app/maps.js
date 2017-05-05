@@ -462,20 +462,23 @@ function hideAndClearSearch() {
   $('.dark-table').show();
 }
 
+// Reveals the meeting room search bar.
 function showAndFocusSearch() {
   $('.active-search-container').show();
   $('#active_search_input').focus();
 }
 
+// Handles informing the user that their meeting room search has filtered out all results.
 function checkAndHandleNoResults() {
-  var firstVisibleCell = $('.dark-table tr').filter(function() {
+  var visibleCells = $('.dark-table tr').filter(function() {
     return $(this).css('display') !== 'none';}
-  )[0];
-  if (!firstVisibleCell) {
+  );
+  var firstVisibleCell = visibleCells[0];
+  if (!firstVisibleCell) { // Case: we have no visible cells. Display that there are no valid results
     $('.dark-table').prepend("<tr id='no_results'><td>No results</td></tr>")
-  } else {
+  } else if (visibleCells.length > 1) {
     $('#no_results').remove();
-  }
+  } // else do nothing
 }
 
 function searchTable() {
