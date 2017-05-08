@@ -25,7 +25,8 @@ function _clearLastTouchedPin() {
 }
 
 function _hidePinsOf(category) {
-  var allpins = stage.find('Text');
+  debugger;
+  var allpins = this.stage.find('Text');
   allpins.each(function(p) {
       if(p.attrs.layerid === category) {
           p.hide();
@@ -36,6 +37,7 @@ function _hidePinsOf(category) {
 }
 
 function _hideAllPins() {
+  debugger;
   var that = this;
   var allpins = this.stage.find('Text');
   allpins.each(function(p) {

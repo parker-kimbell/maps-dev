@@ -58,7 +58,6 @@ function _showAndFocusSearch() {
 
 function _transitionFromMeetingRoomSearch() {
   _closeAllModals();
-  this.hideAllPins();
   _showMapAndButtonStage();
   _hideAndClearSearch();
 }

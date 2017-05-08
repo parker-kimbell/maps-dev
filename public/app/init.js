@@ -75,8 +75,8 @@ function _setupEventHandlers(mapsPayload) {
 
       $('.cancel-search').on('click tap', function() {
         if ($('.dark-table').is(':visible')) {
-          debugger;
           viewTransitions.transitionFromMeetingRoomSearch.call(that);
+          that.hidePinsOf(that.meetingRoomLayerId);
         } else {
           viewTransitions.revertSearchDisplay();
           roomSearch.searchTable();
