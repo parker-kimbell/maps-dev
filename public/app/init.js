@@ -329,7 +329,7 @@ function _initMapsApp(mapsPayload) {
 
                 var node = e.target;
                 if(node.className === 'Image' && !node.attrs.icon) {
-                    closeFloatingMenu();
+                    MapActions.closeFloatingMenu();
                 }
 
             });
