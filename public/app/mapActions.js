@@ -1,49 +1,14 @@
+var VisualMap = require('./VisualMap.js');
 var MEETING_ROOMS = "Meeting Spaces";
 var ELEVATORS = "Elevators";
 
 function MapActions(stage) {
-  this.stage = null;
+  VisualMap.call(this);
   this.layerIcons = {};
-  this.pinLayer = null;
-  this.backgroundLayer = null;
 }
 
 function _clearFloorOptions() {
   $('#floor_select option').remove();
-}
-
-function showPinsOf(category) {
-  var allpins = stage.find('Text');
-  allpins.each(function(p) {
-      if(p.attrs.layerid === category) {
-          p.show();
-          p.attrs.pinIcon.show();
-      }
-  });
-  stage.draw();
-}
-
-function hideAllPins() {
-  var allpins = stage.find('Text');
-  allpins.each(function(p) {
-    if (p.attrs.layerid === ELEVATORS_LAYERID) { // Case: we're dealing with an elevator pin. Elevator pins are always on so skip them;
-      return;
-    }
-    p.hide();
-    p.attrs.pinIcon.hide();
-  });
-  stage.draw();
-}
-
-function hidePinsOf(category) {
-  var allpins = stage.find('Text');
-  allpins.each(function(p) {
-      if(p.attrs.layerid === category) {
-          p.hide();
-          p.attrs.pinIcon.hide();
-      }
-  });
-  stage.draw();
 }
 
 function _updateSelectionHash() {
@@ -111,7 +76,7 @@ function buildLayerIcon(layer) {
 
 function _buildLayersModalForFloor(layers, floorPins) {
   var category_list = $('.category_list');
-
+  var that = this;
   $('.category_list li').remove(); // Since we're changing floors, or init'ing the app, clear all previous amenity buttons
 
   $.each(layers, function(i, layer) {
@@ -134,19 +99,20 @@ function _buildLayersModalForFloor(layers, floorPins) {
     if ($(this).parent().hasClass('on')) { // Case: we're turning off all amenities
       $(this).parent().removeClass('on');
       var categoryId = $(this).data('categoryid');
-      hidePinsOf(categoryId);
+      that.hidePinsOf(categoryId);
       setAmenitiesButtonTo(null); // Clear the amenities button
     } else { // Case: we're turning on an amenties category that wasn't on previously. Clear the map and amenities state, and apply the new amenities filter
       $('.category').parent().removeClass('on');
-      hideAllPins();
+      that.hideAllPins();
       $(this).parent().addClass('on');
       var categoryId = $(this).data('categoryid');
-      showPinsOf(categoryId);
+      that.showPinsOf(categoryId);
       setAmenitiesButtonTo(categoryId);
     }
   });
 }
 
+MapActions.prototype = Object.create(VisualMap.prototype);
 
 MapActions.clearFloorOptions = _clearFloorOptions;
 MapActions.buildFloorSelect = _buildFloorSelect;
