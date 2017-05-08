@@ -63,8 +63,8 @@ function setupEventHandlers(mapsPayload) {
       });
 
       $('#btn_search').on('click tap', function() {
-        closeAllModals();
-        hideMapStage();
+        MapActions.closeAllModals();
+        MapActions.hideMapStage();
         showAndFocusSearch();
       });
 
@@ -353,6 +353,7 @@ function init(cmsUrl) {
 MapsApp.prototype = Object.create(MapActions.prototype);
 MapsApp.prototype.constructor = MapsApp;
 MapsApp.prototype.init = init;
+
 MapsApp.prototype.initLayerIcons = _initLayerIcons;
 MapsApp.prototype.initMapsApp = _initMapsApp;
 

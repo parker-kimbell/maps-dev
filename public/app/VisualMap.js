@@ -15,6 +15,14 @@ function _showPinsOf(category) {
   stage.draw();
 }
 
+function _clearLastTouchedPin() {
+  if (lastTouchedPin && this.backgroundLayer) { // Clear the highlighted appearance of the last touched pin
+    lastTouchedPin.strokeEnabled(false);
+    backgroundLayer.draw();
+    lastTouchedPin = false;
+  }
+}
+
 function _hidePinsOf(category) {
   var allpins = stage.find('Text');
   allpins.each(function(p) {
@@ -41,5 +49,6 @@ function _hideAllPins() {
 VisualMap.prototype.hideAllPins = _hideAllPins;
 VisualMap.prototype.hidePinsOf = _hidePinsOf;
 VisualMap.prototype.showPinsOf = _showPinsOf;
+VisualMap.prototype.clearLastTouchedPin = _clearLastTouchedPin;
 
 module.exports = VisualMap;
