@@ -1,9 +1,3 @@
-function revertSearchDisplay() {
-  $('#map').css('visibility', 'hidden');
-  $('.dark-table').show();
-  // $('.cancel-search div').toggle({ effect: "scale", direction: "vertical" });
-  closeFloatingMenu();
-}
 
 // Handles informing the user that their meeting room search has filtered out all results.
 function checkAndHandleNoResults() {

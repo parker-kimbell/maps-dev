@@ -5,7 +5,7 @@ function _clearFloorOptions() {
   $('#floor_select option').remove();
 }
 
-function closeAmenitiesModal() {
+function _closeAmenitiesModal() {
   $('.amenities-modal-close').hide();
   $('.filter').velocity({
       opacity: 0
@@ -18,7 +18,7 @@ function closeAmenitiesModal() {
 
 function _closeAllModals() {
   _closeFloatingMenu();
-  closeAmenitiesModal();
+  _closeAmenitiesModal();
 }
 
 function _hideMapStage() {
@@ -26,45 +26,51 @@ function _hideMapStage() {
   $('#map').css('visibility', 'hidden');
 }
 
-function showMapAndButtonStage() {
+function _showMapAndButtonStage() {
   $('.buttons').css('visibility', 'visible');
   $('#map').css('visibility', 'visible');
 }
 
-function prepareForMeetingRoomDisplay() {
+function _prepareForMeetingRoomDisplay() {
   $('#map').css('visibility', 'visible');
-  // hideAndClearSearch();
-  // $('.cancel-search div').toggle({ effect: "scale", direction: "vertical" });
-  setAmenitiesButtonTo(null);
   $('.dark-table').hide();
 }
 
-function hideAndClearSearch() {
+function _hideAndClearSearch() {
   $('.active-search-container').hide();
   $('#active_search_input').val("");
   roomSearch.searchTable(); // Revert data table to initial state
   $('.dark-table').show();
 }
 
+// Hide the single pin map and reveal the
+function _revertSearchDisplay() {
+  $('#map').css('visibility', 'hidden');
+  $('.dark-table').show();
+  _closeFloatingMenu();
+}
+
 // Reveals the meeting room search bar.
-function showAndFocusSearch() {
+function _showAndFocusSearch() {
   $('.active-search-container').show();
   $('#active_search_input').focus();
 }
 
-function transitionOutOfMeetingRoomSearch() {
+function _transitionFromMeetingRoomSearch() {
   _closeAllModals();
   this.hideAllPins();
-  showMapAndButtonStage();
-  hideAndClearSearch();
+  _showMapAndButtonStage();
+  _hideAndClearSearch();
 }
 
+function _transitionToSearch() {
+  _closeAllModals();
+  _hideMapStage();
+  _showAndFocusSearch();
+}
 
 function _closeFloatingMenu() {
   $('#floatingmenu').removeClass('open');
-  // TODO : renable this. Disabled while considering how to handlers
-  // the state of it
-  //this.clearLastTouchedPin();
 }
 
 
@@ -72,5 +78,10 @@ module.exports = {
   closeFloatingMenu : _closeFloatingMenu,
   hideMapStage : _hideMapStage,
   closeAllModals : _closeAllModals,
-  clearFloorOptions : _clearFloorOptions
+  clearFloorOptions : _clearFloorOptions,
+  closeAmenitiesModal : _closeAmenitiesModal,
+  transitionToSearch : _transitionToSearch,
+  transitionFromMeetingRoomSearch : _transitionFromMeetingRoomSearch,
+  revertSearchDisplay : _revertSearchDisplay,
+  prepareForMeetingRoomDisplay : _prepareForMeetingRoomDisplay
 }

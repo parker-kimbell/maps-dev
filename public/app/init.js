@@ -15,7 +15,8 @@ var MapsApp = function() {
   this.meetingRoomLayerId = null;
 }
 
-function setupEventHandlers(mapsPayload) {
+function _setupEventHandlers(mapsPayload) {
+  var that = this;
   $(function () {
       if(location.hash.length === 0) {
           if(mapsPayload.length > 0) {
@@ -35,15 +36,15 @@ function setupEventHandlers(mapsPayload) {
 
       $('.amenities-modal-close').on('tap click', function(event) {
         event.stopPropagation();
-        closeAmenitiesModal();
+        viewTransitions.closeAmenitiesModal();
       });
 
       $('.cancel-meeting-room').on('tap click', function(event) {
-        revertSearchDisplay();
+        viewTransitions.revertSearchDisplay();
       });
 
       $('#btn_amenities').on('click tap', function(event) {
-        viewTransitions.closeFloatingMenu();
+        that.closeFloatingMenu();
         if (!$('.filter').is(':visible')) { // Case: our amenities menu is not already open.
           $('.amenities-modal-close').show();
           $('.filter').velocity({
@@ -59,39 +60,36 @@ function setupEventHandlers(mapsPayload) {
       $('body').on('click tap', function(event) {
         if ($('.filter').is(':visible')) {
           event.stopPropagation();
-          closeAmenitiesModal();
+          viewTransitions.closeAmenitiesModal();
         }
       });
 
       $('.filter').on('click tap', function(event) {
         if ($('.filter').is(':visible')) {
           event.stopPropagation();
-          closeAmenitiesModal();
+          viewTransitions.closeAmenitiesModal();
         }
       });
 
-      $('#btn_search').on('click tap', function() {
-        viewTransitions.closeAllModals();
-        viewTransitions.hideMapStage();
-        showAndFocusSearch();
-      });
+      $('#btn_search').on('click tap', viewTransitions.transitionToSearch);
 
       $('.cancel-search').on('click tap', function() {
         if ($('.dark-table').is(':visible')) {
-          viewTransitions.transitionOutOfMeetingRoomSearch();
+          debugger;
+          viewTransitions.transitionFromMeetingRoomSearch.call(that);
         } else {
-          roomSearch.revertSearchDisplay();
+          viewTransitions.revertSearchDisplay();
           roomSearch.searchTable();
         }
       });
 
       $('#active_search_input').on('input', function() {
-        roomSearch.revertSearchDisplay();
+        viewTransitions.revertSearchDisplay();
         roomSearch.searchTable();
       });
 
       $('.layer_name i').on('click tap', function() {
-        closeFloatingMenu();
+        that.closeFloatingMenu();
       });
   });
 }
@@ -102,14 +100,15 @@ function updateSelectionHash() {
   document.location.href = '#' + selectedLocation.data('buildingid') + "." + $(selectedFloor).data('floorid');
 }
 
-function setAmenitiesButtonTo(categoryId) {
+function _setAmenitiesButtonTo(categoryId) {
+  var that = this;
   // Always clear any existing amenities button icon before displaying a new one
   $('#btn_amenities .curr-amen-icon').remove();
   if (categoryId) { // Case: We're showing an amenity category
     $('#btn_amenities').addClass('showing-amenities');
     $('#btn_amenities').removeClass('no-amenities');
     $('.amn-icon').hide();
-    $('#btn_amenities').prepend($(this.layerIcons[categoryId]).clone().addClass('curr-amen-icon'));
+    $('#btn_amenities').prepend($(that.layerIcons[categoryId]).clone().addClass('curr-amen-icon'));
   } else { // Case: We're not showing an amenity categories
     $('#btn_amenities').addClass('no-amenities');
     $('#btn_amenities').removeClass('showing-amenities');
@@ -146,15 +145,8 @@ function buildLocationSelect(mapsPayload) {
   var buildingData = mapsPayload.building_data;
   var buildingSelect = $('#location_select');
   $.each(buildingData, function(i, building) {
-      buildingSelect.append(buildLocationOption(building));
+      buildingSelect.append(htmlGen.buildLocationOption(building));
   });
-}
-
-function buildLocationOption(building) {
-  return $([
-    "<option value=" + building.Id + " data-buildingid=" + building.Id + ">" + building.Name,
-    "</option>"
-  ].join("\n"));
 }
 
 function buildFloorSelect(floorData) {
@@ -164,6 +156,11 @@ function buildFloorSelect(floorData) {
   $.each(floorData, function(i, floor) {
       floorSelect.append(htmlGen.buildFloorOption(floor));
   });
+}
+
+function _closeFloatingMenu() {
+  viewTransitions.closeFloatingMenu();
+  this.clearLastTouchedPin();
 }
 
 function _initMapsApp(mapsPayload) {
@@ -194,7 +191,7 @@ function _initMapsApp(mapsPayload) {
     that.lastLocation = config.location;
     var scaleX = 0;
     var scaleY = 0;
-    setAmenitiesButtonTo(null);
+    that.setAmenitiesButtonTo(null);
     viewTransitions.closeAllModals();
     $('#map').empty();
 
@@ -244,7 +241,7 @@ function _initMapsApp(mapsPayload) {
                 y: 0
             });
 
-            _buildLayersModalForFloor(mapsPayload.layers, floor.Pin);
+            that.buildLayersModalForFloor(mapsPayload.layers, floor.Pin);
 
             // Loop through each pin that has been placed on the floor,
             // and places it in the appropriate spot on the floor map,
@@ -293,12 +290,13 @@ function _initMapsApp(mapsPayload) {
                 newCell = $('<tr><td><div>' + pinData.Title + '</div></td></tr>');
                 searchTable.append(newCell);
                 newCell.on('click tap', function() {
-                  hideAllPins();
+                  that.hideAllPins();
                   pin.show();
                   pinIcon.show();
                   that.backgroundLayer.draw();
                   $('#active_search_input').val(pinData.Title);
-                  prepareForMeetingRoomDisplay();
+                  viewTransitions.prepareForMeetingRoomDisplay();
+                  that.setAmenitiesButtonTo(null);
                   pin.fire('tap');
                 });
               }
@@ -339,7 +337,7 @@ function _initMapsApp(mapsPayload) {
 
                 var node = e.target;
                 if(node.className === 'Image' && !node.attrs.icon) {
-                    viewTransitions.closeFloatingMenu();
+                    that.closeFloatingMenu();
                 }
 
             });
@@ -397,14 +395,14 @@ function _buildLayersModalForFloor(layers, floorPins) {
       $(this).parent().removeClass('on');
       var categoryId = $(this).data('categoryid');
       that.hidePinsOf(categoryId);
-      setAmenitiesButtonTo(null); // Clear the amenities button
+      that.setAmenitiesButtonTo(null); // Clear the amenities button
     } else { // Case: we're turning on an amenties category that wasn't on previously. Clear the map and amenities state, and apply the new amenities filter
       $('.category').parent().removeClass('on');
       that.hideAllPins();
       $(this).parent().addClass('on');
       var categoryId = $(this).data('categoryid');
       that.showPinsOf(categoryId);
-      setAmenitiesButtonTo(categoryId);
+      that.setAmenitiesButtonTo(categoryId);
     }
   });
 }
@@ -430,7 +428,7 @@ function init(cmsUrl) {
     var mapsPayload = JSON.parse(this.responseText);
     that.initLayerIcons(mapsPayload);
     buildLocationSelect(mapsPayload);
-    setupEventHandlers(mapsPayload);
+    that.setupEventHandlers(mapsPayload);
     that.initMapsApp(mapsPayload);
   });
   request.open("GET", "https://e9affc90.ngrok.io/getMaps");
@@ -445,5 +443,9 @@ MapsApp.prototype.constructor = MapsApp;
 MapsApp.prototype.init = init;
 MapsApp.prototype.initLayerIcons = _initLayerIcons;
 MapsApp.prototype.initMapsApp = _initMapsApp;
+MapsApp.prototype.setupEventHandlers = _setupEventHandlers;
+MapsApp.prototype.closeFloatingMenu = _closeFloatingMenu;
+MapsApp.prototype.buildLayersModalForFloor = _buildLayersModalForFloor;
+MapsApp.prototype.setAmenitiesButtonTo = _setAmenitiesButtonTo;
 
 module.exports = new MapsApp();
