@@ -1,29 +1,8 @@
-var VisualMap = require('./VisualMap.js');
 var roomSearch = require('./roomSearch.js');
-
-function MapActions(stage) {
-  VisualMap.call(this);
-  this.layerIcons = {};
-}
+var htmlGen = require('./htmlGenerators.js');
 
 function _clearFloorOptions() {
   $('#floor_select option').remove();
-}
-
-function buildFloorOption(floor) {
-  return $([
-    "<option value=" + floor.Id + " data-locationid=" + floor.LocationId + " data-floorid=" + floor.Id + ">" + floor.Name,
-    "</option>"
-  ].join("\n"));
-}
-
-function _buildFloorSelect(floorData) {
-  // TODO: Again for this code, it looks like the location is already known, so I've backed in the Brisbane
-  // floor, but it will need to be derived at run-time, ultimately
-  var floorSelect = $('#floor_select');
-  $.each(floorData, function(i, floor) {
-      floorSelect.append(buildFloorOption(floor));
-  });
 }
 
 function closeAmenitiesModal() {
@@ -88,10 +67,10 @@ function _closeFloatingMenu() {
   //this.clearLastTouchedPin();
 }
 
-MapActions.prototype = Object.create(VisualMap.prototype);
-MapActions.closeFloatingMenu = _closeFloatingMenu;
-MapActions.hideMapStage = _hideMapStage;
-MapActions.closeAllModals = _closeAllModals;
-MapActions.clearFloorOptions = _clearFloorOptions;
-MapActions.buildFloorSelect = _buildFloorSelect;
-module.exports = MapActions;
+
+module.exports = {
+  closeFloatingMenu : _closeFloatingMenu,
+  hideMapStage : _hideMapStage,
+  closeAllModals : _closeAllModals,
+  clearFloorOptions : _clearFloorOptions
+}

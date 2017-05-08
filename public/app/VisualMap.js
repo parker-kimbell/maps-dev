@@ -2,6 +2,7 @@ function VisualMap() {
   this.stage = null;
   this.pinLayer = null;
   this.backgroundLayer = null;
+  this.layerIcons = {};
 }
 
 function _showPinsOf(category) {

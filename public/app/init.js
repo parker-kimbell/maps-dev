@@ -1,12 +1,13 @@
-var MapActions = require('./mapActions');
+var viewTransitions = require('./viewTransitions');
 var roomSearch = require('./roomSearch');
 var htmlGen = require('./htmlGenerators.js');
+var VisualMap = require('./VisualMap.js');
 
 var MEETING_ROOMS = "Meeting Spaces";
 var ELEVATORS = "Elevators";
 
 var MapsApp = function() {
-  MapActions.call(this);
+  VisualMap.call(this);
   this.lastLocation = null;
   this.lastTouchedPin = null;
   this.cmsUrl = null;
@@ -42,7 +43,7 @@ function setupEventHandlers(mapsPayload) {
       });
 
       $('#btn_amenities').on('click tap', function(event) {
-        MapActions.closeFloatingMenu();
+        viewTransitions.closeFloatingMenu();
         if (!$('.filter').is(':visible')) { // Case: our amenities menu is not already open.
           $('.amenities-modal-close').show();
           $('.filter').velocity({
@@ -70,14 +71,14 @@ function setupEventHandlers(mapsPayload) {
       });
 
       $('#btn_search').on('click tap', function() {
-        MapActions.closeAllModals();
-        MapActions.hideMapStage();
+        viewTransitions.closeAllModals();
+        viewTransitions.hideMapStage();
         showAndFocusSearch();
       });
 
       $('.cancel-search').on('click tap', function() {
         if ($('.dark-table').is(':visible')) {
-          MapActions.transitionOutOfMeetingRoomSearch();
+          viewTransitions.transitionOutOfMeetingRoomSearch();
         } else {
           roomSearch.revertSearchDisplay();
           roomSearch.searchTable();
@@ -156,6 +157,15 @@ function buildLocationOption(building) {
   ].join("\n"));
 }
 
+function buildFloorSelect(floorData) {
+  // TODO: Again for this code, it looks like the location is already known, so I've backed in the Brisbane
+  // floor, but it will need to be derived at run-time, ultimately
+  var floorSelect = $('#floor_select');
+  $.each(floorData, function(i, floor) {
+      floorSelect.append(htmlGen.buildFloorOption(floor));
+  });
+}
+
 function _initMapsApp(mapsPayload) {
   var width = window.innerWidth;
   var height = window.innerHeight - $('.buttons').height();
@@ -177,15 +187,15 @@ function _initMapsApp(mapsPayload) {
     var locationFloorData = getFloorDataFromLocation(mapsPayload.building_data, config.location)
     if (!locationFloorData) throw new Error('In initMap. Could not find location in mapsPayload corresponding to given Id. Given Id: ' + config.location);
     if (that.lastLocation !== config.location) { // Case: our location has changed, so clear all floor data and build the floor data for the new location
-      MapActions.clearFloorOptions();
-      MapActions.buildFloorSelect(locationFloorData);
+      viewTransitions.clearFloorOptions();
+      buildFloorSelect(locationFloorData);
       $('#floor_select').trigger('change');
     }
     that.lastLocation = config.location;
     var scaleX = 0;
     var scaleY = 0;
     setAmenitiesButtonTo(null);
-    MapActions.closeAllModals();
+    viewTransitions.closeAllModals();
     $('#map').empty();
 
     $.each(locationFloorData, function(i, floor) {
@@ -329,7 +339,7 @@ function _initMapsApp(mapsPayload) {
 
                 var node = e.target;
                 if(node.className === 'Image' && !node.attrs.icon) {
-                    MapActions.closeFloatingMenu();
+                    viewTransitions.closeFloatingMenu();
                 }
 
             });
@@ -430,10 +440,9 @@ function init(cmsUrl) {
   request.send();
 }
 
-MapsApp.prototype = Object.create(MapActions.prototype);
+MapsApp.prototype = Object.create(VisualMap.prototype);
 MapsApp.prototype.constructor = MapsApp;
 MapsApp.prototype.init = init;
-
 MapsApp.prototype.initLayerIcons = _initLayerIcons;
 MapsApp.prototype.initMapsApp = _initMapsApp;
 

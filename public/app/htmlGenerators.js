@@ -9,6 +9,14 @@ function buildLayerIcon(layer) {
   ].join("\n"));
 }
 
+function buildFloorOption(floor) {
+  return $([
+    "<option value=" + floor.Id + " data-locationid=" + floor.LocationId + " data-floorid=" + floor.Id + ">" + floor.Name,
+    "</option>"
+  ].join("\n"));
+}
+
 module.exports = {
-  buildLayerIcon : buildLayerIcon
+  buildLayerIcon : buildLayerIcon,
+  buildFloorOption : buildFloorOption
 }
