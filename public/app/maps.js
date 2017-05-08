@@ -19,11 +19,4 @@ var meetingRoomData = {};
 var MEETING_LAYERID;
 var ELEVATORS_LAYERID;
 
-function transitionOutOfMeetingRoomSearch() {
-  closeAllModals();
-  hideAllPins();
-  showMapAndButtonStage();
-  hideAndClearSearch();
-}
-
 MapsApp.init("https://pwc.downstreamlabs.com");

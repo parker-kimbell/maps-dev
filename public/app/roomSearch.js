@@ -23,12 +23,6 @@ function searchTable() {
   checkAndHandleNoResults();
 }
 
-// Reveals the meeting room search bar.
-function showAndFocusSearch() {
-  $('.active-search-container').show();
-  $('#active_search_input').focus();
-}
-
 function filteredSearch() {
   var currVal = $('#active_search_input').val().toUpperCase();
   var searchTableCells = $('.dark-table tr td div');
@@ -45,6 +39,5 @@ function filteredSearch() {
 
 module.exports = {
   filteredSearch : filteredSearch,
-  showAndFocusSearch : showAndFocusSearch,
   searchTable : searchTable
 }
