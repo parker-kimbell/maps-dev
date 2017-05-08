@@ -35,9 +35,10 @@ function _hidePinsOf(category) {
 }
 
 function _hideAllPins() {
+  var that = this;
   var allpins = stage.find('Text');
   allpins.each(function(p) {
-    if (p.attrs.layerid === ELEVATORS_LAYERID) { // Case: we're dealing with an elevator pin. Elevator pins are always on so skip them;
+    if (p.attrs.layerid === that.elevatorsLayerId) { // Case: we're dealing with an elevator pin. Elevator pins are always on so skip them;
       return;
     }
     p.hide();

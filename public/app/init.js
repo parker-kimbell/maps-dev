@@ -98,7 +98,6 @@ function setupEventHandlers(mapsPayload) {
 function updateSelectionHash() {
   var selectedFloor = $("#floor_select option:selected");
   var selectedLocation = $("#location_select option:selected");
-  setAmenitiesButtonTo(null);
   document.location.href = '#' + selectedLocation.data('buildingid') + "." + $(selectedFloor).data('floorid');
 }
 
@@ -185,7 +184,8 @@ function _initMapsApp(mapsPayload) {
     that.lastLocation = config.location;
     var scaleX = 0;
     var scaleY = 0;
-
+    setAmenitiesButtonTo(null);
+    MapActions.closeAllModals();
     $('#map').empty();
 
     $.each(locationFloorData, function(i, floor) {
