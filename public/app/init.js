@@ -164,8 +164,6 @@ function _closeFloatingMenu() {
 }
 
 function _initMapsApp(mapsPayload) {
-  var width = window.innerWidth;
-  var height = window.innerHeight - $('.buttons').height();
   var that = this;
   $(window).on('hashchange',function() {
     var payload = mapsPayload;
@@ -178,6 +176,8 @@ function _initMapsApp(mapsPayload) {
       floor: (parts[1] == undefined ? 0 : Number(parts[1]))
     };
 
+    // Update the values for our location and floor select to match
+    // the given hash value
     $('#location_select').val(config.location);
     $('#floor_select').val(config.floor);
 
@@ -193,179 +193,22 @@ function _initMapsApp(mapsPayload) {
     var scaleY = 0;
     that.setAmenitiesButtonTo(null);
     viewTransitions.closeAllModals();
-    $('#map').empty();
 
     $.each(locationFloorData, function(i, floor) {
-        var payload = mapsPayload;
-        if(floor.Id === config.floor) {
-          // Clear any existing search data, as we'll be creating
-          // new content for this floor
-            var searchTable = $('.dark-table tbody');
-            searchTable.children().remove();
-            $('#name').html(floor.Name);
-
-            scaleX = width/floor.FloorImage.width;
-            scaleY = scaleX;
-
-            that.stage = new Konva.Stage({
-              container: 'map',   // id of container <div>
-              width: width,
-              height: height
-            });
-
-            that.backgroundLayer = new Konva.Layer();
-            that.pinLayer = new Konva.Layer();
-
-            var base = new Konva.Image({
-                x: 0,
-                y: 0,
-                width: floor.FloorImage.width*scaleX,
-                height: floor.FloorImage.height*scaleY,
-                stroke: 0
-            });
-
-            that.backgroundLayer.add(base);
-
-            var imageObj = new Image();
-
-            imageObj.onload = function() {
-              base.image(imageObj);
-              that.backgroundLayer.draw();
-            };
-            imageObj.src = that.cmsUrl + floor.FloorImage.image;
-
-
-            var pinGroup = new Konva.Group({
-                name: 'pingroup',
-                x: 0,
-                y: 0
-            });
-
-            that.buildLayersModalForFloor(mapsPayload.layers, floor.Pin);
-
-            // Loop through each pin that has been placed on the floor,
-            // and places it in the appropriate spot on the floor map,
-            // hiding each pin by default
-            $.each(floor.Pin, function(i,pinData) {
-              // Build the pin icon that we'll place on the Konva layer
-
-              // These offset/scaling calculations try to scale the position of the icon based on its size, this will also be related to the original icon used, in this case \uf041
-              // INCREASING / DECREASING ICON SIZE? Try just changing the fontSize value
-              var fontSize = 40;
-
-              var image = that.layerIcons[pinData.LayerId];
-              var offsetXImage = fontSize - (fontSize * 0.61);
-              var offsetYImage = fontSize - (fontSize * 0.4);
-
-              var pinIcon = new Konva.Image({
-                x: ((floor.FloorImage.width * scaleX)* pinData.PositionX) - offsetXImage,
-                y: ((floor.FloorImage.height * scaleY)* pinData.PositionY) - offsetYImage,
-                image: that.layerIcons[pinData.LayerId],
-                scaleX : fontSize / 90,
-                scaleY : fontSize / 90,
-                icon : true
-              });
-
-              var offsetXPin = fontSize - (fontSize * 0.55);
-              var offsetYPin = fontSize - (fontSize * 0.3);
-
-              var pin = new Konva.Text({
-                  x: ((floor.FloorImage.width * scaleX)* pinData.PositionX) - offsetXPin,
-                  y: ((floor.FloorImage.height * scaleY)* pinData.PositionY) - offsetYPin,
-                  fill: 'rgb(232,66,102)',
-                  text: '\ue807',
-                  stroke : 'white',
-                  strokeWidth : '3',
-                  strokeEnabled : false,
-                  fontSize: fontSize,
-                  fontFamily: 'pwcmobileappicons',
-                  shadowColor: 'black',
-                  shadowBlur: 10,
-                  shadowOffset: {x : 5, y : 5},
-                  shadowOpacity: 0.5,
-                  pinIcon : pinIcon,
-                  layerid: pinData.LayerId
-              });
-              if (pinData.LayerId === that.meetingRoomLayerId) {
-                newCell = $('<tr><td><div>' + pinData.Title + '</div></td></tr>');
-                searchTable.append(newCell);
-                newCell.on('click tap', function() {
-                  that.hideAllPins();
-                  pin.show();
-                  pinIcon.show();
-                  that.backgroundLayer.draw();
-                  $('#active_search_input').val(pinData.Title);
-                  viewTransitions.prepareForMeetingRoomDisplay();
-                  that.setAmenitiesButtonTo(null);
-                  pin.fire('tap');
-                });
-              }
-
-              pinIcon.on('tap click', function(event) {
-                event.evt.stopPropagation();
-                pin.fire(event.type, pin);
-              });
-
-              // Expose the pin data and highlight the pin on pin tap,
-              // Also de-highlight the last pin
-              pin.on('tap click', function(e) {
-                var touchedPin = e.target;
-                if (that.lastTouchedPin) that.lastTouchedPin.strokeEnabled(false);
-                touchedPin.strokeEnabled(true);
-                that.lastTouchedPin = touchedPin;
-                that.backgroundLayer.draw();
-                $('.layer_name div').html(pinData.Title + "text text text text text text text text text text text text text  text text text text text tex");
-                $('.panel_body').html(pinData.Body + "text text text text text text text text text text text text text  t text text text text text  text text tex t text text text text text  text text tex  text text text text text text text text text text text text text text text text text text text text text text text text text ");
-                $('#floatingmenu').addClass('open');
-              });
-              // Add this new pin to the Konva pinGroup, so that we can place them as one action
-              pinGroup.add(pin);
-
-              if (pinData.Id === config.pin) {
-                  pin.show();
-                  $('.layer_name div').html(pinData.Layer.Name);
-                  $('.panel_body').html(pinData.Body);
-                  $('#floatingmenu').addClass('open');
-              }
-
-              that.backgroundLayer.add(pin);
-              that.backgroundLayer.add(pinIcon);
-            }); // End pin each
-
-            // close the panel if the map is tapped
-            that.stage.on('tap click', function(e) {
-
-                var node = e.target;
-                if(node.className === 'Image' && !node.attrs.icon) {
-                    that.closeFloatingMenu();
-                }
-
-            });
-            // TODO: don't think this pinLayer is getting added, daz prolly a bug
-            that.pinLayer.add(pinGroup);
-
-            that.stage.add(that.backgroundLayer);
-
-            // Hide the pin by default
-            //TODO: re-enable this,
-            //hideAllPins();
-
-        }
+      var payload = mapsPayload;
+      if(floor.Id === config.floor) {
+        that.drawMapForFloor(floor, mapsPayload);
+        /* TODO: this controls drawing a given pin. Should be re-enabled ultimately to
+            handle the case of the maps app being called with a given meeting room
+        */
+        // if (pinData.Id === config.pin) {
+        //     pin.show();
+        //     $('.layer_name div').html(pinData.Layer.Name);
+        //     $('.panel_body').html(pinData.Body);
+        //     $('#floatingmenu').addClass('open');
+        // }
+      }
     }); // end $.each floorData
-
-    // TODO: Might need to re-enable this
-    // $('.category').each(function(i,ele) {
-    //   if($(ele).parent().hasClass('on')) {
-    //     var catid = $(ele).data('categoryid');
-    //     var allpins = stage.find('Text');
-    //     allpins.each(function(p) {
-    //         if(p.attrs.layerid == catid) {
-    //             p.show();
-    //         }
-    //     });
-    //   }
-    // });
-
   }).trigger('hashchange'); // $.onHashChange
 }
 
