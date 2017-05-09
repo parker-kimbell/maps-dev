@@ -107,12 +107,12 @@ function _setAmenitiesButtonTo(categoryId) {
   if (categoryId) { // Case: We're showing an amenity category
     $('#btn_amenities').addClass('showing-amenities');
     $('#btn_amenities').removeClass('no-amenities');
-    $('#btn_amenities i').hide();
+    $('#btn_amenities .icon').hide();
     $('#btn_amenities').prepend($(that.layerIcons[categoryId]).clone().addClass('curr-amen-icon'));
   } else { // Case: We're not showing an amenity categories
     $('#btn_amenities').addClass('no-amenities');
     $('#btn_amenities').removeClass('showing-amenities');
-    $('#btn_amenities i').show();
+    $('#btn_amenities .icon').show();
   }
 }
 

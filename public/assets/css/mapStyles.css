@@ -170,12 +170,6 @@ h4 {
     -o-transition: all 300ms ease;
     transition: all 300ms ease;
 }
-.buttons {
-  display: inline-block;
-  width: 100%;
-  height: 20%;
-}
-
 .layer_name {
   padding: 8px;
   max-height: 15%;
@@ -286,20 +280,51 @@ input:focus { outline: none; }
   background-color: #22252B;
   border : 1px solid #7A7676;
 }
-
-.no-amenities {
-  background-color: #22252B;
-}
-
-.showing-amenities {
-  background-color: #EE3D64;
+.buttons {
+  display: inline-block;
+  width: 100%;
+  height: 20%;
+  margin-top : 2%;
 }
 .amenities-container {
-  display: flex;
+  display: inline-block;
   width: 100%;
   height: 40%;
   text-align: center;
   margin-bottom : 1em;
+}
+.amenities-container > button > .icon {
+  height: 60%;
+  width: auto;
+}
+.amenities-container > button > .pin {
+  margin-left: 2%;
+  margin-right: 2%;
+}
+.amenities-container > button > p {
+  color : #D8D8D8;
+  display : inline-block;
+  font-size : 0.4em;
+  height : auto;
+  max-height: 100%;
+  font-size: 1.3em;
+  margin : 0;
+  vertical-align: middle;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.curr-amen-icon {
+  height: 100%;
+  width: auto;
+  margin-right : -4%;
+  margin-left : -6%;
+}
+.no-amenities {
+  background-color: #22252B;
+}
+.showing-amenities {
+  background-color: #EE3D64;
 }
 .btn-amenities {
   color : white;
@@ -311,17 +336,6 @@ input:focus { outline: none; }
   border-radius : 2px;
   display: inline-block;
   border : 1px solid #7A7676;
-}
-.btn-amenities > i {
-  background-image: url(/assets/search-grey.svg);
-  background-size: 100% 100%;
-  height: 100%;
-  flex: 0.2;
-  padding-right: 2em;
-}
-.amenities-text {
-  color : #D8D8D8;
-  display : inline-block;
 }
 .btn-search {
   color : white;
@@ -367,38 +381,12 @@ input:focus { outline: none; }
   margin: 3px;
 }
 
-.amenities-container > button > p {
-  height : auto;
-  max-height: 100%;
-  font-size: 1.6em;
-  margin : 0;
-  vertical-align: middle;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
 option, select {
   font-size: 1.4em;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
 }
-
-.search-text {
-  display: inline-block;;
-  color : #D8D8D8;
-}
-
-.curr-amen-icon {
-  height: 100%;
-  width: auto;
-}
-
-.amn-icon {
-  display: inline-block;
-}
-
 .amn-icon:before {
   display: inline-block;
   font-size: 6vh;
