@@ -1,20 +1,37 @@
 
 // Handles informing the user that their meeting room search has filtered out all results.
 function checkAndHandleNoResults() {
-  var visibleCells = $('.dark-table tr').filter(function() {
-    return $(this).css('display') !== 'none';}
-  );
-  var firstVisibleCell = visibleCells[0];
-  if (!firstVisibleCell) { // Case: we have no visible cells. Display that there are no valid results
+  var visibleRows = getVisibleRows();
+  var firstVisibleRow = visibleRows[0];
+  if (!firstVisibleRow) { // Case: we have no visible cells. Display that there are no valid results
     $('.dark-table').prepend("<tr id='no_results'><td>No results</td></tr>")
-  } else if (visibleCells.length > 1) {
+  } else if (visibleRows.length > 1) {
     $('#no_results').remove();
   } // else do nothing
 }
 
 function searchTable() {
   filteredSearch();
+  removeBorderLastChild();
   checkAndHandleNoResults();
+}
+
+function getVisibleRows() {
+  return $('.dark-table tr').filter(function() {
+    return $(this).css('display') !== 'none';
+  });
+}
+
+function removeBorderLastChild() {
+  var visibleRows = getVisibleRows();
+  $.each(visibleRows, function(i, row) {
+    debugger;
+    if (i !== visibleRows.length - 1) {
+      $(row).find('td div').css('border-bottom', '1px solid #979797');
+    } else {
+      $(row).find('td div').css('border-bottom', 'none');
+    }
+  });
 }
 
 function filteredSearch() {
