@@ -142,6 +142,8 @@ function _drawMapForFloor(floor, mapsPayload) {
       var touchedPin = e.target;
       if (that.lastTouchedPin) that.lastTouchedPin.strokeEnabled(false);
       touchedPin.strokeEnabled(true);
+      touchedPin.moveToTop();
+      pinIcon.moveToTop();
       that.lastTouchedPin = touchedPin;
       that.backgroundLayer.draw();
       $('.layer_name div').html(pinData.Title + "text text text text text text text text text text text text text  text text text text text tex");
