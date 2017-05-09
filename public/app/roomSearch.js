@@ -12,6 +12,7 @@ function checkAndHandleNoResults() {
 
 function searchTable() {
   filteredSearch();
+  applyPaddingFirstChild();
   removeBorderLastChild();
   checkAndHandleNoResults();
 }
@@ -22,10 +23,24 @@ function getVisibleRows() {
   });
 }
 
+function applyPaddingFirstChild() {
+  var visibleRows = getVisibleRows();
+  $.each(visibleRows, function(i, row) {
+    if (i === 0) { // We're viewing the first visible row
+      $(row).find('td').css('padding-top', '20px');
+    } else { // Otherwise we're not the first row, so set the padding top to default
+      $(row).find('td').css('padding-top', '8px');
+    }
+  });
+}
+
+/*
+  keeps the border state for the table such that the last visible row never has
+  a bottom border
+*/
 function removeBorderLastChild() {
   var visibleRows = getVisibleRows();
   $.each(visibleRows, function(i, row) {
-    debugger;
     if (i !== visibleRows.length - 1) {
       $(row).find('td div').css('border-bottom', '1px solid #979797');
     } else {

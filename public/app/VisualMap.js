@@ -123,7 +123,6 @@ function _drawMapForFloor(floor, mapsPayload) {
         that.hideAllPins();
         pin.show();
         pinIcon.show();
-        that.backgroundLayer.draw();
         $('#active_search_input').val(pinData.Title);
         viewTransitions.prepareForMeetingRoomDisplay();
         that.setAmenitiesButtonTo(null);
