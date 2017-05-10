@@ -26,16 +26,6 @@ function _clearLastTouchedPin() {
   }
 }
 
-function _fadeAllPinsExcept(pin, pinImage) {
-  var allpins = this.stage.find('Text');
-  allpins.each(function(p) {
-      if(p.attrs.layerid === category) {
-          p.show();
-          p.attrs.pinIcon.show();
-      }
-  });
-}
-
 function _drawMapForFloor(floor, mapsPayload) {
   var width = window.innerWidth;
   var height = window.innerHeight - $('.buttons').height();
@@ -108,7 +98,6 @@ function _drawMapForFloor(floor, mapsPayload) {
 
     var offsetXPin = fontSize - (fontSize * 0.55);
     var offsetYPin = fontSize - (fontSize * 0.3);
-    debugger;
     var pin = new Konva.Text({
         x: ((floor.FloorImage.width * scaleX)* pinData.PositionX) - offsetXPin,
         y: ((floor.FloorImage.height * scaleY)* pinData.PositionY) - offsetYPin,
@@ -124,7 +113,6 @@ function _drawMapForFloor(floor, mapsPayload) {
         shadowOffset: {x : 5, y : 5},
         shadowOpacity: 0.5,
         pinIcon : pinIcon,
-        id : pinIcon.Id
         layerid: pinData.LayerId
     });
     if (pinData.LayerId === that.meetingRoomLayerId) {
@@ -154,7 +142,6 @@ function _drawMapForFloor(floor, mapsPayload) {
       touchedPin.strokeEnabled(true);
       touchedPin.moveToTop();
       pinIcon.moveToTop();
-      _fadeAllPinsExcept(touchedPin, pinIcon);
       that.lastTouchedPin = touchedPin;
       that.backgroundLayer.draw();
       $('.layer_name div').html(pinData.Title + "text text text text text text text text text text text text text  text text text text text tex");
