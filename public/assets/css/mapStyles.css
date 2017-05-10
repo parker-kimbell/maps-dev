@@ -123,6 +123,7 @@ button {
 #map {
   margin-top: 10px;
   z-index: 1000;
+  display : none;
 }
 h3 {
     font-family: "CharterITCPro-BlackItalic";
@@ -303,6 +304,7 @@ input:focus { outline: none; }
   width: 100%;
   height: 20%;
   margin-top : 2%;
+  display : none;
 }
 .amenities-container {
   display: inline-block;
@@ -333,9 +335,10 @@ input:focus { outline: none; }
   white-space: nowrap;
 }
 .curr-amen-icon {
-  height: 100%;
+  height: 70%;
   width: auto;
-  margin-right : -4%;
+  display: inline-block;
+  margin-right : -3%;
   margin-left : -6%;
 }
 .no-amenities {

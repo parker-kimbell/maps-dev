@@ -273,6 +273,7 @@ function init(cmsUrl) {
     buildLocationSelect(mapsPayload);
     that.setupEventHandlers(mapsPayload);
     that.initMapsApp(mapsPayload);
+    $('#map, .buttons').show();
   });
   request.open("GET", "https://e9affc90.ngrok.io/getMaps");
   request.setRequestHeader('Authorization', 'Bearer ff779ee219d7be0549c971d6ba2311d5');
