@@ -88,7 +88,7 @@ function _setupEventHandlers(mapsPayload) {
         roomSearch.searchTable();
       });
 
-      $('.layer_name i').on('click tap', function() {
+      $('.layer_name img').on('click tap', function() {
         that.closeFloatingMenu();
       });
   });
