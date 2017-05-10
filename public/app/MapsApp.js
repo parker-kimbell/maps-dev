@@ -73,7 +73,7 @@ function _setupEventHandlers(mapsPayload) {
 
       $('#btn_search').on('click tap', viewTransitions.transitionToSearch);
 
-      $('.cancel-search').on('click tap', function() {
+      $('.cancel-search, .active-search-bar-container div:last-child').on('click tap', function() {
         if ($('.dark-table').is(':visible')) {
           viewTransitions.transitionFromMeetingRoomSearch.call(that);
           that.hidePinsOf(that.meetingRoomLayerId);

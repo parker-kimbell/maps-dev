@@ -238,6 +238,9 @@ h4 {
     flex-direction: row;
     align-items: center;
 }
+.active-search-bar-container > div:last-child {
+  border:none;
+}
 .active-search-bar-container > img {
   background-image: url(/assets/search-grey.svg);
   background-size: 100% 100%;
@@ -263,6 +266,7 @@ input:focus { outline: none; }
 .cancel-search {
   padding-left: 10px;
   flex : 1;
+  padding-right: 10px;
 }
 .cancel-search > i {
   background-image: url(/assets/cancel-action.svg);

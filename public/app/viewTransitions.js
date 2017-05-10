@@ -34,6 +34,7 @@ function _showMapAndButtonStage() {
 function _prepareForMeetingRoomDisplay() {
   $('#map').css('visibility', 'visible');
   $('.dark-table').hide();
+  $('.active-search-bar-container div:last-child').hide();
 }
 
 function _hideAndClearSearch() {
@@ -47,6 +48,7 @@ function _hideAndClearSearch() {
 function _revertSearchDisplay() {
   $('#map').css('visibility', 'hidden');
   $('.dark-table').show();
+  $('.active-search-bar-container div:last-child').show();
   _closeFloatingMenu();
 }
 
