@@ -1,18 +1,16 @@
 {
-  "name": "maps_app",
+  "name": "maps-app",
   "version": "0.0.1",
-  "description": "Dev'ing against an express server",
-  "main": "none",
+  "description": "Floor maps app for PwC Open Mobile App",
+  "main": "index.js",
   "scripts": {
     "test": "none"
   },
   "repository": {
     "type": "git",
-    "url": "leave me alone"
+    "url": "https://github.com/parker-kimbell/maps-dev/"
   },
-  "keywords": [
-    "stahp"
-  ],
-  "author": "who?",
-  "license": "UNLICENSED"
+  "keywords": [],
+  "author": "Parker Kimbell",
+  "license": "© 2017 Downstream"
 }
