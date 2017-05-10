@@ -1,5 +1,5 @@
-var bundle = require('./bundle/bundle.js')
-var mapsHtml = require ('./index.html');
+var bundle = require('./public/bundle/bundle.js')
+var mapsHtml = require ('./public/index.html');
 
 module.exports = {
   MapsApp : bundle,
