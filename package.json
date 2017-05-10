@@ -12,5 +12,8 @@
   },
   "keywords": [],
   "author": "Parker Kimbell",
-  "license": "© 2017 Downstream"
+  "license": "© 2017 Downstream",
+  "dependencies": {
+    "graceful-fs": "^4.1.11"
+  }
 }
