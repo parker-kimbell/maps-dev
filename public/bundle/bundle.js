@@ -264,7 +264,7 @@ function getFloorDataFromLocation(locationData, locationId) {
   return false;
 }
 
-function init(cmsUrl) {
+function init(cmsUrl, givenHash) {
   this.cmsUrl = cmsUrl;
   var request = new XMLHttpRequest();
   var that = this;
@@ -274,9 +274,16 @@ function init(cmsUrl) {
     buildLocationSelect(mapsPayload);
     that.setupEventHandlers(mapsPayload);
     that.initMapsApp(mapsPayload);
-    $('#map, .buttons').show();
   });
-  request.open("GET", "https://e9affc90.ngrok.io/getMaps");
+  $('#map').show();
+  $('.buttons').show();
+  if (givenHash) {
+    document.location.hash = givenHash;
+  }
+  request.open("GET", cmsUrl + "/api/map");
+  request.setRequestHeader('Authorization', 'Bearer ff779ee219d7be0549c971d6ba2311d5');
+  request.setRequestHeader('Content-Type', 'application/json');
+  request.setRequestHeader('Accept', 'application/json');
   request.send();
 }
 
