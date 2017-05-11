@@ -276,9 +276,6 @@ function init(cmsUrl) {
     $('#map, .buttons').show();
   });
   request.open("GET", "https://e9affc90.ngrok.io/getMaps");
-  request.setRequestHeader('Authorization', 'Bearer ff779ee219d7be0549c971d6ba2311d5');
-  request.setRequestHeader('Content-Type', 'application/json');
-  request.setRequestHeader('Accept', 'application/json');
   request.send();
 }
 
