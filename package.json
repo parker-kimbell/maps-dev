@@ -2,7 +2,7 @@
   "name": "maps-app",
   "version": "0.0.1",
   "description": "Floor maps app for PwC Open Mobile App",
-  "main": "index.js",
+  "main": "./public/index.js",
   "scripts": {
     "test": "none"
   },
@@ -15,5 +15,8 @@
   "license": "© 2017 Downstream",
   "dependencies": {
     "graceful-fs": "^4.1.11"
+  },
+  "devDependencies": {
+    "inliner": "^1.12.1"
   }
 }
