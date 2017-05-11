@@ -544,7 +544,8 @@ module.exports = {
 var MapsApp = require('./MapsApp.js');
 // TODO: this will be the entry point for the app,
 // inject JavaScript with the CMS URL and go
-MapsApp.init("https://pwc.downstreamlabs.com");
+document.__MapsApp = MapsApp;
+//MapsApp.init("https://pwc.downstreamlabs.com");
 
 },{"./MapsApp.js":1}],5:[function(require,module,exports){
 
