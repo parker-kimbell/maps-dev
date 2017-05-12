@@ -176,6 +176,11 @@ function _initMapsApp(mapsPayload) {
       floor: (parts[1] == undefined ? 0 : Number(parts[1]))
     };
 
+    if(!config.location) {
+      debugger;
+      $('#building_modal').show();
+    }
+
     // Update the values for our location and floor select to match
     // the given hash value
     $('#location_select').val(config.location);
@@ -279,7 +284,8 @@ function init(cmsUrl, givenHash) {
   if (givenHash) {
     document.location.hash = givenHash;
   }
-  request.open("GET", cmsUrl + "/api/map");
+  //request.open("GET", cmsUrl + "/api/map");
+  request.open("GET", 'https://e9affc90.ngrok.io/getMaps');
   request.setRequestHeader('Authorization', 'Bearer ff779ee219d7be0549c971d6ba2311d5');
   request.setRequestHeader('Content-Type', 'application/json');
   request.setRequestHeader('Accept', 'application/json');
