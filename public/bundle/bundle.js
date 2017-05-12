@@ -341,7 +341,7 @@ function _clearLastTouchedPin() {
 }
 
 function _drawMapForFloor(floor, mapsPayload) {
-  var width = window.innerWidth;
+  var width = window.innerWidth * .9;
   var height = window.innerHeight - $('.buttons').height();
   $('#map').empty();
 
