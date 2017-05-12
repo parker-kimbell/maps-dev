@@ -98,7 +98,7 @@ function _setupEventHandlers(mapsPayload) {
 function updateSelectionHash() {
   var selectedFloor = $('#floor_select option').not(function(){ return !this.selected });
   var selectedLocation = $('#location_select option').not(function(){ return !this.selected });
-  document.location.href = '#' + selectedLocation.data('buildingid') + "." + $(selectedFloor).data('floorid');
+  document.location.href = '#' + selectedLocation.data('buildingid') + "." + $(selectedFloor).data('floorid') || 0;
 }
 
 function _setAmenitiesButtonTo(categoryId) {
@@ -140,9 +140,11 @@ function _initLayerIcons(mapsPayload) {
   });
 }
 
+/*
+  Constructs the location/building selector used after app init,
+  and the initial modal presented to the user that allows them to select their location
+*/
 function buildLocationSelect(mapsPayload) {
-  // TODO: Again for this code, it looks like the location is already known, so I've backed in the Brisbane
-  // floor, but it will need to be derived at run-time, ultimately
   var buildingData = mapsPayload.building_data;
   var buildingSelect = $('#location_select');
   var buildingSelectModal = $('.building-modal');
@@ -158,9 +160,10 @@ function buildLocationSelect(mapsPayload) {
   });
 }
 
+/*
+  Constructs the floor select options extracted from the given floor data
+*/
 function buildFloorSelect(floorData) {
-  // TODO: Again for this code, it looks like the location is already known, so I've backed in the Brisbane
-  // floor, but it will need to be derived at run-time, ultimately
   var floorSelect = $('#floor_select');
   $.each(floorData, function(i, floor) {
       floorSelect.append(htmlGen.buildFloorOption(floor));
@@ -316,7 +319,6 @@ var viewTransitions = require('./viewTransitions');
 
 function VisualMap() {
   this.stage = null;
-  this.pinLayer = null;
   this.backgroundLayer = null;
   this.layerIcons = {};
 }
@@ -360,7 +362,6 @@ function _drawMapForFloor(floor, mapsPayload) {
     height: height
   });
   this.backgroundLayer = new Konva.Layer();
-  this.pinLayer = new Konva.Layer();
   this.buildLayersModalForFloor(mapsPayload.layers, floor.Pin);
 
   var base = new Konva.Image({
@@ -462,6 +463,8 @@ function _drawMapForFloor(floor, mapsPayload) {
       $('.layer_name div').html(pinData.Title + "text text text text text text text text text text text text text  text text text text text tex");
       $('.panel_body').html(pinData.Body + "text text text text text text text text text text text text text  t text text text text text  text text tex t text text text text text  text text tex  text text text text text text text text text text text text text text text text text text text text text text text text text ");
       $('#floatingmenu').addClass('open');
+      $('#floor_select').blur();
+      $('#location_select').blur();
     });
     // Add this new pin to the Konva pinGroup, so that we can place them as one action
     pinGroup.add(pin);
@@ -479,14 +482,11 @@ function _drawMapForFloor(floor, mapsPayload) {
       }
 
   });
-  // TODO: don't think this pinLayer is getting added, daz prolly a bug
-  that.pinLayer.add(pinGroup);
 
   that.stage.add(that.backgroundLayer);
 
   // Hide the pin by default
-  //TODO: re-enable this,
-  //hideAllPins();
+  this.hideAllPins();
 }
 
 function _hidePinsOf(category) {

@@ -97,7 +97,7 @@ function _setupEventHandlers(mapsPayload) {
 function updateSelectionHash() {
   var selectedFloor = $('#floor_select option').not(function(){ return !this.selected });
   var selectedLocation = $('#location_select option').not(function(){ return !this.selected });
-  document.location.href = '#' + selectedLocation.data('buildingid') + "." + $(selectedFloor).data('floorid');
+  document.location.href = '#' + selectedLocation.data('buildingid') + "." + $(selectedFloor).data('floorid') || 0;
 }
 
 function _setAmenitiesButtonTo(categoryId) {
@@ -139,9 +139,11 @@ function _initLayerIcons(mapsPayload) {
   });
 }
 
+/*
+  Constructs the location/building selector used after app init,
+  and the initial modal presented to the user that allows them to select their location
+*/
 function buildLocationSelect(mapsPayload) {
-  // TODO: Again for this code, it looks like the location is already known, so I've backed in the Brisbane
-  // floor, but it will need to be derived at run-time, ultimately
   var buildingData = mapsPayload.building_data;
   var buildingSelect = $('#location_select');
   var buildingSelectModal = $('.building-modal');
@@ -157,9 +159,10 @@ function buildLocationSelect(mapsPayload) {
   });
 }
 
+/*
+  Constructs the floor select options extracted from the given floor data
+*/
 function buildFloorSelect(floorData) {
-  // TODO: Again for this code, it looks like the location is already known, so I've backed in the Brisbane
-  // floor, but it will need to be derived at run-time, ultimately
   var floorSelect = $('#floor_select');
   $.each(floorData, function(i, floor) {
       floorSelect.append(htmlGen.buildFloorOption(floor));
