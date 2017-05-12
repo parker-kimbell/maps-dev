@@ -125,17 +125,8 @@ button {
 #floors {
     padding: 0px 4px 0px 4px;
 }
-#floor {
-  position: absolute;
-  margin-left: auto;
-  margin-right: auto;
-  left: 0;
-  right: 0;
-  width: 90%;
-}
 #map {
   margin-top: 10px;
-  z-index: 1000;
   display : none;
 }
 h3 {
