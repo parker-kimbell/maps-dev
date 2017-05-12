@@ -462,3 +462,37 @@ option, select {
   font-family: 'ProximaNova-Regular';
   display: inline-block;
 }
+
+/* Building selection modal styles */
+.building-modal-background {
+  position : absolute;
+  top : 0;
+  bottom : 0;
+  right : 0;
+  left : 0;
+  width : 100%;
+  height : 100%;
+  background-color: rgba(0, 0, 0, 0.57);
+}
+.building-modal {
+  height : 33%;
+  width : 66%;
+  position : absolute;
+  bottom : 3%;
+  left : 3%;
+  background-color: white;
+  color : black;
+  padding : 4%;
+  font-family: 'ProximaNova-Regular';
+  display : flex;
+  justify-content: space-between;
+  flex-direction: column;
+  overflow-y: scroll;
+}
+.building-modal > div:first-child {
+  font-size: 1.8em;
+}
+.building-modal > div {
+  font-family: inherit;
+  font-size : 1.4em
+}

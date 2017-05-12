@@ -145,8 +145,10 @@ function buildLocationSelect(mapsPayload) {
   // floor, but it will need to be derived at run-time, ultimately
   var buildingData = mapsPayload.building_data;
   var buildingSelect = $('#location_select');
+  var buildingSelectModal = $('.building-modal');
   $.each(buildingData, function(i, building) {
       buildingSelect.append(htmlGen.buildLocationOption(building));
+      buildingSelectModal.append(htmlGen.buildLocationDiv(building));
   });
 }
 
@@ -540,10 +542,18 @@ function _buildLocationOption(building) {
   ].join("\n"));
 }
 
+function _buildLocationDiv(building) {
+  return $([
+    "<div data-buildingid=" + building.Id + ">" + building.Name,
+    "</div>"
+  ].join("\n"));
+}
+
 module.exports = {
   buildLayerIcon : _buildLayerIcon,
   buildFloorOption : _buildFloorOption,
-  buildLocationOption : _buildLocationOption
+  buildLocationOption : _buildLocationOption,
+  buildLocationDiv : _buildLocationDiv
 }
 
 },{}],4:[function(require,module,exports){

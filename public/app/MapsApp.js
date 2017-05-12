@@ -144,8 +144,10 @@ function buildLocationSelect(mapsPayload) {
   // floor, but it will need to be derived at run-time, ultimately
   var buildingData = mapsPayload.building_data;
   var buildingSelect = $('#location_select');
+  var buildingSelectModal = $('.building-modal');
   $.each(buildingData, function(i, building) {
       buildingSelect.append(htmlGen.buildLocationOption(building));
+      buildingSelectModal.append(htmlGen.buildLocationDiv(building));
   });
 }
 

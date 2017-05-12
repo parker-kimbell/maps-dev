@@ -23,8 +23,16 @@ function _buildLocationOption(building) {
   ].join("\n"));
 }
 
+function _buildLocationDiv(building) {
+  return $([
+    "<div data-buildingid=" + building.Id + ">" + building.Name,
+    "</div>"
+  ].join("\n"));
+}
+
 module.exports = {
   buildLayerIcon : _buildLayerIcon,
   buildFloorOption : _buildFloorOption,
-  buildLocationOption : _buildLocationOption
+  buildLocationOption : _buildLocationOption,
+  buildLocationDiv : _buildLocationDiv
 }
