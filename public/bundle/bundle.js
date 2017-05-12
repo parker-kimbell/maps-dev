@@ -46,7 +46,7 @@ function _setupEventHandlers(mapsPayload) {
 
       $('#btn_amenities').on('click tap', function(event) {
         that.closeFloatingMenu();
-        if (!$('.filter').is(':visible')) { // Case: our amenities menu is not already open.
+        if (!$('.filter').css('display') !== 'none') { // Case: our amenities menu is not already open.
           $('.amenities-modal-close').show();
           $('.filter').velocity({
               opacity: 1
@@ -59,14 +59,14 @@ function _setupEventHandlers(mapsPayload) {
       });
 
       $('body').on('click tap', function(event) {
-        if ($('.filter').is(':visible')) {
+        if ($('.filter').css('display') !== 'none') {
           event.stopPropagation();
           viewTransitions.closeAmenitiesModal();
         }
       });
 
       $('.filter').on('click tap', function(event) {
-        if ($('.filter').is(':visible')) {
+        if ($('.filter').css('display') !== 'none') {
           event.stopPropagation();
           viewTransitions.closeAmenitiesModal();
         }
@@ -75,7 +75,7 @@ function _setupEventHandlers(mapsPayload) {
       $('#btn_search').on('click tap', viewTransitions.transitionToSearch);
 
       $('.cancel-search, .active-search-bar-container div:last-child').on('click tap', function() {
-        if ($('.dark-table').is(':visible')) {
+        if ($('.dark-table').css('display') !== 'none') {
           viewTransitions.transitionFromMeetingRoomSearch.call(that);
           that.hidePinsOf(that.meetingRoomLayerId);
         } else {
@@ -96,8 +96,8 @@ function _setupEventHandlers(mapsPayload) {
 }
 
 function updateSelectionHash() {
-  var selectedFloor = $("#floor_select option:selected");
-  var selectedLocation = $("#location_select option:selected");
+  var selectedFloor = $('#floor_select option').not(function(){ return !this.selected });
+  var selectedLocation = $('#location_select option').not(function(){ return !this.selected });
   document.location.href = '#' + selectedLocation.data('buildingid') + "." + $(selectedFloor).data('floorid');
 }
 
