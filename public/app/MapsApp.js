@@ -146,8 +146,14 @@ function buildLocationSelect(mapsPayload) {
   var buildingSelect = $('#location_select');
   var buildingSelectModal = $('.building-modal');
   $.each(buildingData, function(i, building) {
-      buildingSelect.append(htmlGen.buildLocationOption(building));
-      buildingSelectModal.append(htmlGen.buildLocationDiv(building));
+    var selectOption = $(htmlGen.buildLocationOption(building));
+    buildingSelect.append(selectOption);
+    var modalDiv = htmlGen.buildLocationDiv(building);
+    modalDiv.on('tap click', function() {
+      buildingSelect.val((selectOption.val())).change();
+      $('.building-modal-background').hide();
+    });
+    buildingSelectModal.append(modalDiv);
   });
 }
 
@@ -179,43 +185,42 @@ function _initMapsApp(mapsPayload) {
     };
 
     if(!config.location) {
-      debugger;
-      $('#building_modal').show();
-    }
+      $('.building-modal-background').show();
+    } else {
+      // Update the values for our location and floor select to match
+      // the given hash value
+      $('#location_select').val(config.location);
+      $('#floor_select').val(config.floor);
 
-    // Update the values for our location and floor select to match
-    // the given hash value
-    $('#location_select').val(config.location);
-    $('#floor_select').val(config.floor);
-
-    var locationFloorData = getFloorDataFromLocation(mapsPayload.building_data, config.location)
-    if (!locationFloorData) throw new Error('In initMap. Could not find location in mapsPayload corresponding to given Id. Given Id: ' + config.location);
-    if (that.lastLocation !== config.location) { // Case: our location has changed, so clear all floor data and build the floor data for the new location
-      viewTransitions.clearFloorOptions();
-      buildFloorSelect(locationFloorData);
-      $('#floor_select').trigger('change');
-    }
-    that.lastLocation = config.location;
-    var scaleX = 0;
-    var scaleY = 0;
-    that.setAmenitiesButtonTo(null);
-    viewTransitions.closeAllModals();
-
-    $.each(locationFloorData, function(i, floor) {
-      var payload = mapsPayload;
-      if(floor.Id === config.floor) {
-        that.drawMapForFloor(floor, mapsPayload);
-        /* TODO: this controls drawing a given pin. Should be re-enabled ultimately to
-            handle the case of the maps app being called with a given meeting room
-        */
-        // if (pinData.Id === config.pin) {
-        //     pin.show();
-        //     $('.layer_name div').html(pinData.Layer.Name);
-        //     $('.panel_body').html(pinData.Body);
-        //     $('#floatingmenu').addClass('open');
-        // }
+      var locationFloorData = getFloorDataFromLocation(mapsPayload.building_data, config.location)
+      if (!locationFloorData) throw new Error('In initMap. Could not find location in mapsPayload corresponding to given Id. Given Id: ' + config.location);
+      if (that.lastLocation !== config.location) { // Case: our location has changed, so clear all floor data and build the floor data for the new location
+        viewTransitions.clearFloorOptions();
+        buildFloorSelect(locationFloorData);
+        $('#floor_select').trigger('change');
       }
-    }); // end $.each floorData
+      that.lastLocation = config.location;
+      var scaleX = 0;
+      var scaleY = 0;
+      that.setAmenitiesButtonTo(null);
+      viewTransitions.closeAllModals();
+
+      $.each(locationFloorData, function(i, floor) {
+        var payload = mapsPayload;
+        if(floor.Id === config.floor) {
+          that.drawMapForFloor(floor, mapsPayload);
+          /* TODO: this controls drawing a given pin. Should be re-enabled ultimately to
+              handle the case of the maps app being called with a given meeting room
+          */
+          // if (pinData.Id === config.pin) {
+          //     pin.show();
+          //     $('.layer_name div').html(pinData.Layer.Name);
+          //     $('.panel_body').html(pinData.Body);
+          //     $('#floatingmenu').addClass('open');
+          // }
+        }
+      }); // end $.each floorData
+    }
   }).trigger('hashchange'); // $.onHashChange
 }
 
@@ -280,9 +285,9 @@ function init(cmsUrl, givenHash) {
     buildLocationSelect(mapsPayload);
     that.setupEventHandlers(mapsPayload);
     that.initMapsApp(mapsPayload);
+    $('#map, .buttons').show();
   });
-  $('#map').show();
-  $('.buttons').show();
+
   if (givenHash) {
     document.location.hash = givenHash;
   }

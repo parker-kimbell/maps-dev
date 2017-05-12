@@ -465,6 +465,7 @@ option, select {
 
 /* Building selection modal styles */
 .building-modal-background {
+  display : none;
   position : absolute;
   top : 0;
   bottom : 0;
@@ -493,6 +494,7 @@ option, select {
   font-size: 1.8em;
 }
 .building-modal > div {
+  cursor:pointer;
   font-family: inherit;
   font-size : 1.4em
 }
