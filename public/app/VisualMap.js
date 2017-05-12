@@ -187,9 +187,6 @@ function _hideAllPins() {
   var that = this;
   var allpins = this.stage.find('Text');
   allpins.each(function(p) {
-    if (p.attrs.layerid === that.elevatorsLayerId) { // Case: we're dealing with an elevator pin. Elevator pins are always on so skip them;
-      return;
-    }
     p.hide();
     p.attrs.pinIcon.hide();
   });

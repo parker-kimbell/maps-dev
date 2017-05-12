@@ -4,14 +4,12 @@ var htmlGen = require('./htmlGenerators.js');
 var VisualMap = require('./VisualMap.js');
 
 var MEETING_ROOMS = "Meeting Spaces";
-var ELEVATORS = "Elevators";
 
 var MapsApp = function() {
   VisualMap.call(this);
   this.lastLocation = null;
   this.lastTouchedPin = null;
   this.cmsUrl = null;
-  this.elevatorsLayerId = null;
   this.meetingRoomLayerId = null;
 }
 
@@ -232,10 +230,6 @@ function _buildLayersModalForFloor(layers, floorPins) {
   $('.category_list li').remove(); // Since we're changing floors, or init'ing the app, clear all previous amenity buttons
 
   $.each(layers, function(i, layer) {
-    if (layer.Name === ELEVATORS) {
-      that.elevatorsLayerId = layer.Id;
-      return; // Do not add elevators to the amenity menu, as they are always on
-    }
     if (layer.Name === MEETING_ROOMS) {
       that.meetingRoomLayerId = layer.Id;
       return; // Do not add meeting rooms to the amenity selections. These are accessed exclusively through search
