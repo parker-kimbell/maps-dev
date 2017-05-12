@@ -12,9 +12,9 @@ function checkAndHandleNoResults() {
 
 function searchTable() {
   filteredSearch();
+  checkAndHandleNoResults();
   applyPaddingFirstChild();
   removeBorderLastChild();
-  checkAndHandleNoResults();
 }
 
 function getVisibleRows() {

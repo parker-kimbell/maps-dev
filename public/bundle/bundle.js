@@ -315,16 +315,18 @@ function VisualMap() {
   this.stage = null;
   this.backgroundLayer = null;
   this.layerIcons = {};
+  this.categoryShowing = null;
 }
 
 function _showPinsOf(category) {
   var allpins = this.stage.find('Text');
   allpins.each(function(p) {
-      if(p.attrs.layerid === category) {
-          p.show();
-          p.attrs.pinIcon.show();
-      }
+    if(p.attrs.layerid === category) {
+        p.show();
+        p.attrs.pinIcon.show();
+    }
   });
+  this.categoryShowing = category;
   this.stage.draw();
 }
 
@@ -479,8 +481,10 @@ function _drawMapForFloor(floor, mapsPayload) {
 
   that.stage.add(that.backgroundLayer);
 
-  // Hide the pin by default
+  // Hide pins by default
   this.hideAllPins();
+  // Show the currently selected amenity, if amenity
+  this.showPinsOf(this.categoryShowing);
 }
 
 function _hidePinsOf(category) {
@@ -491,6 +495,9 @@ function _hidePinsOf(category) {
           p.attrs.pinIcon.hide();
       }
   });
+  if (this.categoryShowing === category) {
+    this.categoryShowing = null;
+  }
   this.stage.draw();
 }
 
@@ -501,6 +508,7 @@ function _hideAllPins() {
     p.hide();
     p.attrs.pinIcon.hide();
   });
+  this.categoryShowing = null;
   this.stage.draw();
 }
 
@@ -574,9 +582,9 @@ function checkAndHandleNoResults() {
 
 function searchTable() {
   filteredSearch();
+  checkAndHandleNoResults();
   applyPaddingFirstChild();
   removeBorderLastChild();
-  checkAndHandleNoResults();
 }
 
 function getVisibleRows() {
