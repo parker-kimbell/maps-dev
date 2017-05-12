@@ -183,8 +183,7 @@ function _initMapsApp(mapsPayload) {
       location: Number(parts[0]),
       floor: (parts[1] == undefined ? 0 : Number(parts[1]))
     };
-
-    if(!config.location) {
+    if(!config.location) { // Case: we haven't been able to determine what location the visitor is in today, so ask them for app initialization
       $('.building-modal-background').show();
     } else {
       // Update the values for our location and floor select to match

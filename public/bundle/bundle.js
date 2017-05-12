@@ -184,8 +184,7 @@ function _initMapsApp(mapsPayload) {
       location: Number(parts[0]),
       floor: (parts[1] == undefined ? 0 : Number(parts[1]))
     };
-
-    if(!config.location) {
+    if(!config.location) { // Case: we haven't been able to determine what location the visitor is in today, so ask them for app initialization
       $('.building-modal-background').show();
     } else {
       // Update the values for our location and floor select to match
@@ -566,7 +565,7 @@ var MapsApp = require('./MapsApp.js');
 // TODO: this will be the entry point for the app,
 // inject JavaScript with the CMS URL and go
 document.__MapsApp = MapsApp;
-MapsApp.init("https://pwc.downstreamlabs.com", "#2.10");
+MapsApp.init("https://pwc.downstreamlabs.com", "#null.10");
 
 },{"./MapsApp.js":1}],5:[function(require,module,exports){
 

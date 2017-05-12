@@ -54,6 +54,9 @@ select:focus {
   position: absolute;
   min-height: 100%;
   height : 100%;
+  width: 100%;
+  margin-left : auto;
+  margin-right : auto;
   overflow: hidden;
   background-image: radial-gradient(circle at 50% 30%, #102176 0%, #102139 35%, black 65%)
 }
@@ -123,6 +126,7 @@ button {
 #map {
   margin-top: 10px;
   z-index: 1000;
+  display : none;
 }
 h3 {
     font-family: "CharterITCPro-BlackItalic";
@@ -303,6 +307,7 @@ input:focus { outline: none; }
   width: 100%;
   height: 20%;
   margin-top : 2%;
+  display : none;
 }
 .amenities-container {
   display: inline-block;
@@ -494,7 +499,7 @@ option, select {
   font-size: 1.8em;
 }
 .building-modal > div {
-  cursor:pointer;
+  cursor: pointer;
   font-family: inherit;
   font-size : 1.4em
 }
