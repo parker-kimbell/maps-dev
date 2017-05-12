@@ -345,6 +345,7 @@ function _drawMapForFloor(floor, mapsPayload) {
   var height = window.innerHeight - $('.buttons').height();
   $('#map').empty();
   var canvasPositionX = window.innerWidth * .05;
+  var canvasPositionY = window.innerHeight * .05;
   // Clear any existing search data, as we'll be creating
   // new content for this floor
   var searchTable = $('.dark-table tbody');
@@ -364,7 +365,7 @@ function _drawMapForFloor(floor, mapsPayload) {
 
   var base = new Konva.Image({
       x: canvasPositionX,
-      y: 0,
+      y: canvasPositionY,
       width: floor.FloorImage.width*scaleX,
       height: floor.FloorImage.height*scaleY,
       stroke: 0
@@ -403,7 +404,7 @@ function _drawMapForFloor(floor, mapsPayload) {
 
     var pinIcon = new Konva.Image({
       x: ((floor.FloorImage.width * scaleX)* pinData.PositionX) - offsetXImage + canvasPositionX,
-      y: ((floor.FloorImage.height * scaleY)* pinData.PositionY) - offsetYImage,
+      y: ((floor.FloorImage.height * scaleY)* pinData.PositionY) - offsetYImage + canvasPositionY,
       image: that.layerIcons[pinData.LayerId],
       scaleX : fontSize / 90,
       scaleY : fontSize / 90,
@@ -414,7 +415,7 @@ function _drawMapForFloor(floor, mapsPayload) {
     var offsetYPin = fontSize - (fontSize * 0.3);
     var pin = new Konva.Text({
         x: ((floor.FloorImage.width * scaleX)* pinData.PositionX) - offsetXPin + canvasPositionX,
-        y: ((floor.FloorImage.height * scaleY)* pinData.PositionY) - offsetYPin,
+        y: ((floor.FloorImage.height * scaleY)* pinData.PositionY) - offsetYPin + canvasPositionY,
         fill: 'rgb(232,66,102)',
         text: '\ue807',
         stroke : 'white',
