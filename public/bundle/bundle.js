@@ -44,16 +44,7 @@ function _setupEventHandlers(mapsPayload) {
 
       $('#btn_amenities').on('click tap', function(event) {
         that.closeFloatingMenu();
-        if (!$('.filter').css('display') !== 'none') { // Case: our amenities menu is not already open.
-          $('.amenities-modal-close').show();
-          $('.filter').velocity({
-              opacity: 1
-          }, {
-              display: 'block',
-              delay: 250,
-              duration: 200
-          });
-        }
+        viewTransitions.toggleAmenitiesModal();
       });
 
       $('body').on('click tap', function(event) {
@@ -685,6 +676,32 @@ function _hideAndClearSearch() {
   $('.dark-table').show();
 }
 
+function _toggleAmenitiesModal() {
+  if ($('.filter').css('display') === 'none') { // Case: our amenities menu is not already open.
+    $('.amenities-modal-close').show();
+    $('.filter').velocity({
+        opacity: 1
+    }, {
+        display: 'block',
+        duration: 200
+    });
+  }
+}
+
+/*
+styles to show amenities button
+
+position: absolute;
+z-index: 10000;
+height: 7.5%;
+right: 10%;
+*/
+/*
+styles for search button
+float: left;
+margin-left: 5%;
+*/
+
 // Hide the single pin map and reveal the
 function _revertSearchDisplay() {
   $('#map').css('visibility', 'hidden');
@@ -725,7 +742,8 @@ module.exports = {
   transitionToSearch : _transitionToSearch,
   transitionFromMeetingRoomSearch : _transitionFromMeetingRoomSearch,
   revertSearchDisplay : _revertSearchDisplay,
-  prepareForMeetingRoomDisplay : _prepareForMeetingRoomDisplay
+  prepareForMeetingRoomDisplay : _prepareForMeetingRoomDisplay,
+  toggleAmenitiesModal : _toggleAmenitiesModal
 }
 
 },{"./htmlGenerators.js":3,"./roomSearch.js":5}]},{},[1,2,3,4,5,6]);

@@ -44,6 +44,32 @@ function _hideAndClearSearch() {
   $('.dark-table').show();
 }
 
+function _toggleAmenitiesModal() {
+  if ($('.filter').css('display') === 'none') { // Case: our amenities menu is not already open.
+    $('.amenities-modal-close').show();
+    $('.filter').velocity({
+        opacity: 1
+    }, {
+        display: 'block',
+        duration: 200
+    });
+  }
+}
+
+/*
+styles to show amenities button
+
+position: absolute;
+z-index: 10000;
+height: 7.5%;
+right: 10%;
+*/
+/*
+styles for search button
+float: left;
+margin-left: 5%;
+*/
+
 // Hide the single pin map and reveal the
 function _revertSearchDisplay() {
   $('#map').css('visibility', 'hidden');
@@ -84,5 +110,6 @@ module.exports = {
   transitionToSearch : _transitionToSearch,
   transitionFromMeetingRoomSearch : _transitionFromMeetingRoomSearch,
   revertSearchDisplay : _revertSearchDisplay,
-  prepareForMeetingRoomDisplay : _prepareForMeetingRoomDisplay
+  prepareForMeetingRoomDisplay : _prepareForMeetingRoomDisplay,
+  toggleAmenitiesModal : _toggleAmenitiesModal
 }

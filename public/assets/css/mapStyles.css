@@ -64,7 +64,7 @@ select:focus {
 }
 .filter {
     position: absolute;
-    top: 10%;
+    top: 0px;
     bottom: 0px;
     left: 0px;
     right: 0px;
@@ -79,7 +79,7 @@ select:focus {
     margin: auto;
     padding: 0;
     width: 85%;
-    margin-top: 7px;
+    margin-top: 17%;
 }
 .filter ul li {
     position: relative;
@@ -114,7 +114,7 @@ select:focus {
     line-height: normal;
 }
 .amenities-modal-close {
-  font-size: 6vh;
+  height: 60%;
   float : right;
   display : none;
 }
@@ -313,7 +313,7 @@ input:focus { outline: none; }
   display: inline-block;
   width: 100%;
   height: 40%;
-  text-align: center;
+  text-align: left;
   margin-bottom : 1em;
 }
 .amenities-container > button > .icon {
@@ -352,8 +352,11 @@ input:focus { outline: none; }
 }
 .btn-amenities {
   color : white;
-  width: 45%;
-  height: 100%;
+  width: 44%;
+  position : absolute;
+  z-index : 10000;
+  height : 8%;
+  right : 5%;
   text-align: left;
   font-size : 1.0em;
   font-family: 'ProximaNova-Regular';
@@ -364,7 +367,8 @@ input:focus { outline: none; }
 .btn-search {
   color : white;
   height: 100%;
-  width: 45%;
+  width: 44%;
+  margin-left : 5%;
   font-size : 1.0em;
   border-radius : 2px;
   border : 1px solid #7A7676;
@@ -399,10 +403,6 @@ input:focus { outline: none; }
   font-family : 'FontAwesome';
   content: "\f041";
   float : left;
-}
-
-.amenities-container > button {
-  margin: 3px;
 }
 
 option, select {
@@ -478,6 +478,7 @@ option, select {
   left : 0;
   width : 100%;
   height : 100%;
+  z-index: 20000;
   background-color: rgba(0, 0, 0, 0.57);
 }
 .building-modal {
@@ -493,6 +494,7 @@ option, select {
   display : flex;
   justify-content: space-between;
   flex-direction: column;
+  z-index: 20000;
   overflow-y: scroll;
 }
 .building-modal > div:first-child {

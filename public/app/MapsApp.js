@@ -43,16 +43,7 @@ function _setupEventHandlers(mapsPayload) {
 
       $('#btn_amenities').on('click tap', function(event) {
         that.closeFloatingMenu();
-        if (!$('.filter').css('display') !== 'none') { // Case: our amenities menu is not already open.
-          $('.amenities-modal-close').show();
-          $('.filter').velocity({
-              opacity: 1
-          }, {
-              display: 'block',
-              delay: 250,
-              duration: 200
-          });
-        }
+        viewTransitions.toggleAmenitiesModal();
       });
 
       $('body').on('click tap', function(event) {
