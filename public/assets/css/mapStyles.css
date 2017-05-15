@@ -201,7 +201,7 @@ h4 {
 .active-search-container {
   display : none;
   height : 100%;
-  width : 90%;
+  width : 92%;
   margin-left: auto;
   margin-right: auto;
   right : 0;
@@ -209,17 +209,24 @@ h4 {
   position: absolute;
   font-family: 'ProximaNova-Regular';
   font-size : 1.3em;
-  top: 5%;
+  top: 2%;
+}
+.active-search-bar-container-background {
+  background-color: rgba(0, 0, 0, 0.57);
+  height : 18%;
+  z-index: 11000;
+  position: relative;
+  margin-bottom: 30px;
 }
 .active-search-bar-container {
-  height : 8%;
+  height : 50%;
+  z-index: 11000;
   background-color: #22252B;
   padding-left: 10px;
   padding-right: 10px;
   position: relative;
   font-family: 'ProximaNova-Regular';
   border : 1px solid #7A7676;
-  margin-bottom: 30px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -255,9 +262,6 @@ input:focus { outline: none; }
   font-size : inherit;
   font-family: inherit;
   border: none;
-  /*border-bottom : 1.5px solid #404041;
-  border-radius: 0;
-  vertical-align: middle;*/
 }
 .search-input-container {
   flex : 2;
@@ -277,6 +281,10 @@ input:focus { outline: none; }
   font-family: 'ProximaNova-Regular';
   display: inline-block;
 }
+#no_results > td {
+  padding : 2rem;
+  font-size : 1.7rem;
+}
 .meeting-room-container {
   overflow-y: scroll;
   height : 70%;
@@ -290,7 +298,7 @@ input:focus { outline: none; }
 }
 .dark-table > tbody > tr > td > div {
   border-bottom : 1px solid #979797;
-  font-size : 17px;
+  font-size : 1.7rem;
   margin-left : 0.4em;
   margin-right : 0.9em;
   padding-bottom : 0.8em;

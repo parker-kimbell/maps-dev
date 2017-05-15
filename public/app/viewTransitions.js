@@ -33,6 +33,7 @@ function _showMapAndButtonStage() {
 
 function _prepareForMeetingRoomDisplay() {
   $('#map').css('visibility', 'visible');
+  $('.buttons').css('visibility', 'visible');
   $('.dark-table').hide();
   $('.active-search-bar-container div:last-child').hide();
 }
@@ -73,6 +74,7 @@ margin-left: 5%;
 // Hide the single pin map and reveal the
 function _revertSearchDisplay() {
   $('#map').css('visibility', 'hidden');
+  $('.buttons').css('visibility', 'hidden');
   $('.dark-table').show();
   $('.active-search-bar-container div:last-child').show();
   _closeFloatingMenu();
