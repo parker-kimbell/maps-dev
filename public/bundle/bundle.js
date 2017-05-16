@@ -178,9 +178,11 @@ function _initMapsApp(mapsPayload) {
     };
     if(!config.location) { // Case: we haven't been able to determine what location the visitor is in today, so ask them for app initialization
       $('.building-modal-background').show();
+      $('#map, .buttons').hide();
     } else {
       // Update the values for our location and floor select to match
       // the given hash value
+      $('#map, .buttons').show();
       $('#location_select').val(config.location);
       $('#floor_select').val(config.floor);
 
@@ -273,7 +275,6 @@ function init(cmsUrl, givenHash) {
     buildLocationSelect(mapsPayload);
     that.setupEventHandlers(mapsPayload);
     that.initMapsApp(mapsPayload);
-    $('#map, .buttons').show();
   });
 
   if (givenHash) {
@@ -711,9 +712,8 @@ function _revertSearchDisplay() {
 
 // Reveals the meeting room search bar.
 function _showAndFocusSearch() {
-  $('.active-search-container').show(function() {
-    $('#active_search_input').focus();
-  });
+  $('.active-search-container').show();
+  $('#active_search_input').focus();
 }
 
 function _transitionFromMeetingRoomSearch() {

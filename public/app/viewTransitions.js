@@ -79,9 +79,8 @@ function _revertSearchDisplay() {
 
 // Reveals the meeting room search bar.
 function _showAndFocusSearch() {
-  $('.active-search-container').show(function() {
-    $('#active_search_input').focus();
-  });
+  $('.active-search-container').show();
+  $('#active_search_input').focus();
 }
 
 function _transitionFromMeetingRoomSearch() {

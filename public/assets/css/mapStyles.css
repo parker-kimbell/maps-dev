@@ -209,13 +209,12 @@ h4 {
   position: absolute;
   font-family: 'ProximaNova-Regular';
   font-size : 1.3em;
-  top: 2%;
+  margin-top: 2%;
 }
 .active-search-bar-container-background {
   height : 18%;
   z-index: 11000;
   position: relative;
-  margin-bottom: 10px;
 }
 .inactive-dropdown {
   filter: contrast(0%) opacity(40%);
@@ -351,7 +350,6 @@ input:focus { outline: none; }
   height: 70%;
   width: auto;
   display: inline-block;
-  margin-right : -3%;
   margin-left : -6%;
 }
 .no-amenities {
