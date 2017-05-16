@@ -307,19 +307,6 @@ function VisualMap() {
   this.stage = null;
   this.backgroundLayer = null;
   this.layerIcons = {};
-  this.categoryShowing = null;
-}
-
-function _showPinsOf(category) {
-  var allpins = this.stage.find('Text');
-  allpins.each(function(p) {
-    if(p.attrs.layerid === category) {
-        p.show();
-        p.attrs.pinIcon.show();
-    }
-  });
-  this.categoryShowing = category;
-  this.stage.draw();
 }
 
 function _clearLastTouchedPin() {
@@ -371,12 +358,6 @@ function _drawMapForFloor(floor, mapsPayload) {
   };
   imageObj.src = that.cmsUrl + floor.FloorImage.image;
 
-  var pinGroup = new Konva.Group({
-      name: 'pingroup',
-      x: 0,
-      y: 0
-  });
-
   // Loop through each pin that has been placed on the floor,
   // and places it in the appropriate spot on the floor map,
   // hiding each pin by default
@@ -388,8 +369,8 @@ function _drawMapForFloor(floor, mapsPayload) {
     var fontSize = 40;
 
     var image = that.layerIcons[pinData.LayerId];
-    var offsetXImage = fontSize - (fontSize * 0.61);
-    var offsetYImage = fontSize - (fontSize * 0.4);
+    var offsetXImage = fontSize - (fontSize * 0.66);
+    var offsetYImage = fontSize - (fontSize * 0.08);
 
     var pinIcon = new Konva.Image({
       x: ((floor.FloorImage.width * scaleX)* pinData.PositionX) - offsetXImage + canvasPositionX,
@@ -400,8 +381,8 @@ function _drawMapForFloor(floor, mapsPayload) {
       icon : true
     });
 
-    var offsetXPin = fontSize - (fontSize * 0.55);
-    var offsetYPin = fontSize - (fontSize * 0.3);
+    var offsetXPin = fontSize - (fontSize * 0.60);
+    var offsetYPin = fontSize - (fontSize * 0.02);
     var pin = new Konva.Text({
         x: ((floor.FloorImage.width * scaleX)* pinData.PositionX) - offsetXPin + canvasPositionX,
         y: ((floor.FloorImage.height * scaleY)* pinData.PositionY) - offsetYPin + canvasPositionY,
@@ -455,12 +436,10 @@ function _drawMapForFloor(floor, mapsPayload) {
       $('#location_select').blur();
     });
     // Add this new pin to the Konva pinGroup, so that we can place them as one action
-    pinGroup.add(pin);
-
     that.backgroundLayer.add(pin);
+    pin.show();
     that.backgroundLayer.add(pinIcon);
   }); // End pin each
-
   // close the panel if the map is tapped
   that.stage.on('tap click', function(e) {
 
@@ -471,12 +450,21 @@ function _drawMapForFloor(floor, mapsPayload) {
 
   });
 
-  that.stage.add(that.backgroundLayer);
+  this.stage.add(that.backgroundLayer);
 
   // Hide pins by default
-  this.hideAllPins();
-  // Show the currently selected amenity, if amenity
-  this.showPinsOf(this.categoryShowing);
+  //this.hideAllPins();
+}
+
+function _showPinsOf(category) {
+  var allpins = this.stage.find('Text');
+  allpins.each(function(p) {
+    if(p.attrs.layerid === category) {
+        p.show();
+        p.attrs.pinIcon.show();
+    }
+  });
+  this.stage.draw();
 }
 
 function _hidePinsOf(category) {
@@ -487,9 +475,6 @@ function _hidePinsOf(category) {
           p.attrs.pinIcon.hide();
       }
   });
-  if (this.categoryShowing === category) {
-    this.categoryShowing = null;
-  }
   this.stage.draw();
 }
 
@@ -500,7 +485,6 @@ function _hideAllPins() {
     p.hide();
     p.attrs.pinIcon.hide();
   });
-  this.categoryShowing = null;
   this.stage.draw();
 }
 
