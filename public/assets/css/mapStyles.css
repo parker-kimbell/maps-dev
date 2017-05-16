@@ -60,7 +60,7 @@ select:focus {
   height : 100%;
   width: 100%;
   overflow: hidden;
-  background-image: radial-gradient(circle at 50% 30%, #102176 0%, #102139 35%, black 65%)
+  background-image: url('/assets/background.png')
 }
 .filter {
     position: absolute;
@@ -212,11 +212,13 @@ h4 {
   top: 2%;
 }
 .active-search-bar-container-background {
-  background-color: rgba(0, 0, 0, 0.57);
   height : 18%;
   z-index: 11000;
   position: relative;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
+}
+.inactive-dropdown {
+  filter: contrast(0%) opacity(40%);
 }
 .active-search-bar-container {
   height : 50%;
@@ -396,21 +398,15 @@ input:focus { outline: none; }
 .dropdown {
   -webkit-appearance: none;
   border: none;
-  color: #fff;
   padding-right : 1.25em;
   outline: none;
   background-color: transparent;
   background-image: url("/assets/chevron-down.png");
-  background-size: contain;
+  background-size: auto 60%;
   background-repeat:no-repeat;
   background-position: right;
   width: 45%;
   height: 100%;
-}
-.dropdown::before {
-  font-family : 'FontAwesome';
-  content: "\f041";
-  float : left;
 }
 
 option, select {
@@ -418,12 +414,6 @@ option, select {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-}
-.amn-icon:before {
-  display: inline-block;
-  font-size: 6vh;
-  font-family : 'FontAwesome';
-  content: "\f041";
 }
 
 .filter_close {

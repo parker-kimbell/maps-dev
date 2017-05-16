@@ -666,6 +666,7 @@ function _showMapAndButtonStage() {
 function _prepareForMeetingRoomDisplay() {
   $('#map').css('visibility', 'visible');
   $('.buttons').css('visibility', 'visible');
+  _setSelectInactive();
   $('.dark-table').hide();
   $('.active-search-bar-container div:last-child').hide();
 }
@@ -689,19 +690,15 @@ function _toggleAmenitiesModal() {
   }
 }
 
-/*
-styles to show amenities button
+function _setSelectActive() {
+  $('#floor_select').removeClass('inactive-dropdown');
+  $('#location_select').removeClass('inactive-dropdown');
+}
 
-position: absolute;
-z-index: 10000;
-height: 7.5%;
-right: 10%;
-*/
-/*
-styles for search button
-float: left;
-margin-left: 5%;
-*/
+function _setSelectInactive() {
+  $('#floor_select').addClass('inactive-dropdown');
+  $('#location_select').addClass('inactive-dropdown');
+}
 
 // Hide the single pin map and reveal the
 function _revertSearchDisplay() {
@@ -714,14 +711,16 @@ function _revertSearchDisplay() {
 
 // Reveals the meeting room search bar.
 function _showAndFocusSearch() {
-  $('.active-search-container').show();
-  $('#active_search_input').focus();
+  $('.active-search-container').show(function() {
+    $('#active_search_input').focus();
+  });
 }
 
 function _transitionFromMeetingRoomSearch() {
   _closeAllModals();
   _showMapAndButtonStage();
   _hideAndClearSearch();
+  _setSelectActive();
 }
 
 function _transitionToSearch() {
