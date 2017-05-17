@@ -279,8 +279,8 @@ function init(cmsUrl, givenHash) {
   if (givenHash) {
     document.location.hash = givenHash;
   }
-  //request.open("GET", cmsUrl + "/api/map");
-  request.open("GET", 'https://e9affc90.ngrok.io/getMaps');
+  request.open("GET", cmsUrl + "/api/map");
+  //request.open("GET", 'https://e9affc90.ngrok.io/getMaps');
   request.setRequestHeader('Authorization', 'Bearer ff779ee219d7be0549c971d6ba2311d5');
   request.setRequestHeader('Content-Type', 'application/json');
   request.setRequestHeader('Accept', 'application/json');

@@ -280,8 +280,8 @@ function init(cmsUrl, givenHash) {
   if (givenHash) {
     document.location.hash = givenHash;
   }
-  //request.open("GET", cmsUrl + "/api/map");
-  request.open("GET", 'https://e9affc90.ngrok.io/getMaps');
+  request.open("GET", cmsUrl + "/api/map");
+  //request.open("GET", 'https://e9affc90.ngrok.io/getMaps');
   request.setRequestHeader('Authorization', 'Bearer ff779ee219d7be0549c971d6ba2311d5');
   request.setRequestHeader('Content-Type', 'application/json');
   request.setRequestHeader('Accept', 'application/json');
@@ -540,7 +540,7 @@ var MapsApp = require('./MapsApp.js');
 // TODO: this will be the entry point for the app,
 // inject JavaScript with the CMS URL and go
 document.__MapsApp = MapsApp;
-MapsApp.init("https://pwc.downstreamlabs.com", "#null.10");
+//MapsApp.init("https://pwc.downstreamlabs.com", "#null.10");
 
 },{"./MapsApp.js":1}],5:[function(require,module,exports){
 
