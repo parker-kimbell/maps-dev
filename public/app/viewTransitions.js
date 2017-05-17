@@ -111,5 +111,5 @@ module.exports = {
   transitionFromMeetingRoomSearch : _transitionFromMeetingRoomSearch,
   revertSearchDisplay : _revertSearchDisplay,
   prepareForMeetingRoomDisplay : _prepareForMeetingRoomDisplay,
-  toggleAmenitiesModal : _toggleAmenitiesModal
+  toggleAmenitiesModal : _toggleAmenitiesModal 
 }
