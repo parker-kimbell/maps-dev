@@ -37,6 +37,7 @@ function _prepareForMeetingRoomDisplay() {
   _setSelectInactive();
   $('.dark-table').hide();
   $('.active-search-bar-container div:last-child').hide();
+  $('.category_list li.on').removeClass('on');
 }
 
 function _hideAndClearSearch() {
@@ -111,5 +112,5 @@ module.exports = {
   transitionFromMeetingRoomSearch : _transitionFromMeetingRoomSearch,
   revertSearchDisplay : _revertSearchDisplay,
   prepareForMeetingRoomDisplay : _prepareForMeetingRoomDisplay,
-  toggleAmenitiesModal : _toggleAmenitiesModal 
+  toggleAmenitiesModal : _toggleAmenitiesModal
 }
