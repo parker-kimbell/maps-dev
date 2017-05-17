@@ -275,7 +275,7 @@ function init(cmsUrl, givenHash) {
     that.setupEventHandlers(mapsPayload);
     that.initMapsApp(mapsPayload);
   });
-
+  alert(givenHash)
   if (givenHash) {
     document.location.hash = givenHash;
   }

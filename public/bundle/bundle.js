@@ -276,7 +276,7 @@ function init(cmsUrl, givenHash) {
     that.setupEventHandlers(mapsPayload);
     that.initMapsApp(mapsPayload);
   });
-
+  alert(givenHash)
   if (givenHash) {
     document.location.hash = givenHash;
   }
@@ -557,9 +557,9 @@ function checkAndHandleNoResults() {
 
 function searchTable() {
   filteredSearch();
-  checkAndHandleNoResults();
   applyPaddingFirstChild();
   removeBorderLastChild();
+  checkAndHandleNoResults();
 }
 
 function getVisibleRows() {
@@ -649,8 +649,6 @@ function _showMapAndButtonStage() {
 
 function _prepareForMeetingRoomDisplay() {
   $('#map').css('visibility', 'visible');
-  $('.buttons').css('visibility', 'visible');
-  _setSelectInactive();
   $('.dark-table').hide();
   $('.active-search-bar-container div:last-child').hide();
 }
@@ -662,32 +660,9 @@ function _hideAndClearSearch() {
   $('.dark-table').show();
 }
 
-function _toggleAmenitiesModal() {
-  if ($('.filter').css('display') === 'none') { // Case: our amenities menu is not already open.
-    $('.amenities-modal-close').show();
-    $('.filter').velocity({
-        opacity: 1
-    }, {
-        display: 'block',
-        duration: 200
-    });
-  }
-}
-
-function _setSelectActive() {
-  $('#floor_select').removeClass('inactive-dropdown');
-  $('#location_select').removeClass('inactive-dropdown');
-}
-
-function _setSelectInactive() {
-  $('#floor_select').addClass('inactive-dropdown');
-  $('#location_select').addClass('inactive-dropdown');
-}
-
 // Hide the single pin map and reveal the
 function _revertSearchDisplay() {
   $('#map').css('visibility', 'hidden');
-  $('.buttons').css('visibility', 'hidden');
   $('.dark-table').show();
   $('.active-search-bar-container div:last-child').show();
   _closeFloatingMenu();
@@ -703,7 +678,6 @@ function _transitionFromMeetingRoomSearch() {
   _closeAllModals();
   _showMapAndButtonStage();
   _hideAndClearSearch();
-  _setSelectActive();
 }
 
 function _transitionToSearch() {
@@ -726,8 +700,7 @@ module.exports = {
   transitionToSearch : _transitionToSearch,
   transitionFromMeetingRoomSearch : _transitionFromMeetingRoomSearch,
   revertSearchDisplay : _revertSearchDisplay,
-  prepareForMeetingRoomDisplay : _prepareForMeetingRoomDisplay,
-  toggleAmenitiesModal : _toggleAmenitiesModal
+  prepareForMeetingRoomDisplay : _prepareForMeetingRoomDisplay
 }
 
 },{"./htmlGenerators.js":3,"./roomSearch.js":5}]},{},[1,2,3,4,5,6]);
