@@ -1,6 +1,6 @@
 {
   "name": "maps-app",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Floor maps app for PwC Open Mobile App",
   "main": "./public/index.js",
   "scripts": {
