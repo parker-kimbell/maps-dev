@@ -429,15 +429,14 @@ function _drawMapForFloor(floor, mapsPayload) {
       pinIcon.moveToTop();
       that.lastTouchedPin = touchedPin;
       that.backgroundLayer.draw();
-      $('.layer_name div').html(pinData.Title + "text text text text text text text text text text text text text  text text text text text tex");
-      $('.panel_body').html(pinData.Body + "text text text text text text text text text text text text text  t text text text text text  text text tex t text text text text text  text text tex  text text text text text text text text text text text text text text text text text text text text text text text text text ");
+      $('.layer_name div').html(pinData.Title);
+      $('.panel_body').html(pinData.Body);
       $('#floatingmenu').addClass('open');
       $('#floor_select').blur();
       $('#location_select').blur();
     });
     // Add this new pin to the Konva pinGroup, so that we can place them as one action
     that.backgroundLayer.add(pin);
-    pin.show();
     that.backgroundLayer.add(pinIcon);
   }); // End pin each
   // close the panel if the map is tapped
@@ -453,7 +452,7 @@ function _drawMapForFloor(floor, mapsPayload) {
   this.stage.add(that.backgroundLayer);
 
   // Hide pins by default
-  //this.hideAllPins();
+  this.hideAllPins();
 }
 
 function _showPinsOf(category) {

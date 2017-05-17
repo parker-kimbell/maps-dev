@@ -60,7 +60,8 @@ select:focus {
   height : 100%;
   width: 100%;
   overflow: hidden;
-  background-image: url('/assets/background.png')
+  background-image: url('/assets/background.png');
+  background-size: 100% 100%;
 }
 .filter {
     position: absolute;
@@ -189,7 +190,7 @@ h4 {
   height: 13%;
   right : 0;
   position: absolute;
-  top: -17%;
+  top: -19%;
 }
 .panel_body {
   padding: 8px;
@@ -480,7 +481,7 @@ option, select {
 }
 .building-modal {
   height : 33%;
-  width : 66%;
+  width : 77%;
   position : absolute;
   bottom : 3%;
   left : 3%;
@@ -495,10 +496,11 @@ option, select {
   overflow-y: scroll;
 }
 .building-modal > div:first-child {
-  font-size: 1.8em;
+  font-size: 2.2em;
 }
 .building-modal > div {
   cursor: pointer;
   font-family: inherit;
-  font-size : 1.4em
+  font-size : 1.8em;
+  line-height: 2em;
 }
