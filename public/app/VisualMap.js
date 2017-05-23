@@ -19,7 +19,7 @@ function _drawMapForFloor(floor, mapsPayload) {
   var height = window.innerHeight - $('.buttons').height();
   $('#map').empty();
   var canvasPositionX = window.innerWidth * .05;
-  var canvasPositionY = window.innerHeight * .05;
+  var canvasPositionY = window.innerHeight * .055;
   /*
     Clear any existing search data, as we'll be creating
     new content for this floor
@@ -48,7 +48,6 @@ function _drawMapForFloor(floor, mapsPayload) {
 
   this.backgroundLayer.add(base);
   var imageObj = new Image();
-  imageObj.crossOrigin = "Anonymous";
   var that = this;
 
   /* Obtain the current floor's image */
@@ -154,7 +153,7 @@ function _drawMapForFloor(floor, mapsPayload) {
   this.stage.add(that.backgroundLayer);
 
   /* Hide pins by default */
-  this.hideAllPins();
+  // this.hideAllPins();
 }
 
 function _showPinsOf(category) {

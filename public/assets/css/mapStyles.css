@@ -222,7 +222,7 @@ h4 {
   filter: contrast(0%) opacity(40%);
 }
 .active-search-bar-container {
-  height : 50%;
+  height : 40%;
   z-index: 11000;
   background-color: #22252B;
   padding-left: 10px;
@@ -325,7 +325,6 @@ input:focus { outline: none; }
   width: 100%;
   height: 40%;
   text-align: left;
-  margin-bottom : 1em;
 }
 .amenities-container > button > .icon {
   height: 60%;
@@ -365,7 +364,7 @@ input:focus { outline: none; }
   width: 44%;
   position : absolute;
   z-index : 10000;
-  height : 8%;
+  height : 6%;
   right : 5%;
   text-align: left;
   font-size : 1.0em;
@@ -376,7 +375,7 @@ input:focus { outline: none; }
 }
 .btn-search {
   color : white;
-  height: 100%;
+  height: 75%;
   width: 44%;
   margin-left : 5%;
   font-size : 1.0em;
@@ -391,9 +390,18 @@ input:focus { outline: none; }
   display: inline-block;
   text-align: center;
   font-size: 1.4em;
-  height: 40%;
+  height: 50%;
   font-family: 'ProximaNova-Regular';
-  width: 100%;
+  width: 80%;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+.floor-selects {
+  height : 100%;
+  display : flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width : 55%;
 }
 .dropdown {
   -webkit-appearance: none;
@@ -402,11 +410,11 @@ input:focus { outline: none; }
   outline: none;
   background-color: transparent;
   background-image: url("/assets/chevron-down.png");
-  background-size: auto 60%;
+  background-size: auto 100%;
   background-repeat:no-repeat;
   background-position: right;
-  width: 45%;
-  height: 100%;
+  width: 100%;
+  height: 40%;
 }
 
 option, select {

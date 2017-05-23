@@ -129,7 +129,6 @@ function _initLayerIcons(mapsPayload) {
   var that = this;
   $.each(layers, function(i, layer) {
     that.layerIcons[layer.Id] = new Image();
-    that.layerIcons[layer.Id].crossOrigin = "Anonymous";
     that.layerIcons[layer.Id].src = layer.Icon;
   });
 }
@@ -285,8 +284,8 @@ function init(cmsUrl, givenHash) {
   if (givenHash) {
     document.location.hash = givenHash;
   }
-  request.open("GET", cmsUrl + "/api/map");
-  /*request.open("GET", 'https://7e899108.ngrok.io/getMaps');*/
+  //request.open("GET", cmsUrl + "/api/map");
+  request.open("GET", 'https://7e899108.ngrok.io/getMaps');
   request.setRequestHeader('Authorization', 'Bearer ff779ee219d7be0549c971d6ba2311d5');
   request.send();
 }

@@ -130,7 +130,6 @@ function _initLayerIcons(mapsPayload) {
   var that = this;
   $.each(layers, function(i, layer) {
     that.layerIcons[layer.Id] = new Image();
-    that.layerIcons[layer.Id].crossOrigin = "Anonymous";
     that.layerIcons[layer.Id].src = layer.Icon;
   });
 }
@@ -286,8 +285,8 @@ function init(cmsUrl, givenHash) {
   if (givenHash) {
     document.location.hash = givenHash;
   }
-  request.open("GET", cmsUrl + "/api/map");
-  /*request.open("GET", 'https://7e899108.ngrok.io/getMaps');*/
+  //request.open("GET", cmsUrl + "/api/map");
+  request.open("GET", 'https://7e899108.ngrok.io/getMaps');
   request.setRequestHeader('Authorization', 'Bearer ff779ee219d7be0549c971d6ba2311d5');
   request.send();
 }
@@ -326,7 +325,7 @@ function _drawMapForFloor(floor, mapsPayload) {
   var height = window.innerHeight - $('.buttons').height();
   $('#map').empty();
   var canvasPositionX = window.innerWidth * .05;
-  var canvasPositionY = window.innerHeight * .05;
+  var canvasPositionY = window.innerHeight * .055;
   /*
     Clear any existing search data, as we'll be creating
     new content for this floor
@@ -355,7 +354,6 @@ function _drawMapForFloor(floor, mapsPayload) {
 
   this.backgroundLayer.add(base);
   var imageObj = new Image();
-  imageObj.crossOrigin = "Anonymous";
   var that = this;
 
   /* Obtain the current floor's image */
@@ -461,7 +459,7 @@ function _drawMapForFloor(floor, mapsPayload) {
   this.stage.add(that.backgroundLayer);
 
   /* Hide pins by default */
-  this.hideAllPins();
+  // this.hideAllPins();
 }
 
 function _showPinsOf(category) {
@@ -547,7 +545,7 @@ module.exports = {
 },{}],4:[function(require,module,exports){
 var MapsApp = require('./MapsApp.js');
 document.__MapsApp = MapsApp;
-/* MapsApp.init("https://pwc.downstreamlabs.com", "#null.10"); */
+MapsApp.init("https://pwc.downstreamlabs.com", "#1.10");
 
 },{"./MapsApp.js":1}],5:[function(require,module,exports){
 
