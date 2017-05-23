@@ -12,7 +12,7 @@ var MapsApp = function() {
   this.lastTouchedPin = null;
   this.cmsUrl = null;
   this.meetingRoomLayerId = null;
-}
+};
 
 function _setupEventHandlers(mapsPayload) {
   var that = this;
@@ -85,35 +85,40 @@ function _setupEventHandlers(mapsPayload) {
 }
 
 function updateSelectionHash() {
-  var selectedFloor = $('#floor_select option').not(function(){ return !this.selected });
-  var selectedLocation = $('#location_select option').not(function(){ return !this.selected });
+  var selectedFloor = $('#floor_select option').not(function(){
+    return !this.selected;
+  });
+  var selectedLocation = $('#location_select option').not(function(){
+    return !this.selected;
+  });
   document.location.href = '#' + selectedLocation.data('buildingid') + "." + $(selectedFloor).data('floorid') || 0;
 }
 
 function _setAmenitiesButtonTo(categoryId) {
   var that = this;
-  // Always clear any existing amenities button icon before displaying a new one
+  /* Always clear any existing amenities button icon before displaying a new one */
   $('#btn_amenities .curr-amen-icon').remove();
-  if (categoryId) { // Case: We're showing an amenity category
+  if (categoryId) { /* Case: We're showing an amenity category */
     $('#btn_amenities').addClass('showing-amenities');
     $('#btn_amenities').removeClass('no-amenities');
     $('#btn_amenities .icon').hide();
     $('#btn_amenities').prepend($(that.layerIcons[categoryId]).clone().addClass('curr-amen-icon'));
-  } else { // Case: We're not showing an amenity categories
+  } else { /* Case: We're not showing an amenity categories */
     $('#btn_amenities').addClass('no-amenities');
     $('#btn_amenities').removeClass('showing-amenities');
     $('#btn_amenities .icon').show();
   }
 }
 
-// Loops through all the pins for a given floor.
-// If any pin matches the given layer, return true indicating that we should give
-// that amenity option.
-// Else return false, indicating that that layer/amenity button should not be constructed
+/* Loops through all the pins for a given floor.
+ If any pin matches the given layer, return true indicating that we should give
+ that amenity option.
+ Else return false, indicating that that layer/amenity button should not be constructed
+ */
 function floorHasThisLayer(floorPins, layer) {
   for (var i = 0; i < floorPins.length; i++) {
     var pin = floorPins[i];
-    if (pin.LayerId === layer.Id) { // Case: the current floor has a pin corresponding to the given amenity/layer , return true
+    if (pin.LayerId === layer.Id) { /* Case: the current floor has a pin corresponding to the given amenity/layer , return true */
       return true;
     }
   }
@@ -125,6 +130,7 @@ function _initLayerIcons(mapsPayload) {
   var that = this;
   $.each(layers, function(i, layer) {
     that.layerIcons[layer.Id] = new Image();
+    that.layerIcons[layer.Id].crossOrigin = "Anonymous";
     that.layerIcons[layer.Id].src = layer.Icon;
   });
 }
@@ -176,19 +182,19 @@ function _initMapsApp(mapsPayload) {
       location: Number(parts[0]),
       floor: (parts[1] == undefined ? 0 : Number(parts[1]))
     };
-    if(!config.location) { // Case: we haven't been able to determine what location the visitor is in today, so ask them for app initialization
+    if(!config.location) { /* Case: we haven't been able to determine what location the visitor is in today, so ask them for app initialization */
       $('.building-modal-background').show();
       $('#map, .buttons').hide();
     } else {
-      // Update the values for our location and floor select to match
-      // the given hash value
+      /* Update the values for our location and floor select to match
+       the given hash value */
       $('#map, .buttons').show();
       $('#location_select').val(config.location);
       $('#floor_select').val(config.floor);
 
-      var locationFloorData = getFloorDataFromLocation(mapsPayload.building_data, config.location)
+      var locationFloorData = getFloorDataFromLocation(mapsPayload.building_data, config.location);
       if (!locationFloorData) throw new Error('In initMap. Could not find location in mapsPayload corresponding to given Id. Given Id: ' + config.location);
-      if (that.lastLocation !== config.location) { // Case: our location has changed, so clear all floor data and build the floor data for the new location
+      if (that.lastLocation !== config.location) { /* Case: our location has changed, so clear all floor data and build the floor data for the new location */
         viewTransitions.clearFloorOptions();
         buildFloorSelect(locationFloorData);
         $('#floor_select').trigger('change');
@@ -205,43 +211,44 @@ function _initMapsApp(mapsPayload) {
           that.drawMapForFloor(floor, mapsPayload);
           /* TODO: this controls drawing a given pin. Should be re-enabled ultimately to
               handle the case of the maps app being called with a given meeting room
+
+          if (pinData.Id === config.pin) {
+              pin.show();
+              $('.layer_name div').html(pinData.Layer.Name);
+              $('.panel_body').html(pinData.Body);
+              $('#floatingmenu').addClass('open');
+          }
           */
-          // if (pinData.Id === config.pin) {
-          //     pin.show();
-          //     $('.layer_name div').html(pinData.Layer.Name);
-          //     $('.panel_body').html(pinData.Body);
-          //     $('#floatingmenu').addClass('open');
-          // }
         }
-      }); // end $.each floorData
+      });
     }
-  }).trigger('hashchange'); // $.onHashChange
+  }).trigger('hashchange'); /* $.onHashChange */
 }
 
 function _buildLayersModalForFloor(layers, floorPins) {
   var category_list = $('.category_list');
   var that = this;
-  $('.category_list li').remove(); // Since we're changing floors, or init'ing the app, clear all previous amenity buttons
+  $('.category_list li').remove(); /* Since we're changing floors, or init'ing the app, clear all previous amenity buttons */
 
   $.each(layers, function(i, layer) {
     if (layer.Name === MEETING_ROOMS) {
       that.meetingRoomLayerId = layer.Id;
-      return; // Do not add meeting rooms to the amenity selections. These are accessed exclusively through search
+      return; /* Do not add meeting rooms to the amenity selections. These are accessed exclusively through search */
     }
-    if (floorHasThisLayer(floorPins, layer)) { // Case: this floor has a pin corresponding to the given/layer amenity, build that layer button
+    if (floorHasThisLayer(floorPins, layer)) { /* Case: this floor has a pin corresponding to the given/layer amenity, build that layer button */
       category_list.append(htmlGen.buildLayerIcon(layer));
     }
   });
 
-  // Initialize click handlers for category buttons
+  /* Initialize click handlers for category buttons */
   $('.category').on('click tap', function(event) {
     event.stopPropagation();
-    if ($(this).parent().hasClass('on')) { // Case: we're turning off all amenities
+    if ($(this).parent().hasClass('on')) { /* Case: we're turning off all amenities */
       $(this).parent().removeClass('on');
       var categoryId = $(this).data('categoryid');
       that.hidePinsOf(categoryId);
-      that.setAmenitiesButtonTo(null); // Clear the amenities button
-    } else { // Case: we're turning on an amenties category that wasn't on previously. Clear the map and amenities state, and apply the new amenities filter
+      that.setAmenitiesButtonTo(null); /* Clear the amenities button */
+    } else { /* Case: we're turning on an amenties category that wasn't on previously. Clear the map and amenities state, and apply the new amenities filter */
       $('.category').parent().removeClass('on');
       that.hideAllPins();
       $(this).parent().addClass('on');
@@ -252,13 +259,13 @@ function _buildLayersModalForFloor(layers, floorPins) {
   });
 }
 
-// Loop through all available locations and return
-// the one that corresponds to the given Id.
-// Returns false if we couldn't find the the location given
+/* Loop through all available locations and return
+ the one that corresponds to the given Id.
+ Returns false if we couldn't find the the location given */
 function getFloorDataFromLocation(locationData, locationId) {
   for (var i = 0; i < locationData.length; i++) {
     var location = locationData[i];
-    if (location.Id === locationId) { // Case: we've found the building that corresponds to our given Id, return it
+    if (location.Id === locationId) { /* Case: we've found the building that corresponds to our given Id, return it */
       return location.Floor;
     }
   }
@@ -280,10 +287,8 @@ function init(cmsUrl, givenHash) {
     document.location.hash = givenHash;
   }
   request.open("GET", cmsUrl + "/api/map");
-  //request.open("GET", 'https://e9affc90.ngrok.io/getMaps');
+  /*request.open("GET", 'https://7e899108.ngrok.io/getMaps');*/
   request.setRequestHeader('Authorization', 'Bearer ff779ee219d7be0549c971d6ba2311d5');
-  request.setRequestHeader('Content-Type', 'application/json');
-  request.setRequestHeader('Accept', 'application/json');
   request.send();
 }
 
@@ -309,7 +314,7 @@ function VisualMap() {
 }
 
 function _clearLastTouchedPin() {
-  if (this.lastTouchedPin && this.backgroundLayer) { // Clear the highlighted appearance of the last touched pin
+  if (this.lastTouchedPin && this.backgroundLayer) { /* Clear the highlighted appearance of the last touched pin */
     this.lastTouchedPin.strokeEnabled(false);
     this.backgroundLayer.draw();
     this.lastTouchedPin = null;
@@ -322,8 +327,10 @@ function _drawMapForFloor(floor, mapsPayload) {
   $('#map').empty();
   var canvasPositionX = window.innerWidth * .05;
   var canvasPositionY = window.innerHeight * .05;
-  // Clear any existing search data, as we'll be creating
-  // new content for this floor
+  /*
+    Clear any existing search data, as we'll be creating
+    new content for this floor
+  */
   var searchTable = $('.dark-table tbody');
   searchTable.children().remove();
 
@@ -331,7 +338,7 @@ function _drawMapForFloor(floor, mapsPayload) {
   scaleY = scaleX;
 
   this.stage = new Konva.Stage({
-    container: 'map',   // id of container <div id="#map">
+    container: 'map',   /* id of container <div id="#map"> */
     width: window.innerWidth,
     height: height
   });
@@ -348,23 +355,26 @@ function _drawMapForFloor(floor, mapsPayload) {
 
   this.backgroundLayer.add(base);
   var imageObj = new Image();
+  imageObj.crossOrigin = "Anonymous";
   var that = this;
 
-  // Obtain the current floor's image
+  /* Obtain the current floor's image */
   imageObj.onload = function() {
     base.image(imageObj);
     that.backgroundLayer.draw();
   };
   imageObj.src = that.cmsUrl + floor.FloorImage.image;
 
-  // Loop through each pin that has been placed on the floor,
-  // and places it in the appropriate spot on the floor map,
-  // hiding each pin by default
+  /* Loop through each pin that has been placed on the floor,
+     and places it in the appropriate spot on the floor map,
+     hiding each pin by default
+  */
   $.each(floor.Pin, function(i,pinData) {
-    // Build the pin icon that we'll place on the Konva layer
+    /* Build the pin icon that we'll place on the Konva layer
 
-    // These offset/scaling calculations try to scale the position of the icon based on its size, this will also be related to the original icon used, in this case \uf041
-    // INCREASING / DECREASING ICON SIZE? Try just changing the fontSize value
+     These offset/scaling calculations try to scale the position of the icon based on its size, this will also be related to the original icon used, in this case \uf041
+     INCREASING / DECREASING ICON SIZE? Try just changing the fontSize value
+    */
     var fontSize = 40;
 
     var image = that.layerIcons[pinData.LayerId];
@@ -418,8 +428,8 @@ function _drawMapForFloor(floor, mapsPayload) {
       pin.fire(event.type, pin);
     });
 
-    // Expose the pin data and highlight the pin on pin tap,
-    // Also de-highlight the last pin
+    /* Expose the pin data and highlight the pin on pin tap,
+     Also de-highlight the last pin */
     pin.on('tap click', function(e) {
       var touchedPin = e.target;
       if (that.lastTouchedPin) that.lastTouchedPin.strokeEnabled(false);
@@ -434,11 +444,11 @@ function _drawMapForFloor(floor, mapsPayload) {
       $('#floor_select').blur();
       $('#location_select').blur();
     });
-    // Add this new pin to the Konva pinGroup, so that we can place them as one action
+    /* Add this new pin to the Konva pinGroup, so that we can place them as one action */
     that.backgroundLayer.add(pin);
     that.backgroundLayer.add(pinIcon);
-  }); // End pin each
-  // close the panel if the map is tapped
+  }); /* End pin each */
+  /* close the panel if the map is tapped */
   that.stage.on('tap click', function(e) {
 
       var node = e.target;
@@ -450,7 +460,7 @@ function _drawMapForFloor(floor, mapsPayload) {
 
   this.stage.add(that.backgroundLayer);
 
-  // Hide pins by default
+  /* Hide pins by default */
   this.hideAllPins();
 }
 
@@ -469,8 +479,8 @@ function _hidePinsOf(category) {
   var allpins = this.stage.find('Text');
   allpins.each(function(p) {
       if(p.attrs.layerid === category) {
-          p.hide();
-          p.attrs.pinIcon.hide();
+        p.hide();
+        p.attrs.pinIcon.hide();
       }
   });
   this.stage.draw();
@@ -532,33 +542,31 @@ module.exports = {
   buildFloorOption : _buildFloorOption,
   buildLocationOption : _buildLocationOption,
   buildLocationDiv : _buildLocationDiv
-}
+};
 
 },{}],4:[function(require,module,exports){
 var MapsApp = require('./MapsApp.js');
-// TODO: this will be the entry point for the app,
-// inject JavaScript with the CMS URL and go
 document.__MapsApp = MapsApp;
-//MapsApp.init("https://pwc.downstreamlabs.com", "#null.10");
+/* MapsApp.init("https://pwc.downstreamlabs.com", "#null.10"); */
 
 },{"./MapsApp.js":1}],5:[function(require,module,exports){
 
-// Handles informing the user that their meeting room search has filtered out all results.
+/* Handles informing the user that their meeting room search has filtered out all results. */
 function checkAndHandleNoResults() {
   var visibleRows = getVisibleRows();
   var firstVisibleRow = visibleRows[0];
-  if (!firstVisibleRow) { // Case: we have no visible cells. Display that there are no valid results
+  if (!firstVisibleRow) { /* Case: we have no visible cells. Display that there are no valid results */
     $('.dark-table').prepend("<tr id='no_results'><td>No results</td></tr>")
   } else if (visibleRows.length > 1) {
     $('#no_results').remove();
-  } // else do nothing
+  } /* else do nothing */
 }
 
 function searchTable() {
   filteredSearch();
+  checkAndHandleNoResults();
   applyPaddingFirstChild();
   removeBorderLastChild();
-  checkAndHandleNoResults();
 }
 
 function getVisibleRows() {
@@ -570,9 +578,9 @@ function getVisibleRows() {
 function applyPaddingFirstChild() {
   var visibleRows = getVisibleRows();
   $.each(visibleRows, function(i, row) {
-    if (i === 0) { // We're viewing the first visible row
+    if (i === 0) { /* We're viewing the first visible row */
       $(row).find('td').css('padding-top', '20px');
-    } else { // Otherwise we're not the first row, so set the padding top to default
+    } else { /* Otherwise we're not the first row, so set the padding top to default */
       $(row).find('td').css('padding-top', '8px');
     }
   });
@@ -610,7 +618,7 @@ function filteredSearch() {
 module.exports = {
   filteredSearch : filteredSearch,
   searchTable : searchTable
-}
+};
 
 },{}],6:[function(require,module,exports){
 var roomSearch = require('./roomSearch.js');
@@ -658,12 +666,12 @@ function _prepareForMeetingRoomDisplay() {
 function _hideAndClearSearch() {
   $('.active-search-container').hide();
   $('#active_search_input').val("");
-  roomSearch.searchTable(); // Revert data table to initial state
+  roomSearch.searchTable(); /* Revert data table to initial state */
   $('.dark-table').show();
 }
 
 function _toggleAmenitiesModal() {
-  if ($('.filter').css('display') === 'none') { // Case: our amenities menu is not already open.
+  if ($('.filter').css('display') === 'none') { /* Case: our amenities menu is not already open. */
     $('.amenities-modal-close').show();
     $('.filter').velocity({
         opacity: 1
@@ -684,7 +692,7 @@ function _setSelectInactive() {
   $('#location_select').addClass('inactive-dropdown');
 }
 
-// Hide the single pin map and reveal the
+/* Hide the single pin map and reveal the */
 function _revertSearchDisplay() {
   $('#map').css('visibility', 'hidden');
   $('.buttons').css('visibility', 'hidden');
@@ -693,7 +701,7 @@ function _revertSearchDisplay() {
   _closeFloatingMenu();
 }
 
-// Reveals the meeting room search bar.
+/* Reveals the meeting room search bar. */
 function _showAndFocusSearch() {
   $('.active-search-container').show();
   $('#active_search_input').focus();
@@ -728,6 +736,6 @@ module.exports = {
   revertSearchDisplay : _revertSearchDisplay,
   prepareForMeetingRoomDisplay : _prepareForMeetingRoomDisplay,
   toggleAmenitiesModal : _toggleAmenitiesModal
-}
+};
 
 },{"./htmlGenerators.js":3,"./roomSearch.js":5}]},{},[1,2,3,4,5,6]);

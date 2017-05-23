@@ -1,13 +1,13 @@
 
-// Handles informing the user that their meeting room search has filtered out all results.
+/* Handles informing the user that their meeting room search has filtered out all results. */
 function checkAndHandleNoResults() {
   var visibleRows = getVisibleRows();
   var firstVisibleRow = visibleRows[0];
-  if (!firstVisibleRow) { // Case: we have no visible cells. Display that there are no valid results
+  if (!firstVisibleRow) { /* Case: we have no visible cells. Display that there are no valid results */
     $('.dark-table').prepend("<tr id='no_results'><td>No results</td></tr>")
   } else if (visibleRows.length > 1) {
     $('#no_results').remove();
-  } // else do nothing
+  } /* else do nothing */
 }
 
 function searchTable() {
@@ -26,9 +26,9 @@ function getVisibleRows() {
 function applyPaddingFirstChild() {
   var visibleRows = getVisibleRows();
   $.each(visibleRows, function(i, row) {
-    if (i === 0) { // We're viewing the first visible row
+    if (i === 0) { /* We're viewing the first visible row */
       $(row).find('td').css('padding-top', '20px');
-    } else { // Otherwise we're not the first row, so set the padding top to default
+    } else { /* Otherwise we're not the first row, so set the padding top to default */
       $(row).find('td').css('padding-top', '8px');
     }
   });
@@ -66,4 +66,4 @@ function filteredSearch() {
 module.exports = {
   filteredSearch : filteredSearch,
   searchTable : searchTable
-}
+};

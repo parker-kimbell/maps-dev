@@ -35,4 +35,4 @@ module.exports = {
   buildFloorOption : _buildFloorOption,
   buildLocationOption : _buildLocationOption,
   buildLocationDiv : _buildLocationDiv
-}
+};

@@ -11,7 +11,7 @@ var MapsApp = function() {
   this.lastTouchedPin = null;
   this.cmsUrl = null;
   this.meetingRoomLayerId = null;
-}
+};
 
 function _setupEventHandlers(mapsPayload) {
   var that = this;
@@ -84,35 +84,40 @@ function _setupEventHandlers(mapsPayload) {
 }
 
 function updateSelectionHash() {
-  var selectedFloor = $('#floor_select option').not(function(){ return !this.selected });
-  var selectedLocation = $('#location_select option').not(function(){ return !this.selected });
+  var selectedFloor = $('#floor_select option').not(function(){
+    return !this.selected;
+  });
+  var selectedLocation = $('#location_select option').not(function(){
+    return !this.selected;
+  });
   document.location.href = '#' + selectedLocation.data('buildingid') + "." + $(selectedFloor).data('floorid') || 0;
 }
 
 function _setAmenitiesButtonTo(categoryId) {
   var that = this;
-  // Always clear any existing amenities button icon before displaying a new one
+  /* Always clear any existing amenities button icon before displaying a new one */
   $('#btn_amenities .curr-amen-icon').remove();
-  if (categoryId) { // Case: We're showing an amenity category
+  if (categoryId) { /* Case: We're showing an amenity category */
     $('#btn_amenities').addClass('showing-amenities');
     $('#btn_amenities').removeClass('no-amenities');
     $('#btn_amenities .icon').hide();
     $('#btn_amenities').prepend($(that.layerIcons[categoryId]).clone().addClass('curr-amen-icon'));
-  } else { // Case: We're not showing an amenity categories
+  } else { /* Case: We're not showing an amenity categories */
     $('#btn_amenities').addClass('no-amenities');
     $('#btn_amenities').removeClass('showing-amenities');
     $('#btn_amenities .icon').show();
   }
 }
 
-// Loops through all the pins for a given floor.
-// If any pin matches the given layer, return true indicating that we should give
-// that amenity option.
-// Else return false, indicating that that layer/amenity button should not be constructed
+/* Loops through all the pins for a given floor.
+ If any pin matches the given layer, return true indicating that we should give
+ that amenity option.
+ Else return false, indicating that that layer/amenity button should not be constructed
+ */
 function floorHasThisLayer(floorPins, layer) {
   for (var i = 0; i < floorPins.length; i++) {
     var pin = floorPins[i];
-    if (pin.LayerId === layer.Id) { // Case: the current floor has a pin corresponding to the given amenity/layer , return true
+    if (pin.LayerId === layer.Id) { /* Case: the current floor has a pin corresponding to the given amenity/layer , return true */
       return true;
     }
   }
@@ -124,6 +129,7 @@ function _initLayerIcons(mapsPayload) {
   var that = this;
   $.each(layers, function(i, layer) {
     that.layerIcons[layer.Id] = new Image();
+    that.layerIcons[layer.Id].crossOrigin = "Anonymous";
     that.layerIcons[layer.Id].src = layer.Icon;
   });
 }
@@ -175,19 +181,19 @@ function _initMapsApp(mapsPayload) {
       location: Number(parts[0]),
       floor: (parts[1] == undefined ? 0 : Number(parts[1]))
     };
-    if(!config.location) { // Case: we haven't been able to determine what location the visitor is in today, so ask them for app initialization
+    if(!config.location) { /* Case: we haven't been able to determine what location the visitor is in today, so ask them for app initialization */
       $('.building-modal-background').show();
       $('#map, .buttons').hide();
     } else {
-      // Update the values for our location and floor select to match
-      // the given hash value
+      /* Update the values for our location and floor select to match
+       the given hash value */
       $('#map, .buttons').show();
       $('#location_select').val(config.location);
       $('#floor_select').val(config.floor);
 
-      var locationFloorData = getFloorDataFromLocation(mapsPayload.building_data, config.location)
+      var locationFloorData = getFloorDataFromLocation(mapsPayload.building_data, config.location);
       if (!locationFloorData) throw new Error('In initMap. Could not find location in mapsPayload corresponding to given Id. Given Id: ' + config.location);
-      if (that.lastLocation !== config.location) { // Case: our location has changed, so clear all floor data and build the floor data for the new location
+      if (that.lastLocation !== config.location) { /* Case: our location has changed, so clear all floor data and build the floor data for the new location */
         viewTransitions.clearFloorOptions();
         buildFloorSelect(locationFloorData);
         $('#floor_select').trigger('change');
@@ -204,43 +210,44 @@ function _initMapsApp(mapsPayload) {
           that.drawMapForFloor(floor, mapsPayload);
           /* TODO: this controls drawing a given pin. Should be re-enabled ultimately to
               handle the case of the maps app being called with a given meeting room
+
+          if (pinData.Id === config.pin) {
+              pin.show();
+              $('.layer_name div').html(pinData.Layer.Name);
+              $('.panel_body').html(pinData.Body);
+              $('#floatingmenu').addClass('open');
+          }
           */
-          // if (pinData.Id === config.pin) {
-          //     pin.show();
-          //     $('.layer_name div').html(pinData.Layer.Name);
-          //     $('.panel_body').html(pinData.Body);
-          //     $('#floatingmenu').addClass('open');
-          // }
         }
-      }); // end $.each floorData
+      });
     }
-  }).trigger('hashchange'); // $.onHashChange
+  }).trigger('hashchange'); /* $.onHashChange */
 }
 
 function _buildLayersModalForFloor(layers, floorPins) {
   var category_list = $('.category_list');
   var that = this;
-  $('.category_list li').remove(); // Since we're changing floors, or init'ing the app, clear all previous amenity buttons
+  $('.category_list li').remove(); /* Since we're changing floors, or init'ing the app, clear all previous amenity buttons */
 
   $.each(layers, function(i, layer) {
     if (layer.Name === MEETING_ROOMS) {
       that.meetingRoomLayerId = layer.Id;
-      return; // Do not add meeting rooms to the amenity selections. These are accessed exclusively through search
+      return; /* Do not add meeting rooms to the amenity selections. These are accessed exclusively through search */
     }
-    if (floorHasThisLayer(floorPins, layer)) { // Case: this floor has a pin corresponding to the given/layer amenity, build that layer button
+    if (floorHasThisLayer(floorPins, layer)) { /* Case: this floor has a pin corresponding to the given/layer amenity, build that layer button */
       category_list.append(htmlGen.buildLayerIcon(layer));
     }
   });
 
-  // Initialize click handlers for category buttons
+  /* Initialize click handlers for category buttons */
   $('.category').on('click tap', function(event) {
     event.stopPropagation();
-    if ($(this).parent().hasClass('on')) { // Case: we're turning off all amenities
+    if ($(this).parent().hasClass('on')) { /* Case: we're turning off all amenities */
       $(this).parent().removeClass('on');
       var categoryId = $(this).data('categoryid');
       that.hidePinsOf(categoryId);
-      that.setAmenitiesButtonTo(null); // Clear the amenities button
-    } else { // Case: we're turning on an amenties category that wasn't on previously. Clear the map and amenities state, and apply the new amenities filter
+      that.setAmenitiesButtonTo(null); /* Clear the amenities button */
+    } else { /* Case: we're turning on an amenties category that wasn't on previously. Clear the map and amenities state, and apply the new amenities filter */
       $('.category').parent().removeClass('on');
       that.hideAllPins();
       $(this).parent().addClass('on');
@@ -251,13 +258,13 @@ function _buildLayersModalForFloor(layers, floorPins) {
   });
 }
 
-// Loop through all available locations and return
-// the one that corresponds to the given Id.
-// Returns false if we couldn't find the the location given
+/* Loop through all available locations and return
+ the one that corresponds to the given Id.
+ Returns false if we couldn't find the the location given */
 function getFloorDataFromLocation(locationData, locationId) {
   for (var i = 0; i < locationData.length; i++) {
     var location = locationData[i];
-    if (location.Id === locationId) { // Case: we've found the building that corresponds to our given Id, return it
+    if (location.Id === locationId) { /* Case: we've found the building that corresponds to our given Id, return it */
       return location.Floor;
     }
   }
@@ -279,10 +286,8 @@ function init(cmsUrl, givenHash) {
     document.location.hash = givenHash;
   }
   request.open("GET", cmsUrl + "/api/map");
-  //request.open("GET", 'https://e9affc90.ngrok.io/getMaps');
+  /*request.open("GET", 'https://7e899108.ngrok.io/getMaps');*/
   request.setRequestHeader('Authorization', 'Bearer ff779ee219d7be0549c971d6ba2311d5');
-  request.setRequestHeader('Content-Type', 'application/json');
-  request.setRequestHeader('Accept', 'application/json');
   request.send();
 }
 

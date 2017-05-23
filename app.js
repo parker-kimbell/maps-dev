@@ -24,6 +24,13 @@ app.get('/getMaps', function (req, res) {
   });
 });
 
+app.options('/getMaps', function (req, res) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+  res.send(200);
+});
+
 app.get('/main', function (req, res) {
   res.sendFile(path.join(__dirname + '/public/index.html'));
 });

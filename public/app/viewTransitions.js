@@ -43,12 +43,12 @@ function _prepareForMeetingRoomDisplay() {
 function _hideAndClearSearch() {
   $('.active-search-container').hide();
   $('#active_search_input').val("");
-  roomSearch.searchTable(); // Revert data table to initial state
+  roomSearch.searchTable(); /* Revert data table to initial state */
   $('.dark-table').show();
 }
 
 function _toggleAmenitiesModal() {
-  if ($('.filter').css('display') === 'none') { // Case: our amenities menu is not already open.
+  if ($('.filter').css('display') === 'none') { /* Case: our amenities menu is not already open. */
     $('.amenities-modal-close').show();
     $('.filter').velocity({
         opacity: 1
@@ -69,7 +69,7 @@ function _setSelectInactive() {
   $('#location_select').addClass('inactive-dropdown');
 }
 
-// Hide the single pin map and reveal the
+/* Hide the single pin map and reveal the */
 function _revertSearchDisplay() {
   $('#map').css('visibility', 'hidden');
   $('.buttons').css('visibility', 'hidden');
@@ -78,7 +78,7 @@ function _revertSearchDisplay() {
   _closeFloatingMenu();
 }
 
-// Reveals the meeting room search bar.
+/* Reveals the meeting room search bar. */
 function _showAndFocusSearch() {
   $('.active-search-container').show();
   $('#active_search_input').focus();
@@ -113,4 +113,4 @@ module.exports = {
   revertSearchDisplay : _revertSearchDisplay,
   prepareForMeetingRoomDisplay : _prepareForMeetingRoomDisplay,
   toggleAmenitiesModal : _toggleAmenitiesModal
-}
+};

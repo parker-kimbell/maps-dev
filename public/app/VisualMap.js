@@ -7,7 +7,7 @@ function VisualMap() {
 }
 
 function _clearLastTouchedPin() {
-  if (this.lastTouchedPin && this.backgroundLayer) { // Clear the highlighted appearance of the last touched pin
+  if (this.lastTouchedPin && this.backgroundLayer) { /* Clear the highlighted appearance of the last touched pin */
     this.lastTouchedPin.strokeEnabled(false);
     this.backgroundLayer.draw();
     this.lastTouchedPin = null;
@@ -20,8 +20,10 @@ function _drawMapForFloor(floor, mapsPayload) {
   $('#map').empty();
   var canvasPositionX = window.innerWidth * .05;
   var canvasPositionY = window.innerHeight * .05;
-  // Clear any existing search data, as we'll be creating
-  // new content for this floor
+  /*
+    Clear any existing search data, as we'll be creating
+    new content for this floor
+  */
   var searchTable = $('.dark-table tbody');
   searchTable.children().remove();
 
@@ -29,7 +31,7 @@ function _drawMapForFloor(floor, mapsPayload) {
   scaleY = scaleX;
 
   this.stage = new Konva.Stage({
-    container: 'map',   // id of container <div id="#map">
+    container: 'map',   /* id of container <div id="#map"> */
     width: window.innerWidth,
     height: height
   });
@@ -46,23 +48,26 @@ function _drawMapForFloor(floor, mapsPayload) {
 
   this.backgroundLayer.add(base);
   var imageObj = new Image();
+  imageObj.crossOrigin = "Anonymous";
   var that = this;
 
-  // Obtain the current floor's image
+  /* Obtain the current floor's image */
   imageObj.onload = function() {
     base.image(imageObj);
     that.backgroundLayer.draw();
   };
   imageObj.src = that.cmsUrl + floor.FloorImage.image;
 
-  // Loop through each pin that has been placed on the floor,
-  // and places it in the appropriate spot on the floor map,
-  // hiding each pin by default
+  /* Loop through each pin that has been placed on the floor,
+     and places it in the appropriate spot on the floor map,
+     hiding each pin by default
+  */
   $.each(floor.Pin, function(i,pinData) {
-    // Build the pin icon that we'll place on the Konva layer
+    /* Build the pin icon that we'll place on the Konva layer
 
-    // These offset/scaling calculations try to scale the position of the icon based on its size, this will also be related to the original icon used, in this case \uf041
-    // INCREASING / DECREASING ICON SIZE? Try just changing the fontSize value
+     These offset/scaling calculations try to scale the position of the icon based on its size, this will also be related to the original icon used, in this case \uf041
+     INCREASING / DECREASING ICON SIZE? Try just changing the fontSize value
+    */
     var fontSize = 40;
 
     var image = that.layerIcons[pinData.LayerId];
@@ -116,8 +121,8 @@ function _drawMapForFloor(floor, mapsPayload) {
       pin.fire(event.type, pin);
     });
 
-    // Expose the pin data and highlight the pin on pin tap,
-    // Also de-highlight the last pin
+    /* Expose the pin data and highlight the pin on pin tap,
+     Also de-highlight the last pin */
     pin.on('tap click', function(e) {
       var touchedPin = e.target;
       if (that.lastTouchedPin) that.lastTouchedPin.strokeEnabled(false);
@@ -132,11 +137,11 @@ function _drawMapForFloor(floor, mapsPayload) {
       $('#floor_select').blur();
       $('#location_select').blur();
     });
-    // Add this new pin to the Konva pinGroup, so that we can place them as one action
+    /* Add this new pin to the Konva pinGroup, so that we can place them as one action */
     that.backgroundLayer.add(pin);
     that.backgroundLayer.add(pinIcon);
-  }); // End pin each
-  // close the panel if the map is tapped
+  }); /* End pin each */
+  /* close the panel if the map is tapped */
   that.stage.on('tap click', function(e) {
 
       var node = e.target;
@@ -148,7 +153,7 @@ function _drawMapForFloor(floor, mapsPayload) {
 
   this.stage.add(that.backgroundLayer);
 
-  // Hide pins by default
+  /* Hide pins by default */
   this.hideAllPins();
 }
 
@@ -167,8 +172,8 @@ function _hidePinsOf(category) {
   var allpins = this.stage.find('Text');
   allpins.each(function(p) {
       if(p.attrs.layerid === category) {
-          p.hide();
-          p.attrs.pinIcon.hide();
+        p.hide();
+        p.attrs.pinIcon.hide();
       }
   });
   this.stage.draw();
