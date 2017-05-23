@@ -61,6 +61,11 @@ function _setupEventHandlers(mapsPayload) {
         }
       });
 
+      $('.nearby-btn').on('click tap', function(event) {
+        //viewTransitions.transitionToNearby();
+        that.drawNearbyMap();
+      });
+
       $('#btn_search').on('click tap', viewTransitions.transitionToSearch);
 
       $('.cancel-search, .active-search-bar-container div:last-child').on('click tap', function() {
