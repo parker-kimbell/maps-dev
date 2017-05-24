@@ -24,6 +24,21 @@ app.get('/getMaps', function (req, res) {
   });
 });
 
+app.get('/getMapsNearby', function (req, res) {
+  var options = {
+    url : 'https://pwc.downstreamlabs.com/api/map/nearby',
+    headers : {
+      Authorization : "Bearer ff779ee219d7be0549c971d6ba2311d5"
+    }
+  };
+
+  request(options, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+      res.send(body);
+    }
+  });
+});
+
 app.options('/getMaps', function (req, res) {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');

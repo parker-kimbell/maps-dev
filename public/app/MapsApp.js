@@ -11,6 +11,8 @@ var MapsApp = function() {
   this.lastTouchedPin = null;
   this.cmsUrl = null;
   this.meetingRoomLayerId = null;
+  this.mapsPayload = null;
+  this.nearbyMapsPayload = null;
 };
 
 function _setupEventHandlers(mapsPayload) {
@@ -74,6 +76,8 @@ function _setupEventHandlers(mapsPayload) {
 
       $('.nearby-btn').on('click tap', function() {
         viewTransitions.transitionToNearbyView();
+        var nearby = that.extractNearbyPayload(_extractHashComponents());
+        that.drawNearbyView(nearby);
       });
 
       $('#active_search_input').on('input', function() {
@@ -85,6 +89,20 @@ function _setupEventHandlers(mapsPayload) {
         that.closeFloatingMenu();
       });
   });
+}
+
+function _extractNearbyPayload(config) {
+  var nearbyMapsPayload = this.nearbyMapsPayload;
+  var currentBuildingId = config.location;
+  var allBuildings = nearbyMapsPayload.building_data;
+
+  for (var i = 0; i < allBuildings.length; i++) {
+    var building = allBuildings[i];
+    if (building.Id === currentBuildingId) { /* Case: we've found the building that corresponds to our given Id, return it */
+      return building;
+    }
+  }
+  return false;
 }
 
 function updateSelectionHash() {
@@ -172,18 +190,23 @@ function _closeFloatingMenu() {
   this.clearLastTouchedPin();
 }
 
+function _extractHashComponents() {
+  var hash = location.hash.replace('#','');
+  var parts = hash.split('.');
+
+  return {
+    location: Number(parts[0]),
+    floor: (parts[1] == undefined ? 0 : Number(parts[1]))
+  };
+}
+
 function _initMapsApp(mapsPayload) {
   var that = this;
   $(window).on('hashchange',function() {
     var payload = mapsPayload;
 
-    var hash = location.hash.replace('#','');
-    var parts = hash.split('.');
+    var config = _extractHashComponents();
 
-    var config = {
-      location: Number(parts[0]),
-      floor: (parts[1] == undefined ? 0 : Number(parts[1]))
-    };
     if(!config.location) { /* Case: we haven't been able to determine what location the visitor is in today, so ask them for app initialization */
       $('.building-modal-background').show();
       $('#map, .buttons').hide();
@@ -274,12 +297,26 @@ function getFloorDataFromLocation(locationData, locationId) {
   return false;
 }
 
+function _retrieveNearbyMaps() {
+  var request = new XMLHttpRequest();
+  var that = this;
+  request.addEventListener("load", function() {
+    var nearbyMapsPayload = JSON.parse(this.responseText);
+    that.nearbyMapsPayload = nearbyMapsPayload;
+  });
+  //request.open("GET", cmsUrl + "/api/map/nearby");
+  request.open("GET", 'https://7e899108.ngrok.io/getMapsNearby');
+  request.setRequestHeader('Authorization', 'Bearer ff779ee219d7be0549c971d6ba2311d5');
+  request.send();
+}
+
 function init(cmsUrl, givenHash) {
   this.cmsUrl = cmsUrl;
   var request = new XMLHttpRequest();
   var that = this;
   request.addEventListener("load", function() {
     var mapsPayload = JSON.parse(this.responseText);
+    that.mapsPayload = mapsPayload;
     that.initLayerIcons(mapsPayload);
     buildLocationSelect(mapsPayload);
     that.setupEventHandlers(mapsPayload);
@@ -292,6 +329,7 @@ function init(cmsUrl, givenHash) {
   request.open("GET", 'https://7e899108.ngrok.io/getMaps');
   request.setRequestHeader('Authorization', 'Bearer ff779ee219d7be0549c971d6ba2311d5');
   request.send();
+  this.retrieveNearbyMaps();
 }
 
 MapsApp.prototype = Object.create(VisualMap.prototype);
@@ -303,5 +341,7 @@ MapsApp.prototype.setupEventHandlers = _setupEventHandlers;
 MapsApp.prototype.closeFloatingMenu = _closeFloatingMenu;
 MapsApp.prototype.buildLayersModalForFloor = _buildLayersModalForFloor;
 MapsApp.prototype.setAmenitiesButtonTo = _setAmenitiesButtonTo;
+MapsApp.prototype.extractNearbyPayload = _extractNearbyPayload;
+MapsApp.prototype.retrieveNearbyMaps = _retrieveNearbyMaps;
 
 module.exports = new MapsApp();

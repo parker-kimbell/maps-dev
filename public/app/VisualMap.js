@@ -188,10 +188,178 @@ function _hideAllPins() {
   this.stage.draw();
 }
 
+function _drawNearbyView(nearby) {
+  debugger;
+  var editorConfig = {
+    ResourcesWidth: nearby.MapImage.ResourcesWidth,
+    ResourcesHeight: nearby.MapImage.ResourcesHeight
+  };
+
+  var contentWidth = 700;
+  var contentHeight = 700;
+
+  var scaleX = contentWidth/editorConfig.ResourcesWidth;
+  var scaleY = contentHeight/editorConfig.ResourcesHeight;
+  // Intialize layout
+  var container = document.getElementById("container");
+  var content = document.getElementById("content");
+  var clientWidth = 0;
+  var clientHeight = 0;
+
+  var scroller;
+
+  var that = this;
+
+  $(function () {
+
+    // $('#location_select').on('change', function() {
+    //     var optionSelected = $("option:selected", this);
+    //     document.location.href = '/mobile/nearby/' + $(optionSelected).data('locationid');
+    // });
+    //
+    // $('.filter_close').on('click', function() {
+    //     $('.filter').velocity({
+    //         opacity: 0
+    //     }, {
+    //         display: 'none',
+    //         delay: 500,
+    //         duration: 200
+    //     });
+    // });
+    //
+    // $('.panel_close').on('click', function() {
+    //   $('#floatingmenu').removeClass('open');
+    // });
+
+    that.stage = new Konva.Stage({
+      container: 'nearby',   // id of container <div>
+      width: contentWidth,
+      height: contentHeight
+    });
+
+    var backgroundLayer = new Konva.Layer({});
+
+    var pinLayer = new Konva.Layer();
+
+    var base = new Konva.Image({
+        x: 0,
+        y: 0,
+        width: editorConfig.ResourcesWidth*scaleX,
+        height: editorConfig.ResourcesHeight*scaleY,
+        stroke: 0,
+        listening: true
+    });
+
+    backgroundLayer.add(base);
+
+    var imageObj = new Image();
+
+    imageObj.onload = function() {
+      base.image(imageObj);
+      backgroundLayer.draw();
+    };
+
+    imageObj.src = that.cmsUrl + nearby.MapImage.image;
+
+    that.stage.add(backgroundLayer);
+
+    //_initializeScroller(contentWidth, contentHeight);
+
+  });
+}
+
+function _initializeScroller(contentWidth, contentHeight) {
+  var container = document.getElementById("container");
+
+  var scroller = new Scroller(render, {
+    zooming: false
+  });
+
+  var rect = container.getBoundingClientRect();
+
+  // Reflow handling
+  var reflow = function() {
+    var clientWidth = container.clientWidth;
+    var clientHeight = container.clientHeight;
+    scroller.setDimensions(clientWidth, clientHeight, contentWidth, contentHeight);
+  };
+
+  window.addEventListener("resize", reflow, false);
+  reflow();
+  if ('ontouchstart' in window) {
+
+    container.addEventListener("touchstart", function(e) {
+      // Don't react if initial down happens on a form element
+      if (e.touches[0] && e.touches[0].target && e.touches[0].target.tagName.match(/input|textarea|select/i)) {
+        return;
+      }
+
+      scroller.doTouchStart(e.touches, e.timeStamp);
+      e.preventDefault();
+    }, false);
+
+    document.addEventListener("touchmove", function(e) {
+      scroller.doTouchMove(e.touches, e.timeStamp, e.scale);
+    }, false);
+
+    document.addEventListener("touchend", function(e) {
+      scroller.doTouchEnd(e.timeStamp);
+    }, false);
+
+    document.addEventListener("touchcancel", function(e) {
+      scroller.doTouchEnd(e.timeStamp);
+    }, false);
+
+  } else {
+
+    var mousedown = false;
+
+    container.addEventListener("mousedown", function(e) {
+      if (e.target.tagName.match(/input|textarea|select/i)) {
+        return;
+      }
+
+      scroller.doTouchStart([{
+        pageX: e.pageX,
+        pageY: e.pageY
+      }], e.timeStamp);
+
+      mousedown = true;
+    }, false);
+
+    document.addEventListener("mousemove", function(e) {
+      if (!mousedown) {
+        return;
+      }
+
+      scroller.doTouchMove([{
+        pageX: e.pageX,
+        pageY: e.pageY
+      }], e.timeStamp);
+
+      mousedown = true;
+    }, false);
+
+    document.addEventListener("mouseup", function(e) {
+      if (!mousedown) {
+        return;
+      }
+
+      scroller.doTouchEnd(e.timeStamp);
+
+      mousedown = false;
+    }, false);
+
+  }
+
+  scroller.scrollBy(150, 150, true);
+}
+
 VisualMap.prototype.hideAllPins = _hideAllPins;
 VisualMap.prototype.hidePinsOf = _hidePinsOf;
 VisualMap.prototype.showPinsOf = _showPinsOf;
 VisualMap.prototype.clearLastTouchedPin = _clearLastTouchedPin;
 VisualMap.prototype.drawMapForFloor = _drawMapForFloor;
+VisualMap.prototype.drawNearbyView = _drawNearbyView;
 
 module.exports = VisualMap;
