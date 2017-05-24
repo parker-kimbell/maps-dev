@@ -150,8 +150,6 @@ function _transitionToNearbyView() {
     $('.nearby-btn-cancel').velocity({
       left : '5%',
       'font-size': '1.2em'
-    }, {
-      delay : 700
     });
   }, 700);
 }
