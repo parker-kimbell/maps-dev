@@ -425,6 +425,7 @@ input:focus { outline: none; }
   position:absolute;
   background-color: #22252B;
   top: 9%;
+  z-index: 10000;
 }
 .nearby-btn {
   -webkit-appearance: none;
@@ -449,6 +450,7 @@ input:focus { outline: none; }
   margin: 0;
   padding: 0;
   outline: none;
+  z-index: 10000;
   background-color: #22252B;
   background-image: url("/assets/cancel-action-grey.svg");
   background-size: auto 60%;
@@ -463,6 +465,20 @@ input:focus { outline: none; }
   top : 2%;
   text-align: left;
   font-family: 'ProximaNova-Regular';
+}
+
+#container {
+  position: absolute;
+	left: 300%;
+	top: 0px;
+	bottom: 0px;
+	cursor: default;
+	overflow: hidden;
+  -webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
 }
 
 option, select {

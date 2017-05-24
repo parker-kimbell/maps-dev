@@ -191,8 +191,8 @@ function _hideAllPins() {
 function _drawNearbyView(nearby) {
   debugger;
   var editorConfig = {
-    ResourcesWidth: nearby.MapImage.ResourcesWidth,
-    ResourcesHeight: nearby.MapImage.ResourcesHeight
+    ResourcesWidth: nearby.MapImage.width,
+    ResourcesHeight: nearby.MapImage.height
   };
 
   var contentWidth = 700;
@@ -257,13 +257,20 @@ function _drawNearbyView(nearby) {
     imageObj.onload = function() {
       base.image(imageObj);
       backgroundLayer.draw();
+      $('#container').velocity({
+        left : '0px',
+        right : '0px'
+      }, {
+        complete : function() {
+          _initializeScroller(contentWidth, contentHeight);
+        },
+        duration : 1250
+      });
     };
 
     imageObj.src = that.cmsUrl + nearby.MapImage.image;
 
     that.stage.add(backgroundLayer);
-
-    //_initializeScroller(contentWidth, contentHeight);
 
   });
 }
@@ -276,7 +283,6 @@ function _initializeScroller(contentWidth, contentHeight) {
   });
 
   var rect = container.getBoundingClientRect();
-
   // Reflow handling
   var reflow = function() {
     var clientWidth = container.clientWidth;
@@ -352,7 +358,7 @@ function _initializeScroller(contentWidth, contentHeight) {
 
   }
 
-  scroller.scrollBy(150, 150, true);
+  //scroller.scrollBy(150, 150, true);
 }
 
 VisualMap.prototype.hideAllPins = _hideAllPins;

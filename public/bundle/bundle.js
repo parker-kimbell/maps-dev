@@ -541,8 +541,8 @@ function _hideAllPins() {
 function _drawNearbyView(nearby) {
   debugger;
   var editorConfig = {
-    ResourcesWidth: nearby.MapImage.ResourcesWidth,
-    ResourcesHeight: nearby.MapImage.ResourcesHeight
+    ResourcesWidth: nearby.MapImage.width,
+    ResourcesHeight: nearby.MapImage.height
   };
 
   var contentWidth = 700;
@@ -607,13 +607,20 @@ function _drawNearbyView(nearby) {
     imageObj.onload = function() {
       base.image(imageObj);
       backgroundLayer.draw();
+      $('#container').velocity({
+        left : '0px',
+        right : '0px'
+      }, {
+        complete : function() {
+          _initializeScroller(contentWidth, contentHeight);
+        },
+        duration : 1250
+      });
     };
 
     imageObj.src = that.cmsUrl + nearby.MapImage.image;
 
     that.stage.add(backgroundLayer);
-
-    //_initializeScroller(contentWidth, contentHeight);
 
   });
 }
@@ -626,7 +633,6 @@ function _initializeScroller(contentWidth, contentHeight) {
   });
 
   var rect = container.getBoundingClientRect();
-
   // Reflow handling
   var reflow = function() {
     var clientWidth = container.clientWidth;
@@ -702,7 +708,7 @@ function _initializeScroller(contentWidth, contentHeight) {
 
   }
 
-  scroller.scrollBy(150, 150, true);
+  //scroller.scrollBy(150, 150, true);
 }
 
 VisualMap.prototype.hideAllPins = _hideAllPins;
@@ -947,36 +953,20 @@ function _transitionToNearbyView() {
   });
   /* Begin anims */
 
-  /* Move unneeded components offscreen */
-  $('#floor_select').velocity({
-    'margin-left' : "300%",
-  }, {
-    easing : 'easeInSine',
-    duration : 'slow',
-  });
-  $('#btn_search').velocity({
-    'margin-left' : "300%",
-  }, {
-    easing : 'easeInSine',
-    duration : 'slow'
-  });
-  $('#floor').velocity({
-    left: '100%'
-  });
-
+  var rootDelay = 100;
   /* Move needed components to necessary positions */
-  $('.btn-amenities').velocity({
-    top: '12%',
-    height: '8%',
-  }, {
-    delay : 500
-  });
   $('#location_select').velocity({
     width: '44%',
     height: '8%',
     top : '12%'
   }, {
-    delay : 400
+    delay : rootDelay
+  });
+  $('.btn-amenities').velocity({
+    top: '12%',
+    height: '8%',
+  }, {
+    delay : rootDelay + 100
   });
   setTimeout(function() {
     $('.nearby-btn').removeClass('nearby-btn').addClass('nearby-btn-cancel');
@@ -984,7 +974,25 @@ function _transitionToNearbyView() {
       left : '5%',
       'font-size': '1.2em'
     });
-  }, 700);
+  }, rootDelay + 300);
+  setTimeout(function() {
+    /* Move unneeded components offscreen */
+    $('#floor_select').velocity({
+      'margin-left' : "300%",
+    }, {
+      easing : 'easeInSine',
+      duration : 'slow',
+    });
+    $('#btn_search').velocity({
+      'margin-left' : "300%",
+    }, {
+      easing : 'easeInSine',
+      duration : 'slow'
+    });
+    $('#floor').velocity({
+      left: '100%'
+    });
+  }, rootDelay + 500);
 }
 
 
