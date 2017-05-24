@@ -729,8 +729,8 @@ function _closeFloatingMenu() {
 /* Transitions for Nearby */
 
 function _transitionToNearbyView() {
+  _closeAllModals();
   $('#location_select').removeClass('dropdown').addClass('nearby-dropdown');
-  $('.nearby-btn').removeClass('nearby-btn').addClass('nearby-btn-cancel');
   $('#floor').css({
     position: 'absolute'
   });
@@ -770,12 +770,15 @@ function _transitionToNearbyView() {
   }, {
     delay : 400
   });
-  $('.nearby-btn-cancel').velocity({
-    left : '5%',
-    'font-size': '1.2em'
-  }, {
-    delay : 700
-  });
+  setTimeout(function() {
+    $('.nearby-btn').removeClass('nearby-btn').addClass('nearby-btn-cancel');
+    $('.nearby-btn-cancel').velocity({
+      left : '5%',
+      'font-size': '1.2em'
+    }, {
+      delay : 700
+    });
+  }, 700);
 }
 
 
