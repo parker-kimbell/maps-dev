@@ -620,6 +620,32 @@ function _drawNearbyView(nearby) {
 
     imageObj.src = that.cmsUrl + nearby.MapImage.image;
 
+    $.each(nearby.Map.NearbyPin, function(i, pinData) {
+        var pin = new Konva.Text({
+            x: ((editorConfig.ResourcesWidth * scaleX)* pinData.PositionX) - 10,
+            y: ((editorConfig.ResourcesHeight * scaleY)* pinData.PositionY) - 35,
+            fill: 'rgb(232,66,102)',
+            text: '\ue807',
+            fontSize: 40,
+            fontFamily: 'pwcmobileappicons',
+            shadowColor: 'black',
+            shadowBlur: 10,
+            shadowOffset: {x : 5, y : 5},
+            shadowOpacity: 0.5,
+            layerid: pinData.LayerId
+        });
+        pin.on('tap click', function(e) {
+            var p = e.target;
+            /* TODO: figure out what this is doing */
+            // $('.layer_name').html(pinData.NearbyLayer.Name);
+            $('.panel_title').html(pinData.Title);
+            $('.panel_body').html(pinData.Body);
+            $('.panel_location').html(pinData.Location);
+            $('#floatingmenu').addClass('open');
+        });
+        backgroundLayer.add(pin);
+    });
+
     that.stage.add(backgroundLayer);
 
   });
