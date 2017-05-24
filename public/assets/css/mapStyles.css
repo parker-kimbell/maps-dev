@@ -121,7 +121,6 @@ select:focus {
 }
 button {
     width: 45%;
-    margin: 3px;
 }
 #floors {
     padding: 0px 4px 0px 4px;
@@ -415,6 +414,19 @@ input:focus { outline: none; }
   width: 100%;
   height: 40%;
 }
+.nearby-dropdown {
+  -webkit-appearance: none;
+  outline: none;
+  border: 1px solid #7A7676;
+  background-image: url("/assets/chevron-down.png");
+  background-size: auto 60%;
+  background-repeat:no-repeat;
+  background-position: right;
+  position:absolute;
+  background-color: #22252B;
+
+  top: 9%;
+}
 .nearby-btn {
   -webkit-appearance: none;
   border: none;
@@ -429,6 +441,27 @@ input:focus { outline: none; }
   background-position: right;
   width: 50%;
   height: 50%;
+  text-align: left;
+  font-family: 'ProximaNova-Regular';
+}
+.nearby-btn-cancel {
+  -webkit-appearance: none;
+  border: 1px solid #7A7676;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  background-color: #22252B;
+  background-image: url("/assets/cancel-action-grey.svg");
+  background-size: auto 60%;
+  background-repeat:no-repeat;
+  background-position: 98%;
+  position: absolute;
+  width: 90%;
+  height: 8%;
+  padding-left: 5px;
+  padding-right: 5px;
+  left : 100%;
+  top : 2%;
   text-align: left;
   font-family: 'ProximaNova-Regular';
 }

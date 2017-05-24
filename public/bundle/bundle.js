@@ -61,11 +61,6 @@ function _setupEventHandlers(mapsPayload) {
         }
       });
 
-      $('.nearby-btn').on('click tap', function(event) {
-        //viewTransitions.transitionToNearby();
-        that.drawNearbyMap();
-      });
-
       $('#btn_search').on('click tap', viewTransitions.transitionToSearch);
 
       $('.cancel-search, .active-search-bar-container div:last-child').on('click tap', function() {
@@ -76,6 +71,10 @@ function _setupEventHandlers(mapsPayload) {
           viewTransitions.revertSearchDisplay();
           roomSearch.searchTable();
         }
+      });
+
+      $('.nearby-btn').on('click tap', function() {
+        viewTransitions.transitionToNearbyView();
       });
 
       $('#active_search_input').on('input', function() {
@@ -727,6 +726,58 @@ function _closeFloatingMenu() {
   $('#floatingmenu').removeClass('open');
 }
 
+/* Transitions for Nearby */
+
+function _transitionToNearbyView() {
+  $('#location_select').removeClass('dropdown').addClass('nearby-dropdown');
+  $('.nearby-btn').removeClass('nearby-btn').addClass('nearby-btn-cancel');
+  $('#floor').css({
+    position: 'absolute'
+  });
+  $('.btn-amenities').css({
+    top : '1.5%'
+  });
+  /* Begin anims */
+
+  /* Move unneeded components offscreen */
+  $('#floor_select').velocity({
+    'margin-left' : "300%",
+  }, {
+    easing : 'easeInSine',
+    duration : 'slow',
+  });
+  $('#btn_search').velocity({
+    'margin-left' : "300%",
+  }, {
+    easing : 'easeInSine',
+    duration : 'slow'
+  });
+  $('#floor').velocity({
+    left: '100%'
+  });
+
+  /* Move needed components to necessary positions */
+  $('.btn-amenities').velocity({
+    top: '12%',
+    height: '8%',
+  }, {
+    delay : 500
+  });
+  $('#location_select').velocity({
+    width: '44%',
+    height: '8%',
+    top : '12%'
+  }, {
+    delay : 400
+  });
+  $('.nearby-btn-cancel').velocity({
+    left : '5%',
+    'font-size': '1.2em'
+  }, {
+    delay : 700
+  });
+}
+
 
 module.exports = {
   closeFloatingMenu : _closeFloatingMenu,
@@ -738,7 +789,8 @@ module.exports = {
   transitionFromMeetingRoomSearch : _transitionFromMeetingRoomSearch,
   revertSearchDisplay : _revertSearchDisplay,
   prepareForMeetingRoomDisplay : _prepareForMeetingRoomDisplay,
-  toggleAmenitiesModal : _toggleAmenitiesModal
+  toggleAmenitiesModal : _toggleAmenitiesModal,
+  transitionToNearbyView : _transitionToNearbyView
 };
 
 },{"./htmlGenerators.js":3,"./roomSearch.js":5}]},{},[1,2,3,4,5,6]);

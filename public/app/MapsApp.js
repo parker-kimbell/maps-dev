@@ -72,6 +72,10 @@ function _setupEventHandlers(mapsPayload) {
         }
       });
 
+      $('.nearby-btn').on('click tap', function() {
+        viewTransitions.transitionToNearbyView();
+      });
+
       $('#active_search_input').on('input', function() {
         viewTransitions.revertSearchDisplay();
         roomSearch.searchTable();
