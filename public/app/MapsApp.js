@@ -155,6 +155,15 @@ function _initLayerIcons(mapsPayload) {
   });
 }
 
+function _initNearbyLayerIcons(nearbyMapsPayload) {
+  var layers = nearbyMapsPayload.layers;
+  var that = this;
+  $.each(layers, function(i, layer) {
+    that.nearbyLayerIcons[layer.Id] = new Image();
+    that.nearbyLayerIcons[layer.Id].src = layer.Icon;
+  });
+}
+
 /*
   Constructs the location/building selector used after app init,
   and the initial modal presented to the user that allows them to select their location
@@ -247,7 +256,7 @@ function _initMapsApp(mapsPayload) {
         }
       });
     }
-  }).trigger('hashchange'); /* $.onHashChange */
+  }).trigger('hashchange');
 }
 
 function _buildLayersModalForFloor(layers, floorPins) {
@@ -303,6 +312,7 @@ function _retrieveNearbyMaps() {
   request.addEventListener("load", function() {
     var nearbyMapsPayload = JSON.parse(this.responseText);
     that.nearbyMapsPayload = nearbyMapsPayload;
+    that.initNearbyLayerIcons(nearbyMapsPayload);
   });
   //request.open("GET", cmsUrl + "/api/map/nearby");
   request.open("GET", 'https://7e899108.ngrok.io/getMapsNearby');
@@ -343,5 +353,6 @@ MapsApp.prototype.buildLayersModalForFloor = _buildLayersModalForFloor;
 MapsApp.prototype.setAmenitiesButtonTo = _setAmenitiesButtonTo;
 MapsApp.prototype.extractNearbyPayload = _extractNearbyPayload;
 MapsApp.prototype.retrieveNearbyMaps = _retrieveNearbyMaps;
+MapsApp.prototype.initNearbyLayerIcons = _initNearbyLayerIcons;
 
 module.exports = new MapsApp();

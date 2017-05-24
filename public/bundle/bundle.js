@@ -156,6 +156,15 @@ function _initLayerIcons(mapsPayload) {
   });
 }
 
+function _initNearbyLayerIcons(nearbyMapsPayload) {
+  var layers = nearbyMapsPayload.layers;
+  var that = this;
+  $.each(layers, function(i, layer) {
+    that.nearbyLayerIcons[layer.Id] = new Image();
+    that.nearbyLayerIcons[layer.Id].src = layer.Icon;
+  });
+}
+
 /*
   Constructs the location/building selector used after app init,
   and the initial modal presented to the user that allows them to select their location
@@ -248,7 +257,7 @@ function _initMapsApp(mapsPayload) {
         }
       });
     }
-  }).trigger('hashchange'); /* $.onHashChange */
+  }).trigger('hashchange');
 }
 
 function _buildLayersModalForFloor(layers, floorPins) {
@@ -304,6 +313,7 @@ function _retrieveNearbyMaps() {
   request.addEventListener("load", function() {
     var nearbyMapsPayload = JSON.parse(this.responseText);
     that.nearbyMapsPayload = nearbyMapsPayload;
+    that.initNearbyLayerIcons(nearbyMapsPayload);
   });
   //request.open("GET", cmsUrl + "/api/map/nearby");
   request.open("GET", 'https://7e899108.ngrok.io/getMapsNearby');
@@ -344,6 +354,7 @@ MapsApp.prototype.buildLayersModalForFloor = _buildLayersModalForFloor;
 MapsApp.prototype.setAmenitiesButtonTo = _setAmenitiesButtonTo;
 MapsApp.prototype.extractNearbyPayload = _extractNearbyPayload;
 MapsApp.prototype.retrieveNearbyMaps = _retrieveNearbyMaps;
+MapsApp.prototype.initNearbyLayerIcons = _initNearbyLayerIcons;
 
 module.exports = new MapsApp();
 
@@ -354,6 +365,7 @@ function VisualMap() {
   this.stage = null;
   this.backgroundLayer = null;
   this.layerIcons = {};
+  this.nearbyLayerIcons = {};
 }
 
 function _clearLastTouchedPin() {
@@ -419,7 +431,6 @@ function _drawMapForFloor(floor, mapsPayload) {
     */
     var fontSize = 40;
 
-    var image = that.layerIcons[pinData.LayerId];
     var offsetXImage = fontSize - (fontSize * 0.66);
     var offsetYImage = fontSize - (fontSize * 0.08);
 
@@ -562,32 +573,13 @@ function _drawNearbyView(nearby) {
 
   $(function () {
 
-    // $('#location_select').on('change', function() {
-    //     var optionSelected = $("option:selected", this);
-    //     document.location.href = '/mobile/nearby/' + $(optionSelected).data('locationid');
-    // });
-    //
-    // $('.filter_close').on('click', function() {
-    //     $('.filter').velocity({
-    //         opacity: 0
-    //     }, {
-    //         display: 'none',
-    //         delay: 500,
-    //         duration: 200
-    //     });
-    // });
-    //
-    // $('.panel_close').on('click', function() {
-    //   $('#floatingmenu').removeClass('open');
-    // });
-
     that.stage = new Konva.Stage({
       container: 'nearby',   // id of container <div>
       width: contentWidth,
       height: contentHeight
     });
 
-    var backgroundLayer = new Konva.Layer({});
+    that.backgroundLayer = new Konva.Layer({});
 
     var pinLayer = new Konva.Layer();
 
@@ -600,13 +592,13 @@ function _drawNearbyView(nearby) {
         listening: true
     });
 
-    backgroundLayer.add(base);
+    that.backgroundLayer.add(base);
 
     var imageObj = new Image();
 
     imageObj.onload = function() {
       base.image(imageObj);
-      backgroundLayer.draw();
+      that.backgroundLayer.draw();
       $('#container').velocity({
         left : '0px',
         right : '0px'
@@ -620,33 +612,79 @@ function _drawNearbyView(nearby) {
 
     imageObj.src = that.cmsUrl + nearby.MapImage.image;
 
+    var fontSize = 40;
+
+    var offsetXImage = fontSize - (fontSize * 0.66);
+    var offsetYImage = fontSize - (fontSize * 0.08);
+
+    var offsetXPin = fontSize - (fontSize * 0.60);
+    var offsetYPin = fontSize - (fontSize * 0.02);
+
     $.each(nearby.Map.NearbyPin, function(i, pinData) {
-        var pin = new Konva.Text({
-            x: ((editorConfig.ResourcesWidth * scaleX)* pinData.PositionX) - 10,
-            y: ((editorConfig.ResourcesHeight * scaleY)* pinData.PositionY) - 35,
-            fill: 'rgb(232,66,102)',
-            text: '\ue807',
-            fontSize: 40,
-            fontFamily: 'pwcmobileappicons',
-            shadowColor: 'black',
-            shadowBlur: 10,
-            shadowOffset: {x : 5, y : 5},
-            shadowOpacity: 0.5,
-            layerid: pinData.LayerId
-        });
-        pin.on('tap click', function(e) {
-            var p = e.target;
-            /* TODO: figure out what this is doing */
-            // $('.layer_name').html(pinData.NearbyLayer.Name);
-            $('.panel_title').html(pinData.Title);
-            $('.panel_body').html(pinData.Body);
-            $('.panel_location').html(pinData.Location);
-            $('#floatingmenu').addClass('open');
-        });
-        backgroundLayer.add(pin);
+      debugger;
+      var pinIcon = new Konva.Image({
+        x: ((editorConfig.ResourcesWidth * scaleX)* pinData.PositionX) - offsetXImage,
+        y: ((editorConfig.ResourcesHeight * scaleY)* pinData.PositionY) - offsetYImage,
+        image: that.nearbyLayerIcons[pinData.LayerId],
+        scaleX : fontSize / 90,
+        scaleY : fontSize / 90,
+        icon : true
+      });
+
+      var pin = new Konva.Text({
+        x: ((editorConfig.ResourcesWidth * scaleX)* pinData.PositionX) - offsetXPin,
+        y: ((editorConfig.ResourcesHeight * scaleY)* pinData.PositionY) - offsetYPin,
+        fill: 'rgb(232,66,102)',
+        text: '\ue807',
+        fontSize: 40,
+        stroke : 'white',
+        strokeWidth : '3',
+        strokeEnabled : false,
+        fontFamily: 'pwcmobileappicons',
+        shadowColor: 'black',
+        shadowBlur: 10,
+        shadowOffset: {x : 5, y : 5},
+        shadowOpacity: 0.5,
+        layerid: pinData.LayerId
+      });
+
+      pinIcon.on('tap click', function(event) {
+        event.evt.stopPropagation();
+        pin.fire(event.type, pin);
+      });
+
+      pin.on('tap click', function(e) {
+        var touchedPin = e.target;
+        if (that.lastTouchedPin) that.lastTouchedPin.strokeEnabled(false);
+        debugger;
+        touchedPin.strokeEnabled(true);
+        touchedPin.moveToTop();
+        pinIcon.moveToTop();
+        that.lastTouchedPin = touchedPin;
+        that.backgroundLayer.draw();
+        /* TODO: figure out what this is doing */
+        // $('.layer_name').html(pinData.NearbyLayer.Name);
+        $('.layer_name div').html(pinData.Title);
+        $('.panel_body').html(pinData.Body);
+        $('.panel_location').html(pinData.Location);
+        $('#floatingmenu').addClass('open');
+        $('#location_select').blur();
+      });
+      that.backgroundLayer.add(pin);
+      that.backgroundLayer.add(pinIcon);
     });
 
-    that.stage.add(backgroundLayer);
+    /* close the panel if the map is tapped */
+    that.stage.on('tap click', function(e) {
+
+        var node = e.target;
+        if(node.className === 'Image' && !node.attrs.icon) {
+            that.closeFloatingMenu();
+        }
+
+    });
+
+    that.stage.add(that.backgroundLayer);
 
   });
 }

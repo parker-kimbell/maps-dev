@@ -470,7 +470,7 @@ input:focus { outline: none; }
 #container {
   position: absolute;
 	left: 300%;
-	top: 0px;
+	top: 22%;
 	bottom: 0px;
 	cursor: default;
 	overflow: hidden;
