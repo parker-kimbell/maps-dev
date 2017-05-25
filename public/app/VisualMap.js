@@ -189,8 +189,13 @@ function _hideAllPins() {
   this.stage.draw();
 }
 
+var lastDist = 0;
+var startScale = 1;
+function getDistance(p1, p2) {
+    return Math.sqrt(Math.pow((p2.x - p1.x), 2) + Math.pow((p2.y - p1.y), 2));
+}
+
 function _drawNearbyView(nearby) {
-  debugger;
   var editorConfig = {
     ResourcesWidth: nearby.MapImage.width,
     ResourcesHeight: nearby.MapImage.height
@@ -214,7 +219,8 @@ function _drawNearbyView(nearby) {
   that.stage = new Konva.Stage({
     container: 'nearby',   // id of container <div>
     width: contentWidth,
-    height: contentHeight
+    height: contentHeight,
+    preventDefault: false
   });
 
   that.backgroundLayer = new Konva.Layer({});
@@ -227,7 +233,8 @@ function _drawNearbyView(nearby) {
       width: editorConfig.ResourcesWidth*scaleX,
       height: editorConfig.ResourcesHeight*scaleY,
       stroke: 0,
-      listening: true
+      listening: true,
+      preventDefault: false
   });
 
   that.backgroundLayer.add(base);
@@ -242,7 +249,7 @@ function _drawNearbyView(nearby) {
       right : '0px'
     }, {
       complete : function() {
-        that.scroller = _initializeScroller(contentWidth, contentHeight);
+        //that.scroller = _initializeScroller(contentWidth, contentHeight);
       },
       duration : 1250
     });
@@ -293,7 +300,6 @@ function _drawNearbyView(nearby) {
     });
 
     pin.on('tap click', function(event) {
-      debugger;
       if (event.evt) event.evt.stopPropagation();
       var touchedPin = event.target;
       if (that.lastTouchedPin) that.lastTouchedPin.strokeEnabled(false);
@@ -302,11 +308,6 @@ function _drawNearbyView(nearby) {
       // pinIcon.moveToTop();
       // that.lastTouchedPin = touchedPin;
       // that.backgroundLayer.draw();
-
-      that.scroller.doTouchEnd(Date.now());
-      alert('pinX: ' + pinX);
-      alert('pinY: ' + pinY);
-      that.scroller.scrollTo(pinX, pinY, true);
 
       /* TODO: figure out what this is doing */
       // $('.layer_name').html(pinData.NearbyLayer.Name);
@@ -331,6 +332,31 @@ function _drawNearbyView(nearby) {
   });
 
   that.stage.add(that.backgroundLayer);
+  that.stage.getContent().addEventListener('touchmove', function(evt) {
+    var touch1 = evt.touches[0];
+    var touch2 = evt.touches[1];
+    if(touch1 && touch2) {
+       var dist = getDistance({
+           x: touch1.clientX,
+           y: touch1.clientY
+       }, {
+           x: touch2.clientX,
+           y: touch2.clientY
+       });
+       if(!lastDist) {
+           lastDist = dist;
+       }
+       var scale = that.stage.getScaleX() * dist / lastDist;
+       that.stage.scaleX(scale);
+       that.stage.scaleY(scale);
+       that.stage.draw();
+       lastDist = dist;
+    }
+   }, false);
+
+  // that.stage.getContent().addEventListener('touchend', function() {
+  //   lastDist = 0;
+  // }, false);
 }
 
 function _initializeScroller(contentWidth, contentHeight) {
