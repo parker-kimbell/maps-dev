@@ -292,15 +292,22 @@ function _drawNearbyView(nearby) {
       pin.fire(event.type, pin);
     });
 
-    pin.on('tap click', function(e) {
-      var touchedPin = e.target;
+    pin.on('tap click', function(event) {
+      debugger;
+      if (event.evt) event.evt.stopPropagation();
+      var touchedPin = event.target;
       if (that.lastTouchedPin) that.lastTouchedPin.strokeEnabled(false);
       // touchedPin.strokeEnabled(true);
       // touchedPin.moveToTop();
       // pinIcon.moveToTop();
       // that.lastTouchedPin = touchedPin;
       // that.backgroundLayer.draw();
-      that.scroller.scrollTo(0, 0);
+
+      that.scroller.doTouchEnd(Date.now());
+      alert('pinX: ' + pinX);
+      alert('pinY: ' + pinY);
+      that.scroller.scrollTo(pinX, pinY, true);
+
       /* TODO: figure out what this is doing */
       // $('.layer_name').html(pinData.NearbyLayer.Name);
       $('.layer_name div').html(pinData.Title);
@@ -328,7 +335,6 @@ function _drawNearbyView(nearby) {
 
 function _initializeScroller(contentWidth, contentHeight) {
   var container = document.getElementById("container");
-  debugger;
   var scroller = new Scroller(render, {
     zooming: false
   });
@@ -339,9 +345,10 @@ function _initializeScroller(contentWidth, contentHeight) {
     var clientWidth = container.clientWidth;
     var clientHeight = container.clientHeight;
     scroller.setDimensions(clientWidth, clientHeight, contentWidth, contentHeight);
+    alert('reflow called');
   };
 
-  //window.addEventListener("resize", reflow, false);
+  window.addEventListener("resize", reflow, false);
   reflow();
   if ('ontouchstart' in window) {
 
@@ -350,66 +357,69 @@ function _initializeScroller(contentWidth, contentHeight) {
       if (e.touches[0] && e.touches[0].target && e.touches[0].target.tagName.match(/input|textarea|select/i)) {
         return;
       }
-
+      //alert('touch start');
       scroller.doTouchStart(e.touches, e.timeStamp);
       e.preventDefault();
     }, false);
 
-    document.addEventListener("touchmove", function(e) {
+    container.addEventListener("touchmove", function(e) {
+      //alert('touch move');
       scroller.doTouchMove(e.touches, e.timeStamp, e.scale);
     }, false);
 
-    document.addEventListener("touchend", function(e) {
+    container.addEventListener("touchend", function(e) {
+      //alert('touch end');
       scroller.doTouchEnd(e.timeStamp);
     }, false);
 
-    document.addEventListener("touchcancel", function(e) {
-      scroller.doTouchEnd(e.timeStamp);
+    container.addEventListener("touchcancel", function(e) {
+      //alert('touch cancel');
+     scroller.doTouchEnd(e.timeStamp);
     }, false);
 
   } else {
 
-    var mousedown = false;
-
-    container.addEventListener("mousedown", function(e) {
-      if (e.target.tagName.match(/input|textarea|select/i)) {
-        return;
-      }
-
-      scroller.doTouchStart([{
-        pageX: e.pageX,
-        pageY: e.pageY
-      }], e.timeStamp);
-
-      mousedown = true;
-    }, false);
-
-    document.addEventListener("mousemove", function(e) {
-      if (!mousedown) {
-        return;
-      }
-
-      scroller.doTouchMove([{
-        pageX: e.pageX,
-        pageY: e.pageY
-      }], e.timeStamp);
-
-      mousedown = true;
-    }, false);
-
-    document.addEventListener("mouseup", function(e) {
-      if (!mousedown) {
-        return;
-      }
-
-      scroller.doTouchEnd(e.timeStamp);
-
-      mousedown = false;
-    }, false);
+    // var mousedown = false;
+    //
+    // container.addEventListener("mousedown", function(e) {
+    //   if (e.target.tagName.match(/input|textarea|select/i)) {
+    //     return;
+    //   }
+    //
+    //   scroller.doTouchStart([{
+    //     pageX: e.pageX,
+    //     pageY: e.pageY
+    //   }], e.timeStamp);
+    //
+    //   mousedown = true;
+    // }, false);
+    //
+    // document.addEventListener("mousemove", function(e) {
+    //   if (!mousedown) {
+    //     return;
+    //   }
+    //
+    //   scroller.doTouchMove([{
+    //     pageX: e.pageX,
+    //     pageY: e.pageY
+    //   }], e.timeStamp);
+    //
+    //   mousedown = true;
+    // }, false);
+    //
+    // document.addEventListener("mouseup", function(e) {
+    //   if (!mousedown) {
+    //     return;
+    //   }
+    //
+    //   scroller.doTouchEnd(e.timeStamp);
+    //
+    //   mousedown = false;
+    // }, false);
 
   }
+
   return scroller;
-  //scroller.scrollBy(150, 150, true);
 }
 
 VisualMap.prototype.hideAllPins = _hideAllPins;
