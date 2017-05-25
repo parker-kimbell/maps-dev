@@ -5,6 +5,7 @@ function VisualMap() {
   this.backgroundLayer = null;
   this.layerIcons = {};
   this.nearbyLayerIcons = {};
+  this.scroller = null;
 }
 
 function _clearLastTouchedPin() {
@@ -210,127 +211,124 @@ function _drawNearbyView(nearby) {
 
   var that = this;
 
-  $(function () {
+  that.stage = new Konva.Stage({
+    container: 'nearby',   // id of container <div>
+    width: contentWidth,
+    height: contentHeight
+  });
 
-    that.stage = new Konva.Stage({
-      container: 'nearby',   // id of container <div>
-      width: contentWidth,
-      height: contentHeight
+  that.backgroundLayer = new Konva.Layer({});
+
+  var pinLayer = new Konva.Layer();
+
+  var base = new Konva.Image({
+      x: 0,
+      y: 0,
+      width: editorConfig.ResourcesWidth*scaleX,
+      height: editorConfig.ResourcesHeight*scaleY,
+      stroke: 0,
+      listening: true
+  });
+
+  that.backgroundLayer.add(base);
+
+  var imageObj = new Image();
+
+  imageObj.onload = function() {
+    base.image(imageObj);
+    that.backgroundLayer.draw();
+    $('#container').velocity({
+      left : '0px',
+      right : '0px'
+    }, {
+      complete : function() {
+        that.scroller = _initializeScroller(contentWidth, contentHeight);
+      },
+      duration : 1250
+    });
+  };
+
+  imageObj.src = that.cmsUrl + nearby.MapImage.image;
+
+  var fontSize = 40;
+
+  var offsetXImage = fontSize - (fontSize * 0.66);
+  var offsetYImage = fontSize - (fontSize * 0.08);
+
+  var offsetXPin = fontSize - (fontSize * 0.60);
+  var offsetYPin = fontSize - (fontSize * 0.02);
+
+  $.each(nearby.Map.NearbyPin, function(i, pinData) {
+    var pinIcon = new Konva.Image({
+      x: ((editorConfig.ResourcesWidth * scaleX)* pinData.PositionX) - offsetXImage,
+      y: ((editorConfig.ResourcesHeight * scaleY)* pinData.PositionY) - offsetYImage,
+      image: that.nearbyLayerIcons[pinData.LayerId],
+      scaleX : fontSize / 90,
+      scaleY : fontSize / 90,
+      icon : true
     });
 
-    that.backgroundLayer = new Konva.Layer({});
-
-    var pinLayer = new Konva.Layer();
-
-    var base = new Konva.Image({
-        x: 0,
-        y: 0,
-        width: editorConfig.ResourcesWidth*scaleX,
-        height: editorConfig.ResourcesHeight*scaleY,
-        stroke: 0,
-        listening: true
+    var pinX = ((editorConfig.ResourcesWidth * scaleX)* pinData.PositionX) - offsetXPin;
+    var pinY = ((editorConfig.ResourcesHeight * scaleY)* pinData.PositionY) - offsetYPin;
+    var pin = new Konva.Text({
+      x: pinX,
+      y: pinY,
+      fill: 'rgb(232,66,102)',
+      text: '\ue807',
+      fontSize: 40,
+      stroke : 'white',
+      strokeWidth : '3',
+      strokeEnabled : false,
+      fontFamily: 'pwcmobileappicons',
+      shadowColor: 'black',
+      shadowBlur: 10,
+      shadowOffset: {x : 5, y : 5},
+      shadowOpacity: 0.5,
+      layerid: pinData.LayerId
     });
 
-    that.backgroundLayer.add(base);
-
-    var imageObj = new Image();
-
-    imageObj.onload = function() {
-      base.image(imageObj);
-      that.backgroundLayer.draw();
-      $('#container').velocity({
-        left : '0px',
-        right : '0px'
-      }, {
-        complete : function() {
-          _initializeScroller(contentWidth, contentHeight);
-        },
-        duration : 1250
-      });
-    };
-
-    imageObj.src = that.cmsUrl + nearby.MapImage.image;
-
-    var fontSize = 40;
-
-    var offsetXImage = fontSize - (fontSize * 0.66);
-    var offsetYImage = fontSize - (fontSize * 0.08);
-
-    var offsetXPin = fontSize - (fontSize * 0.60);
-    var offsetYPin = fontSize - (fontSize * 0.02);
-
-    $.each(nearby.Map.NearbyPin, function(i, pinData) {
-      debugger;
-      var pinIcon = new Konva.Image({
-        x: ((editorConfig.ResourcesWidth * scaleX)* pinData.PositionX) - offsetXImage,
-        y: ((editorConfig.ResourcesHeight * scaleY)* pinData.PositionY) - offsetYImage,
-        image: that.nearbyLayerIcons[pinData.LayerId],
-        scaleX : fontSize / 90,
-        scaleY : fontSize / 90,
-        icon : true
-      });
-
-      var pin = new Konva.Text({
-        x: ((editorConfig.ResourcesWidth * scaleX)* pinData.PositionX) - offsetXPin,
-        y: ((editorConfig.ResourcesHeight * scaleY)* pinData.PositionY) - offsetYPin,
-        fill: 'rgb(232,66,102)',
-        text: '\ue807',
-        fontSize: 40,
-        stroke : 'white',
-        strokeWidth : '3',
-        strokeEnabled : false,
-        fontFamily: 'pwcmobileappicons',
-        shadowColor: 'black',
-        shadowBlur: 10,
-        shadowOffset: {x : 5, y : 5},
-        shadowOpacity: 0.5,
-        layerid: pinData.LayerId
-      });
-
-      pinIcon.on('tap click', function(event) {
-        event.evt.stopPropagation();
-        pin.fire(event.type, pin);
-      });
-
-      pin.on('tap click', function(e) {
-        var touchedPin = e.target;
-        if (that.lastTouchedPin) that.lastTouchedPin.strokeEnabled(false);
-        debugger;
-        touchedPin.strokeEnabled(true);
-        touchedPin.moveToTop();
-        pinIcon.moveToTop();
-        that.lastTouchedPin = touchedPin;
-        that.backgroundLayer.draw();
-        /* TODO: figure out what this is doing */
-        // $('.layer_name').html(pinData.NearbyLayer.Name);
-        $('.layer_name div').html(pinData.Title);
-        $('.panel_body').html(pinData.Body);
-        $('.panel_location').html(pinData.Location);
-        $('#floatingmenu').addClass('open');
-        $('#location_select').blur();
-      });
-      that.backgroundLayer.add(pin);
-      that.backgroundLayer.add(pinIcon);
+    pinIcon.on('tap click', function(event) {
+      event.evt.stopPropagation();
+      pin.fire(event.type, pin);
     });
 
-    /* close the panel if the map is tapped */
-    that.stage.on('tap click', function(e) {
-
-        var node = e.target;
-        if(node.className === 'Image' && !node.attrs.icon) {
-            that.closeFloatingMenu();
-        }
-
+    pin.on('tap click', function(e) {
+      var touchedPin = e.target;
+      if (that.lastTouchedPin) that.lastTouchedPin.strokeEnabled(false);
+      // touchedPin.strokeEnabled(true);
+      // touchedPin.moveToTop();
+      // pinIcon.moveToTop();
+      // that.lastTouchedPin = touchedPin;
+      // that.backgroundLayer.draw();
+      that.scroller.scrollTo(0, 0);
+      /* TODO: figure out what this is doing */
+      // $('.layer_name').html(pinData.NearbyLayer.Name);
+      $('.layer_name div').html(pinData.Title);
+      $('.panel_body').html(pinData.Body);
+      $('.panel_location').html(pinData.Location);
+      $('#floatingmenu').addClass('open');
+      $('#location_select').blur();
     });
+    that.backgroundLayer.add(pin);
+    that.backgroundLayer.add(pinIcon);
+  });
 
-    that.stage.add(that.backgroundLayer);
+  /* close the panel if the map is tapped */
+  that.stage.on('tap click', function(e) {
+
+      var node = e.target;
+      if(node.className === 'Image' && !node.attrs.icon) {
+          that.closeFloatingMenu();
+      }
 
   });
+
+  that.stage.add(that.backgroundLayer);
 }
 
 function _initializeScroller(contentWidth, contentHeight) {
   var container = document.getElementById("container");
-
+  debugger;
   var scroller = new Scroller(render, {
     zooming: false
   });
@@ -343,7 +341,7 @@ function _initializeScroller(contentWidth, contentHeight) {
     scroller.setDimensions(clientWidth, clientHeight, contentWidth, contentHeight);
   };
 
-  window.addEventListener("resize", reflow, false);
+  //window.addEventListener("resize", reflow, false);
   reflow();
   if ('ontouchstart' in window) {
 
@@ -410,7 +408,7 @@ function _initializeScroller(contentWidth, contentHeight) {
     }, false);
 
   }
-
+  return scroller;
   //scroller.scrollBy(150, 150, true);
 }
 
