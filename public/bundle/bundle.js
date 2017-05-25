@@ -609,9 +609,6 @@ function _drawNearbyView(nearby) {
       left : '0px',
       right : '0px'
     }, {
-      complete : function() {
-        //that.scroller = _initializeScroller(contentWidth, contentHeight);
-      },
       duration : 1250
     });
   };
@@ -723,98 +720,9 @@ function _drawNearbyView(nearby) {
     }
    }, false);
 
-  // that.stage.getContent().addEventListener('touchend', function() {
-  //   lastDist = 0;
-  // }, false);
-}
-
-function _initializeScroller(contentWidth, contentHeight) {
-  var container = document.getElementById("container");
-  var scroller = new Scroller(render, {
-    zooming: false
-  });
-
-  var rect = container.getBoundingClientRect();
-  // Reflow handling
-  var reflow = function() {
-    var clientWidth = container.clientWidth;
-    var clientHeight = container.clientHeight;
-    scroller.setDimensions(clientWidth, clientHeight, contentWidth, contentHeight);
-    alert('reflow called');
-  };
-
-  window.addEventListener("resize", reflow, false);
-  reflow();
-  if ('ontouchstart' in window) {
-
-    container.addEventListener("touchstart", function(e) {
-      // Don't react if initial down happens on a form element
-      if (e.touches[0] && e.touches[0].target && e.touches[0].target.tagName.match(/input|textarea|select/i)) {
-        return;
-      }
-      //alert('touch start');
-      scroller.doTouchStart(e.touches, e.timeStamp);
-      e.preventDefault();
-    }, false);
-
-    container.addEventListener("touchmove", function(e) {
-      //alert('touch move');
-      scroller.doTouchMove(e.touches, e.timeStamp, e.scale);
-    }, false);
-
-    container.addEventListener("touchend", function(e) {
-      //alert('touch end');
-      scroller.doTouchEnd(e.timeStamp);
-    }, false);
-
-    container.addEventListener("touchcancel", function(e) {
-      //alert('touch cancel');
-     scroller.doTouchEnd(e.timeStamp);
-    }, false);
-
-  } else {
-
-    // var mousedown = false;
-    //
-    // container.addEventListener("mousedown", function(e) {
-    //   if (e.target.tagName.match(/input|textarea|select/i)) {
-    //     return;
-    //   }
-    //
-    //   scroller.doTouchStart([{
-    //     pageX: e.pageX,
-    //     pageY: e.pageY
-    //   }], e.timeStamp);
-    //
-    //   mousedown = true;
-    // }, false);
-    //
-    // document.addEventListener("mousemove", function(e) {
-    //   if (!mousedown) {
-    //     return;
-    //   }
-    //
-    //   scroller.doTouchMove([{
-    //     pageX: e.pageX,
-    //     pageY: e.pageY
-    //   }], e.timeStamp);
-    //
-    //   mousedown = true;
-    // }, false);
-    //
-    // document.addEventListener("mouseup", function(e) {
-    //   if (!mousedown) {
-    //     return;
-    //   }
-    //
-    //   scroller.doTouchEnd(e.timeStamp);
-    //
-    //   mousedown = false;
-    // }, false);
-
-  }
-
-  return scroller;
+  that.stage.getContent().addEventListener('touchend', function() {
+    lastDist = 0;
+  }, false);
 }
 
 VisualMap.prototype.hideAllPins = _hideAllPins;
