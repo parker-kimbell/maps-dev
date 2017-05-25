@@ -652,7 +652,8 @@ function _drawNearbyView(nearby) {
       shadowBlur: 10,
       shadowOffset: {x : 5, y : 5},
       shadowOpacity: 0.5,
-      layerid: pinData.LayerId
+      layerid: pinData.LayerId,
+      pinIcon: pinIcon
     });
 
     pinIcon.on('tap click', function(event) {
@@ -663,12 +664,19 @@ function _drawNearbyView(nearby) {
     pin.on('tap click', function(event) {
       if (event.evt) event.evt.stopPropagation();
       var touchedPin = event.target;
-      if (that.lastTouchedPin) that.lastTouchedPin.strokeEnabled(false);
-      // touchedPin.strokeEnabled(true);
-      // touchedPin.moveToTop();
-      // pinIcon.moveToTop();
-      // that.lastTouchedPin = touchedPin;
-      // that.backgroundLayer.draw();
+      if (that.lastTouchedPin) {
+        that.lastTouchedPin.strokeEnabled(false);
+        that.lastTouchedPin.draw(); // Update stroke on last touched pin
+        that.lastTouchedPin.attrs.pinIcon.draw();
+      }
+      /* Redraw the pin that has been touched to show the user that
+        is that they're looking at */
+      touchedPin.strokeEnabled(true);
+      touchedPin.moveToTop();
+      pinIcon.moveToTop();
+      that.lastTouchedPin = touchedPin;
+      touchedPin.draw();
+      touchedPin.attrs.pinIcon.draw();
 
       /* TODO: figure out what this is doing */
       // $('.layer_name').html(pinData.NearbyLayer.Name);
