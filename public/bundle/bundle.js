@@ -366,7 +366,6 @@ function VisualMap() {
   this.backgroundLayer = null;
   this.layerIcons = {};
   this.nearbyLayerIcons = {};
-  this.scroller = null;
 }
 
 function _clearLastTouchedPin() {
@@ -572,8 +571,6 @@ function _drawNearbyView(nearby) {
   var content = document.getElementById("content");
   var clientWidth = 0;
   var clientHeight = 0;
-
-  var scroller;
 
   var that = this;
 
