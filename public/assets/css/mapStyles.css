@@ -473,7 +473,7 @@ input:focus { outline: none; }
 	top: 22%;
 	bottom: 0px;
 	cursor: default;
-	overflow: scroll;
+	/*overflow: scroll;*/
   -webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
@@ -482,25 +482,25 @@ input:focus { outline: none; }
 }
 
 #content {
-  overflow: scroll;
+  /*overflow: scroll;*/
   width: 100%;
   height: 100%;
 }
 
 #nearby {
-  overflow: scroll;
+  /*overflow: scroll;*/
   width: 100%;
   height: 100%;
 }
 
 #nearby > div {
-  overflow: scroll;
+  /*overflow: scroll;*/
   width: 100%;
   height: 100%;
 }
 
 #nearby > div > canvas {
-  overflow: scroll;
+  /*overflow: scroll;*/
 }
 
 option, select {

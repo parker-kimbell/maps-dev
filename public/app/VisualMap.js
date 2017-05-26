@@ -217,13 +217,43 @@ function _drawNearbyView(nearby) {
     container: 'nearby',   // id of container <div>
     width: contentWidth,
     height: contentHeight,
-    preventDefault: false
   });
 
-  that.backgroundLayer = new Konva.Layer({});
+  that.backgroundLayer = new Konva.Layer({
+    draggable : true,
+    dragBoundFunc: function(pos) {
+      var currY = pos.y;
+      var currX = pos.x;
+
+      var newY;
+      var newX;
+      if (currY < -mapImageHeight / 3) {
+        newY = -mapImageHeight / 3;
+      } else if (currY > 0 ) {
+        newY = 0;
+      } else {
+        newY = currY;
+      }
+
+      if (currX < -mapImageWidth / 2) {
+        newX = -mapImageWidth / 2;
+      } else if (currX > 0) {
+        newX = 0;
+      } else {
+        newX = currX;
+      }
+
+      return {
+          x: newX,
+          y: newY
+      };
+    }
+  });
 
   var pinLayer = new Konva.Layer();
-
+  debugger;
+  var mapImageWidth = editorConfig.ResourcesWidth*scaleX;
+  var mapImageHeight = editorConfig.ResourcesHeight*scaleY;
   var base = new Konva.Image({
       x: 0,
       y: 0,
@@ -231,7 +261,6 @@ function _drawNearbyView(nearby) {
       height: editorConfig.ResourcesHeight*scaleY,
       stroke: 0,
       listening: true,
-      preventDefault: false
   });
 
   that.backgroundLayer.add(base);
@@ -334,31 +363,33 @@ function _drawNearbyView(nearby) {
   });
 
   that.stage.add(that.backgroundLayer);
-  that.stage.getContent().addEventListener('touchmove', function(evt) {
-    var touch1 = evt.touches[0];
-    var touch2 = evt.touches[1];
-    if(touch1 && touch2) {
-       var dist = getDistance({
-           x: touch1.clientX,
-           y: touch1.clientY
-       }, {
-           x: touch2.clientX,
-           y: touch2.clientY
-       });
-       if(!lastDist) {
-           lastDist = dist;
-       }
-       var scale = that.stage.getScaleX() * dist / lastDist;
-       that.stage.scaleX(scale);
-       that.stage.scaleY(scale);
-       that.stage.draw();
-       lastDist = dist;
-    }
-   }, false);
 
-  that.stage.getContent().addEventListener('touchend', function() {
-    lastDist = 0;
-  }, false);
+  /* setup zoom */
+  // that.stage.getContent().addEventListener('touchmove', function(evt) {
+  //   var touch1 = evt.touches[0];
+  //   var touch2 = evt.touches[1];
+  //   if(touch1 && touch2) {
+  //      var dist = getDistance({
+  //          x: touch1.clientX,
+  //          y: touch1.clientY
+  //      }, {
+  //          x: touch2.clientX,
+  //          y: touch2.clientY
+  //      });
+  //      if(!lastDist) {
+  //          lastDist = dist;
+  //      }
+  //      var scale = that.stage.getScaleX() * dist / lastDist;
+  //      that.stage.scaleX(scale);
+  //      that.stage.scaleY(scale);
+  //      that.stage.draw();
+  //      lastDist = dist;
+  //   }
+  //  }, false);
+  //
+  // that.stage.getContent().addEventListener('touchend', function() {
+  //   lastDist = 0;
+  // }, false);
 }
 
 VisualMap.prototype.hideAllPins = _hideAllPins;
