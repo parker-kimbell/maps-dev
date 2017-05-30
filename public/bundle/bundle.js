@@ -79,6 +79,10 @@ function _setupEventHandlers(mapsPayload) {
         that.closeFloatingMenu();
       });
 
+      $('#floatingmenu').on('click tap', function(event) {
+        event.stopPropagation();
+      });
+
       $('.nearby-btn').on('click tap', function() {
         that.inNearbyMaps = true;
         viewTransitions.transitionToNearbyView();
