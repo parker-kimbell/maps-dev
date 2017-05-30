@@ -86,8 +86,7 @@ function _setupEventHandlers(mapsPayload) {
       $('.nearby-btn').on('click tap', function() {
         that.inNearbyMaps = true;
         viewTransitions.transitionToNearbyView();
-        var nearby = that.extractNearbyPayload(_extractHashComponents());
-        that.drawNearbyView(nearby);
+        that.updateNearbyMapState(that.extractNearbyPayload(_extractHashComponents()));
       });
 
       $('#active_search_input').on('input', function() {
@@ -235,6 +234,11 @@ function _extractHashComponents() {
   };
 }
 
+function _updateNearbyMapState(nearby) {
+  this.setAmenitiesButtonTo(null);
+  this.drawNearbyView(nearby);
+}
+
 function _initMapsApp(mapsPayload) {
   var that = this;
   $(window).on('hashchange',function() {
@@ -246,8 +250,7 @@ function _initMapsApp(mapsPayload) {
       $('.building-modal-background').show();
       $('#map, .buttons').hide();
     } else if (that.inNearbyMaps) {
-      var nearby = that.extractNearbyPayload(_extractHashComponents());
-      that.drawNearbyView(nearby);
+      that.updateNearbyMapState(that.extractNearbyPayload(_extractHashComponents()));
     } else {
       /* Update the values for our location and floor select to match
        the given hash value */
@@ -384,6 +387,7 @@ MapsApp.prototype.setAmenitiesButtonTo = _setAmenitiesButtonTo;
 MapsApp.prototype.extractNearbyPayload = _extractNearbyPayload;
 MapsApp.prototype.retrieveNearbyMaps = _retrieveNearbyMaps;
 MapsApp.prototype.initNearbyLayerIcons = _initNearbyLayerIcons;
+MapsApp.prototype.updateNearbyMapState = _updateNearbyMapState;
 
 module.exports = new MapsApp();
 
