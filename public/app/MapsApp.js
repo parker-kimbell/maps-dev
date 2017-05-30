@@ -242,6 +242,7 @@ function _initMapsApp(mapsPayload) {
       $('#map, .buttons').hide();
     } else if (that.inNearbyMaps) {
       var nearby = that.extractNearbyPayload(_extractHashComponents());
+      that.setAmenitiesButtonTo(null);
       that.drawNearbyView(nearby);
     } else {
       /* Update the values for our location and floor select to match

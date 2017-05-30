@@ -431,7 +431,7 @@ input:focus { outline: none; }
   position:absolute;
   background-color: #22252B;
   top: 9%;
-  z-index: 10000;
+  z-index: 9500;
 }
 .nearby-btn {
   -webkit-appearance: none;
@@ -456,7 +456,7 @@ input:focus { outline: none; }
   margin: 0;
   padding: 0;
   outline: none;
-  z-index: 10000;
+  z-index: 9500;
   background-color: #22252B;
   background-image: url("/assets/cancel-action-grey.svg");
   background-size: auto 60%;

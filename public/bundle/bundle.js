@@ -243,6 +243,7 @@ function _initMapsApp(mapsPayload) {
       $('#map, .buttons').hide();
     } else if (that.inNearbyMaps) {
       var nearby = that.extractNearbyPayload(_extractHashComponents());
+      that.setAmenitiesButtonTo(null);
       that.drawNearbyView(nearby);
     } else {
       /* Update the values for our location and floor select to match
@@ -1114,7 +1115,7 @@ function _openFloatingMenu() {
 /* Transitions for Nearby */
 
 function _transitionToNearbyView() {
-  $('.filter').css('top', '22%');
+  $('.filter > ul').css('margin-top', '33%');
   $('.layer_name > img').addClass('close-modal-dark-bg');
   _closeAllModals();
   $('#location_select').removeClass('dropdown').addClass('nearby-dropdown');
