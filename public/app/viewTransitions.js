@@ -110,6 +110,7 @@ function _openFloatingMenu() {
 /* Transitions for Nearby */
 
 function _transitionToNearbyView() {
+  $('.filter').css('top', '22%');
   $('.layer_name > img').addClass('close-modal-dark-bg');
   _closeAllModals();
   $('#location_select').removeClass('dropdown').addClass('nearby-dropdown');
