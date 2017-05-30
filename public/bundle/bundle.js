@@ -79,7 +79,7 @@ function _setupEventHandlers(mapsPayload) {
         that.closeFloatingMenu();
       });
 
-      $('#floatingmenu').on('click tap', function(event) {
+      $('.panel_body').on('click tap', function(event) {
         event.stopPropagation();
       });
 
@@ -133,7 +133,11 @@ function _setAmenitiesButtonTo(categoryId) {
     $('#btn_amenities').addClass('showing-amenities');
     $('#btn_amenities').removeClass('no-amenities');
     $('#btn_amenities .icon').hide();
-    $('#btn_amenities').prepend($(that.layerIcons[categoryId]).clone().addClass('curr-amen-icon'));
+    if (that.inNearbyMaps) {
+      $('#btn_amenities').prepend($(that.nearbyLayerIcons[categoryId]).clone().addClass('curr-amen-icon'));
+    } else {
+      $('#btn_amenities').prepend($(that.layerIcons[categoryId]).clone().addClass('curr-amen-icon'));
+    }
   } else { /* Case: We're not showing an amenity categories */
     $('#btn_amenities').addClass('no-amenities');
     $('#btn_amenities').removeClass('showing-amenities');
@@ -243,7 +247,6 @@ function _initMapsApp(mapsPayload) {
       $('#map, .buttons').hide();
     } else if (that.inNearbyMaps) {
       var nearby = that.extractNearbyPayload(_extractHashComponents());
-      that.setAmenitiesButtonTo(null);
       that.drawNearbyView(nearby);
     } else {
       /* Update the values for our location and floor select to match
@@ -289,7 +292,7 @@ function _buildLayersModalForFloor(layers, floorPins) {
   var category_list = $('.category_list');
   var that = this;
   $('.category_list li').remove(); /* Since we're changing floors, or init'ing the app, clear all previous amenity buttons */
-  debugger;
+
   $.each(layers, function(i, layer) {
     if (layer.Name === MEETING_ROOMS) {
       that.meetingRoomLayerId = layer.Id;
@@ -732,7 +735,6 @@ function _drawNearbyView(nearby) {
   };
 
   imageObj.src = that.cmsUrl + nearby.MapImage.image;
-  debugger;
   this.buildLayersModalForFloor(that.nearbyMapsPayload.layers, nearby.Map.NearbyPin);
   $.each(nearby.Map.NearbyPin, function(i, pinData) {
     var pinIcon = new Konva.Image({

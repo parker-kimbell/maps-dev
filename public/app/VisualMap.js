@@ -345,7 +345,6 @@ function _drawNearbyView(nearby) {
   };
 
   imageObj.src = that.cmsUrl + nearby.MapImage.image;
-  debugger;
   this.buildLayersModalForFloor(that.nearbyMapsPayload.layers, nearby.Map.NearbyPin);
   $.each(nearby.Map.NearbyPin, function(i, pinData) {
     var pinIcon = new Konva.Image({
