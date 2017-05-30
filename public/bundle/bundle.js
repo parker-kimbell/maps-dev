@@ -75,6 +75,10 @@ function _setupEventHandlers(mapsPayload) {
         }
       });
 
+      $('.app').on('click tap', function() {
+        that.closeFloatingMenu();
+      });
+
       $('.nearby-btn').on('click tap', function() {
         that.inNearbyMaps = true;
         viewTransitions.transitionToNearbyView();
@@ -233,6 +237,9 @@ function _initMapsApp(mapsPayload) {
     if(!config.location) { /* Case: we haven't been able to determine what location the visitor is in today, so ask them for app initialization */
       $('.building-modal-background').show();
       $('#map, .buttons').hide();
+    } else if (that.inNearbyMaps) {
+      var nearby = that.extractNearbyPayload(_extractHashComponents());
+      that.drawNearbyView(nearby);
     } else {
       /* Update the values for our location and floor select to match
        the given hash value */
@@ -628,7 +635,7 @@ function _generateNearbyBoundFunc(mapImageWidth, mapImageHeight, offsetXPin, off
       */
       if (currY < -(mapImageHeight - nearbyViewportHeight)) { // Case: viewport width exceeds the top most bounds of base map image
         newY = -(mapImageHeight - nearbyViewportHeight);
-      } else if (currY > offsetYPin ) { // Case: viewport width exceeds the bottom most bounds of base map image
+      } else if (currY > offsetYPin) { // Case: viewport width exceeds the bottom most bounds of base map image
         newY = offsetYPin;
       } else { // Case: Y coordinate is within acceptable bounds of base map image
         newY = currY;
