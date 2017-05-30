@@ -288,7 +288,7 @@ function _buildLayersModalForFloor(layers, floorPins) {
   var category_list = $('.category_list');
   var that = this;
   $('.category_list li').remove(); /* Since we're changing floors, or init'ing the app, clear all previous amenity buttons */
-
+  debugger;
   $.each(layers, function(i, layer) {
     if (layer.Name === MEETING_ROOMS) {
       that.meetingRoomLayerId = layer.Id;

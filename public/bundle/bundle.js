@@ -289,7 +289,7 @@ function _buildLayersModalForFloor(layers, floorPins) {
   var category_list = $('.category_list');
   var that = this;
   $('.category_list li').remove(); /* Since we're changing floors, or init'ing the app, clear all previous amenity buttons */
-
+  debugger;
   $.each(layers, function(i, layer) {
     if (layer.Name === MEETING_ROOMS) {
       that.meetingRoomLayerId = layer.Id;
@@ -732,7 +732,8 @@ function _drawNearbyView(nearby) {
   };
 
   imageObj.src = that.cmsUrl + nearby.MapImage.image;
-
+  debugger;
+  this.buildLayersModalForFloor(that.nearbyMapsPayload.layers, nearby.Map.NearbyPin);
   $.each(nearby.Map.NearbyPin, function(i, pinData) {
     var pinIcon = new Konva.Image({
       x: ((editorConfig.ResourcesWidth * scaleX)* pinData.PositionX) - offsetXImage,
@@ -1126,7 +1127,6 @@ function _transitionToNearbyView() {
     top : '1.5%'
   });
   /* Begin anims */
-
   var rootDelay = 100;
   /* Move needed components to necessary positions */
   $('#location_select').velocity({

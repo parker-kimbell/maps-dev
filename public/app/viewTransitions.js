@@ -121,7 +121,6 @@ function _transitionToNearbyView() {
     top : '1.5%'
   });
   /* Begin anims */
-
   var rootDelay = 100;
   /* Move needed components to necessary positions */
   $('#location_select').velocity({
