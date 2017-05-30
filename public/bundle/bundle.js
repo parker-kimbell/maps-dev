@@ -76,6 +76,7 @@ function _setupEventHandlers(mapsPayload) {
       });
 
       $('.nearby-btn').on('click tap', function() {
+        that.inNearbyMaps = true;
         viewTransitions.transitionToNearbyView();
         var nearby = that.extractNearbyPayload(_extractHashComponents());
         that.drawNearbyView(nearby);
@@ -198,6 +199,9 @@ function buildFloorSelect(floorData) {
 function _closeFloatingMenu() {
   viewTransitions.closeFloatingMenu();
   this.clearLastTouchedPin();
+  if (this.inNearbyMaps) {
+    this.animateToWithinMapBounds();
+  }
 }
 
 function _extractHashComponents() {
@@ -369,6 +373,8 @@ function VisualMap() {
   this.backgroundLayer = null;
   this.layerIcons = {};
   this.nearbyLayerIcons = {};
+  this.inNearbyMaps = false;
+  this.getNearbyBounds = null;
 }
 
 function _clearLastTouchedPin() {
@@ -562,7 +568,7 @@ function getDistance(p1, p2) {
 /*
   Returns the function used to control the scroll area for the current map image
 */
-function _nearbyBoundFunc(mapImageWidth, mapImageHeight) {
+function _generateNearbyBoundFunc(mapImageWidth, mapImageHeight) {
 
   var nearbyViewportWidth = window.innerWidth;
   /*
@@ -656,12 +662,12 @@ function _drawNearbyView(nearby) {
 
   var mapImageWidth = editorConfig.ResourcesWidth*scaleX;
   var mapImageHeight = editorConfig.ResourcesHeight*scaleY;
-
+  that.getNearbyBounds = _generateNearbyBoundFunc(mapImageWidth, mapImageHeight);
   that.backgroundLayer = new Konva.Layer({
     draggable : true,
     x : 0,
     y : 0,
-    dragBoundFunc: _nearbyBoundFunc(mapImageWidth, mapImageHeight)
+    dragBoundFunc: that.getNearbyBounds
   });
 
 
@@ -822,7 +828,18 @@ function _animateToPin(pin) {
 }
 
 function _animateToWithinMapBounds() {
-
+  var legalBounds = this.getNearbyBounds({
+    x : this.backgroundLayer.getX(),
+    y : this.backgroundLayer.getY()
+  });
+  var anim = new Konva.Tween({
+    node: this.backgroundLayer,
+    x : legalBounds.x,
+    y : legalBounds.y,
+    duration : 0.3, // seconds
+    easing : Konva.Easings.EaseOut
+  });
+  anim.play();
 }
 
 VisualMap.prototype.hideAllPins = _hideAllPins;
@@ -832,6 +849,8 @@ VisualMap.prototype.clearLastTouchedPin = _clearLastTouchedPin;
 VisualMap.prototype.drawMapForFloor = _drawMapForFloor;
 VisualMap.prototype.drawNearbyView = _drawNearbyView;
 VisualMap.prototype.animateToPin = _animateToPin;
+VisualMap.prototype.animateToWithinMapBounds = _animateToWithinMapBounds;
+
 
 module.exports = VisualMap;
 

@@ -75,6 +75,7 @@ function _setupEventHandlers(mapsPayload) {
       });
 
       $('.nearby-btn').on('click tap', function() {
+        that.inNearbyMaps = true;
         viewTransitions.transitionToNearbyView();
         var nearby = that.extractNearbyPayload(_extractHashComponents());
         that.drawNearbyView(nearby);
@@ -197,6 +198,9 @@ function buildFloorSelect(floorData) {
 function _closeFloatingMenu() {
   viewTransitions.closeFloatingMenu();
   this.clearLastTouchedPin();
+  if (this.inNearbyMaps) {
+    this.animateToWithinMapBounds();
+  }
 }
 
 function _extractHashComponents() {
