@@ -196,12 +196,21 @@ function buildFloorSelect(floorData) {
   });
 }
 
+function _openFloatingMenu() {
+  viewTransitions.openFloatingMenu();
+  if (this.inNearbyMaps) { // Case: if we are within the "nearby" view and we're closing out of an information modal, make sure we end within the scrollable map bounds
+    this.backgroundLayer.setDraggable(false);
+  }
+}
+
 function _closeFloatingMenu() {
   viewTransitions.closeFloatingMenu();
   this.clearLastTouchedPin();
-  if (this.inNearbyMaps) {
+  if (this.inNearbyMaps) { // Case: if we are within the "nearby" view and we're closing out of an information modal, make sure we end within the scrollable map bounds
     this.animateToWithinMapBounds();
+    this.backgroundLayer.setDraggable(true);
   }
+
 }
 
 function _extractHashComponents() {
@@ -354,6 +363,7 @@ MapsApp.prototype.initLayerIcons = _initLayerIcons;
 MapsApp.prototype.initMapsApp = _initMapsApp;
 MapsApp.prototype.setupEventHandlers = _setupEventHandlers;
 MapsApp.prototype.closeFloatingMenu = _closeFloatingMenu;
+MapsApp.prototype.openFloatingMenu = _openFloatingMenu;
 MapsApp.prototype.buildLayersModalForFloor = _buildLayersModalForFloor;
 MapsApp.prototype.setAmenitiesButtonTo = _setAmenitiesButtonTo;
 MapsApp.prototype.extractNearbyPayload = _extractNearbyPayload;
@@ -500,6 +510,7 @@ function _drawMapForFloor(floor, mapsPayload) {
       pinIcon.moveToTop();
       that.lastTouchedPin = touchedPin;
       that.backgroundLayer.draw();
+      that.openFloatingMenu();
       $('.layer_name div').html(pinData.Title);
       $('.panel_body').html(pinData.Body);
       $('#floatingmenu').addClass('open');
@@ -587,52 +598,55 @@ function _generateNearbyBoundFunc(mapImageWidth, mapImageHeight) {
   var nearbyViewportHeight = window.innerHeight * VERTICAL_VIEWPORT_SCALE;
 
   return function(pos) {
-    // var currY = pos.y;
-    // var currX = pos.x;
-    //
-    // var newY;
-    // var newX;
-    // /*
-    //   Explanation for
-    //     mapImageHeight - nearbyViewportHeight
-    //   and
-    //     mapImageWidth - nearbyViewportWidth
-    //
-    //   tl;dr
-    //     mapImageWidth - nearbyViewportWidth === the width dims of the map that renders offscreen
-    //     mapImageHeight - nearbyViewportHeight === the height dims of the map that renders offscreen
-    //
-    //   The intent of this bounding function is to only allow the user to scroll
-    //   within the bounds of the image.
-    //
-    //   Because our viewport dimensions are dynamic per device, we compute then subtract those dimensions
-    //   from the raw image height and width, giving us the remaining amount of map that renders
-    //   offscreen. The user is then not allowed to scroll to dimensions that exceed that overflow value.
-    // */
-    // if (currY < -(mapImageHeight - nearbyViewportHeight)) { // Case: viewport width exceeds the top most bounds of base map image
-    //   newY = -(mapImageHeight - nearbyViewportHeight);
-    // } else if (currY > 0 ) { // Case: viewport width exceeds the bottom most bounds of base map image
-    //   newY = 0;
-    // } else { // Case: Y coordinate is within acceptable bounds of base map image
-    //   newY = currY;
-    // }
-    //
-    // if (currX < -(mapImageWidth - nearbyViewportWidth)) { // Case: viewport width exceeds the right most bounds of base map image
-    //   newX = -(mapImageWidth - nearbyViewportWidth);
-    // } else if (currX > 0) { // Case: viewport width exceeds the left most bounds of base map image
-    //   newX = 0;
-    // } else { // Case: X coordinate is within acceptable bounds of base map image
-    //   newX = currX;
-    // }
-    //
-    // return {
-    //   x: newX,
-    //   y: newY
-    // };
-    return {
-      x : pos.x,
-      y : pos.y
-    };
+    if ($('#floatingmenu').hasClass('open')) { // Case: we are viewing pin information, allow scrolling to wherever
+      return {
+        x : pos.x,
+        y : pos.y
+      };
+    } else { // Case: we are viewing pin information, allow scrolling to wherever
+      var currY = pos.y;
+      var currX = pos.x;
+
+      var newY;
+      var newX;
+      /*
+        Explanation for
+          mapImageHeight - nearbyViewportHeight
+        and
+          mapImageWidth - nearbyViewportWidth
+
+        tl;dr
+          mapImageWidth - nearbyViewportWidth === the width dims of the map that renders offscreen
+          mapImageHeight - nearbyViewportHeight === the height dims of the map that renders offscreen
+
+        The intent of this bounding function is to only allow the user to scroll
+        within the bounds of the image.
+
+        Because our viewport dimensions are dynamic per device, we compute then subtract those dimensions
+        from the raw image height and width, giving us the remaining amount of map that renders
+        offscreen. The user is then not allowed to scroll to dimensions that exceed that overflow value.
+      */
+      if (currY < -(mapImageHeight - nearbyViewportHeight)) { // Case: viewport width exceeds the top most bounds of base map image
+        newY = -(mapImageHeight - nearbyViewportHeight);
+      } else if (currY > 0 ) { // Case: viewport width exceeds the bottom most bounds of base map image
+        newY = 0;
+      } else { // Case: Y coordinate is within acceptable bounds of base map image
+        newY = currY;
+      }
+
+      if (currX < -(mapImageWidth - nearbyViewportWidth)) { // Case: viewport width exceeds the right most bounds of base map image
+        newX = -(mapImageWidth - nearbyViewportWidth);
+      } else if (currX > 0) { // Case: viewport width exceeds the left most bounds of base map image
+        newX = 0;
+      } else { // Case: X coordinate is within acceptable bounds of base map image
+        newX = currX;
+      }
+
+      return {
+        x: newX,
+        y: newY
+      };
+    }
   }
 }
 
@@ -764,8 +778,7 @@ function _drawNearbyView(nearby) {
       $('.layer_name div').html(pinData.Title);
       $('.panel_body').html(pinData.Body);
       $('.panel_location').html(pinData.Location);
-      $('#floatingmenu').addClass('open');
-      $('#location_select').blur();
+      that.openFloatingMenu();
     });
     that.backgroundLayer.add(pin);
     that.backgroundLayer.add(pinIcon);
@@ -1074,6 +1087,12 @@ function _closeFloatingMenu() {
   $('#floatingmenu').removeClass('open');
 }
 
+function _openFloatingMenu() {
+  $('#floatingmenu').addClass('open');
+  $('#floor_select').blur();
+  $('#location_select').blur();
+}
+
 /* Transitions for Nearby */
 
 function _transitionToNearbyView() {
@@ -1133,6 +1152,7 @@ function _transitionToNearbyView() {
 
 module.exports = {
   closeFloatingMenu : _closeFloatingMenu,
+  openFloatingMenu : _openFloatingMenu,
   hideMapStage : _hideMapStage,
   closeAllModals : _closeAllModals,
   clearFloorOptions : _clearFloorOptions,

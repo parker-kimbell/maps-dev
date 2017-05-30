@@ -101,6 +101,12 @@ function _closeFloatingMenu() {
   $('#floatingmenu').removeClass('open');
 }
 
+function _openFloatingMenu() {
+  $('#floatingmenu').addClass('open');
+  $('#floor_select').blur();
+  $('#location_select').blur();
+}
+
 /* Transitions for Nearby */
 
 function _transitionToNearbyView() {
@@ -160,6 +166,7 @@ function _transitionToNearbyView() {
 
 module.exports = {
   closeFloatingMenu : _closeFloatingMenu,
+  openFloatingMenu : _openFloatingMenu,
   hideMapStage : _hideMapStage,
   closeAllModals : _closeAllModals,
   clearFloorOptions : _clearFloorOptions,

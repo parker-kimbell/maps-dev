@@ -195,12 +195,21 @@ function buildFloorSelect(floorData) {
   });
 }
 
+function _openFloatingMenu() {
+  viewTransitions.openFloatingMenu();
+  if (this.inNearbyMaps) { // Case: if we are within the "nearby" view and we're closing out of an information modal, make sure we end within the scrollable map bounds
+    this.backgroundLayer.setDraggable(false);
+  }
+}
+
 function _closeFloatingMenu() {
   viewTransitions.closeFloatingMenu();
   this.clearLastTouchedPin();
-  if (this.inNearbyMaps) {
+  if (this.inNearbyMaps) { // Case: if we are within the "nearby" view and we're closing out of an information modal, make sure we end within the scrollable map bounds
     this.animateToWithinMapBounds();
+    this.backgroundLayer.setDraggable(true);
   }
+
 }
 
 function _extractHashComponents() {
@@ -353,6 +362,7 @@ MapsApp.prototype.initLayerIcons = _initLayerIcons;
 MapsApp.prototype.initMapsApp = _initMapsApp;
 MapsApp.prototype.setupEventHandlers = _setupEventHandlers;
 MapsApp.prototype.closeFloatingMenu = _closeFloatingMenu;
+MapsApp.prototype.openFloatingMenu = _openFloatingMenu;
 MapsApp.prototype.buildLayersModalForFloor = _buildLayersModalForFloor;
 MapsApp.prototype.setAmenitiesButtonTo = _setAmenitiesButtonTo;
 MapsApp.prototype.extractNearbyPayload = _extractNearbyPayload;
