@@ -758,10 +758,9 @@ function _drawNearbyView(nearby) {
   });
 
   /* close the panel if the map is tapped */
-  that.stage.on('tap click', function(e) {
-
+  that.stage.on('tap click dragmove', function(e) {
       var node = e.target;
-      if(node.className === 'Image' && !node.attrs.icon) {
+      if((node.className === 'Image' && !node.attrs.icon) || node.nodeType === "Layer") {
           that.closeFloatingMenu();
       }
 
@@ -1029,6 +1028,7 @@ function _closeFloatingMenu() {
 /* Transitions for Nearby */
 
 function _transitionToNearbyView() {
+  $('.layer_name > img').addClass('close-modal-dark-bg');
   _closeAllModals();
   $('#location_select').removeClass('dropdown').addClass('nearby-dropdown');
   $('#floor').css({
