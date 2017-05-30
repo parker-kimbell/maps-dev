@@ -555,30 +555,11 @@ function getDistance(p1, p2) {
     return Math.sqrt(Math.pow((p2.x - p1.x), 2) + Math.pow((p2.y - p1.y), 2));
 }
 
-function _drawNearbyView(nearby) {
-  var editorConfig = {
-    ResourcesWidth: nearby.MapImage.width,
-    ResourcesHeight: nearby.MapImage.height
-  };
 
-  var contentWidth = 700;
-  var contentHeight = 700;
-
-  var scaleX = contentWidth/editorConfig.ResourcesWidth;
-  var scaleY = contentHeight/editorConfig.ResourcesHeight;
-  // Intialize layout
-  var container = document.getElementById("container");
-  var content = document.getElementById("content");
-  var clientWidth = 0;
-  var clientHeight = 0;
-  debugger;
-  var that = this;
-
-  that.stage = new Konva.Stage({
-    container: 'nearby',   // id of container <div>
-    width: contentWidth,
-    height: contentHeight,
-  });
+/*
+  Returns the function used to control the scroll area for the current map image
+*/
+function _nearbyBoundFunc(mapImageWidth, mapImageHeight) {
 
   var nearbyViewportWidth = window.innerWidth;
   /*
@@ -595,61 +576,89 @@ function _drawNearbyView(nearby) {
     viewport height.
   */
   var nearbyViewportHeight = window.innerHeight * .78;
-  debugger;
+
+  return function(pos) {
+    var currY = pos.y;
+    var currX = pos.x;
+
+    var newY;
+    var newX;
+    /*
+      Explanation for
+        mapImageHeight - nearbyViewportHeight
+      and
+        mapImageWidth - nearbyViewportWidth
+
+      tl;dr
+        mapImageWidth - nearbyViewportWidth === the width dims of the map that renders offscreen
+        mapImageHeight - nearbyViewportHeight === the height dims of the map that renders offscreen
+
+      The intent of this bounding function is to only allow the user to scroll
+      within the bounds of the image.
+
+      Because our viewport dimensions are dynamic per device, we compute then subtract those dimensions
+      from the raw image height and width, giving us the remaining amount of map that renders
+      offscreen. The user is then not allowed to scroll to dimensions that exceed that overflow value.
+    */
+    if (currY < -(mapImageHeight - nearbyViewportHeight)) { // Case: viewport width exceeds the top most bounds of base map image
+      newY = -(mapImageHeight - nearbyViewportHeight);
+    } else if (currY > 0 ) { // Case: viewport width exceeds the bottom most bounds of base map image
+      newY = 0;
+    } else { // Case: Y coordinate is within acceptable bounds of base map image
+      newY = currY;
+    }
+
+    if (currX < -(mapImageWidth - nearbyViewportWidth)) { // Case: viewport width exceeds the right most bounds of base map image
+      newX = -(mapImageWidth - nearbyViewportWidth);
+    } else if (currX > 0) { // Case: viewport width exceeds the left most bounds of base map image
+      newX = 0;
+    } else { // Case: X coordinate is within acceptable bounds of base map image
+      newX = currX;
+    }
+
+    return {
+      x: newX,
+      y: newY
+    };
+  }
+}
+
+function _drawNearbyView(nearby) {
+  var editorConfig = {
+    ResourcesWidth: nearby.MapImage.width,
+    ResourcesHeight: nearby.MapImage.height
+  };
+
+  var contentWidth = 700;
+  var contentHeight = 700;
+
+  var scaleX = contentWidth/editorConfig.ResourcesWidth;
+  var scaleY = contentHeight/editorConfig.ResourcesHeight;
+  // Intialize layout
+  var container = document.getElementById("container");
+  var content = document.getElementById("content");
+  var clientWidth = 0;
+  var clientHeight = 0;
+  var that = this;
+
+  that.stage = new Konva.Stage({
+    container: 'nearby',   // id of container <div>
+    width: contentWidth,
+    height: contentHeight,
+  });
+
+  var mapImageWidth = editorConfig.ResourcesWidth*scaleX;
+  var mapImageHeight = editorConfig.ResourcesHeight*scaleY;
+
   that.backgroundLayer = new Konva.Layer({
     draggable : true,
     x : 0,
     y : 0,
-    dragBoundFunc: function(pos) {
-      var currY = pos.y;
-      var currX = pos.x;
-
-      var newY;
-      var newX;
-      /*
-        Explanation for
-          mapImageHeight - nearbyViewportHeight
-        and
-          mapImageWidth - nearbyViewportWidth
-
-        tl;dr
-          mapImageWidth - nearbyViewportWidth === the width of the map that renders offscreen
-          mapImageHeight - nearbyViewportHeight === the height of the map that renders offscreen
-
-        The intent of this bounding function is to only allow the user to scroll
-        within the bounds of the image.
-
-        Because our viewport dimensions are dynamic per device, we compute then subtract those dimensions
-        from the raw image height and width, giving us the remaining amount of map that renders
-        offscreen. The user is then not allowed to scroll to dimensions that exceed that overflow value.
-      */
-      if (currY < -(mapImageHeight - nearbyViewportHeight)) {
-        newY = -(mapImageHeight - nearbyViewportHeight);
-      } else if (currY > 0 ) {
-        newY = 0;
-      } else {
-        newY = currY;
-      }
-
-      if (currX < -(mapImageWidth - nearbyViewportWidth)) {
-        newX = -(mapImageWidth - nearbyViewportWidth);
-      } else if (currX > 0) {
-        newX = 0;
-      } else {
-        newX = currX;
-      }
-
-      return {
-          x: newX,
-          y: newY
-      };
-    }
+    dragBoundFunc: _nearbyBoundFunc(mapImageWidth, mapImageHeight)
   });
 
 
   var pinLayer = new Konva.Layer();
-  var mapImageWidth = editorConfig.ResourcesWidth*scaleX;
-  var mapImageHeight = editorConfig.ResourcesHeight*scaleY;
   var base = new Konva.Image({
       x: 0,
       y: 0,
