@@ -210,7 +210,7 @@ function _drawNearbyView(nearby) {
   var content = document.getElementById("content");
   var clientWidth = 0;
   var clientHeight = 0;
-
+  debugger;
   var that = this;
 
   that.stage = new Konva.Stage({
@@ -219,24 +219,59 @@ function _drawNearbyView(nearby) {
     height: contentHeight,
   });
 
+  var nearbyViewportWidth = window.innerWidth;
+  /*
+    Explanation for:
+    nearbyViewportHeight = window.innerHeight * .78;
+
+    Because our nearby viewport needs to accomodate the height
+    of the user menu at the top of the screen,
+    our styles for #container set the "top" value for the #container element
+    at 22%, thus, to compute our actual viewport height,
+    1.00 - .22 = .78 (the magic number on the next line),
+    and .78, being the actual percentage height our viewport takes up,
+    when multiplied by the total viewport height will give us our
+    viewport height.
+  */
+  var nearbyViewportHeight = window.innerHeight * .78;
+  debugger;
   that.backgroundLayer = new Konva.Layer({
     draggable : true,
+    x : 0,
+    y : 0,
     dragBoundFunc: function(pos) {
       var currY = pos.y;
       var currX = pos.x;
 
       var newY;
       var newX;
-      if (currY < -mapImageHeight / 3) {
-        newY = -mapImageHeight / 3;
+      /*
+        Explanation for
+          mapImageHeight - nearbyViewportHeight
+        and
+          mapImageWidth - nearbyViewportWidth
+
+        tl;dr
+          mapImageWidth - nearbyViewportWidth === the width of the map that renders offscreen
+          mapImageHeight - nearbyViewportHeight === the height of the map that renders offscreen
+
+        The intent of this bounding function is to only allow the user to scroll
+        within the bounds of the image.
+
+        Because our viewport dimensions are dynamic per device, we compute then subtract those dimensions
+        from the raw image height and width, giving us the remaining amount of map that renders
+        offscreen. The user is then not allowed to scroll to dimensions that exceed that overflow value.
+      */
+      if (currY < -(mapImageHeight - nearbyViewportHeight)) {
+        newY = -(mapImageHeight - nearbyViewportHeight);
       } else if (currY > 0 ) {
         newY = 0;
       } else {
         newY = currY;
       }
 
-      if (currX < -mapImageWidth / 2) {
-        newX = -mapImageWidth / 2;
+      if (currX < -(mapImageWidth - nearbyViewportWidth)) {
+        newX = -(mapImageWidth - nearbyViewportWidth);
       } else if (currX > 0) {
         newX = 0;
       } else {
@@ -250,15 +285,15 @@ function _drawNearbyView(nearby) {
     }
   });
 
+
   var pinLayer = new Konva.Layer();
-  debugger;
   var mapImageWidth = editorConfig.ResourcesWidth*scaleX;
   var mapImageHeight = editorConfig.ResourcesHeight*scaleY;
   var base = new Konva.Image({
       x: 0,
       y: 0,
-      width: editorConfig.ResourcesWidth*scaleX,
-      height: editorConfig.ResourcesHeight*scaleY,
+      width: mapImageWidth,
+      height: mapImageHeight,
       stroke: 0,
       listening: true,
   });
@@ -332,7 +367,7 @@ function _drawNearbyView(nearby) {
         that.lastTouchedPin.attrs.pinIcon.draw();
       }
       /* Redraw the pin that has been touched to show the user that
-        is that they're looking at */
+        is what they're looking at */
       touchedPin.strokeEnabled(true);
       touchedPin.moveToTop();
       pinIcon.moveToTop();

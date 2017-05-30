@@ -482,25 +482,22 @@ input:focus { outline: none; }
 }
 
 #content {
-  /*overflow: scroll;*/
   width: 100%;
   height: 100%;
 }
 
 #nearby {
-  /*overflow: scroll;*/
   width: 100%;
   height: 100%;
 }
 
 #nearby > div {
-  /*overflow: scroll;*/
   width: 100%;
   height: 100%;
 }
 
 #nearby > div > canvas {
-  /*overflow: scroll;*/
+  
 }
 
 option, select {
