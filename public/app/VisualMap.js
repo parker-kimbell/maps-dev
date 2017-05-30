@@ -448,16 +448,20 @@ function _animateToPin(pin) {
   var pinX = pin.getX();
   var pinY = pin.getY();
   var animTime = 300;
-  var centeredPinX = pinX; //+ window.innerWidth / 2;
-  var centeredPinY = pinY; //+ ((window.innerHeight * VERTICAL_VIEWPORT_SCALE) / 2);
+  var centeredPinX = -pinX + (window.innerWidth / 2);
+  var centeredPinY = -pinY + ((window.innerHeight * VERTICAL_VIEWPORT_SCALE) / 3);
   var anim = new Konva.Tween({
     node: this.backgroundLayer,
-    x : 100,
-    y : 100,
+    x : centeredPinX,
+    y : centeredPinY,
     duration : 0.3, // seconds
     easing : Konva.Easings.EaseOut
   });
   anim.play();
+}
+
+function _animateToWithinMapBounds() {
+
 }
 
 VisualMap.prototype.hideAllPins = _hideAllPins;
