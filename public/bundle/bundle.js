@@ -361,6 +361,9 @@ module.exports = new MapsApp();
 },{"./VisualMap.js":2,"./htmlGenerators.js":3,"./roomSearch":5,"./viewTransitions":6}],2:[function(require,module,exports){
 var viewTransitions = require('./viewTransitions');
 
+/* Nearby viewport takes up .78 of the vertical viewport */
+var VERTICAL_VIEWPORT_SCALE = 0.78;
+
 function VisualMap() {
   this.stage = null;
   this.backgroundLayer = null;
@@ -575,50 +578,54 @@ function _nearbyBoundFunc(mapImageWidth, mapImageHeight) {
     when multiplied by the total viewport height will give us our
     viewport height.
   */
-  var nearbyViewportHeight = window.innerHeight * .78;
+  var nearbyViewportHeight = window.innerHeight * VERTICAL_VIEWPORT_SCALE;
 
   return function(pos) {
-    var currY = pos.y;
-    var currX = pos.x;
-
-    var newY;
-    var newX;
-    /*
-      Explanation for
-        mapImageHeight - nearbyViewportHeight
-      and
-        mapImageWidth - nearbyViewportWidth
-
-      tl;dr
-        mapImageWidth - nearbyViewportWidth === the width dims of the map that renders offscreen
-        mapImageHeight - nearbyViewportHeight === the height dims of the map that renders offscreen
-
-      The intent of this bounding function is to only allow the user to scroll
-      within the bounds of the image.
-
-      Because our viewport dimensions are dynamic per device, we compute then subtract those dimensions
-      from the raw image height and width, giving us the remaining amount of map that renders
-      offscreen. The user is then not allowed to scroll to dimensions that exceed that overflow value.
-    */
-    if (currY < -(mapImageHeight - nearbyViewportHeight)) { // Case: viewport width exceeds the top most bounds of base map image
-      newY = -(mapImageHeight - nearbyViewportHeight);
-    } else if (currY > 0 ) { // Case: viewport width exceeds the bottom most bounds of base map image
-      newY = 0;
-    } else { // Case: Y coordinate is within acceptable bounds of base map image
-      newY = currY;
-    }
-
-    if (currX < -(mapImageWidth - nearbyViewportWidth)) { // Case: viewport width exceeds the right most bounds of base map image
-      newX = -(mapImageWidth - nearbyViewportWidth);
-    } else if (currX > 0) { // Case: viewport width exceeds the left most bounds of base map image
-      newX = 0;
-    } else { // Case: X coordinate is within acceptable bounds of base map image
-      newX = currX;
-    }
-
+    // var currY = pos.y;
+    // var currX = pos.x;
+    //
+    // var newY;
+    // var newX;
+    // /*
+    //   Explanation for
+    //     mapImageHeight - nearbyViewportHeight
+    //   and
+    //     mapImageWidth - nearbyViewportWidth
+    //
+    //   tl;dr
+    //     mapImageWidth - nearbyViewportWidth === the width dims of the map that renders offscreen
+    //     mapImageHeight - nearbyViewportHeight === the height dims of the map that renders offscreen
+    //
+    //   The intent of this bounding function is to only allow the user to scroll
+    //   within the bounds of the image.
+    //
+    //   Because our viewport dimensions are dynamic per device, we compute then subtract those dimensions
+    //   from the raw image height and width, giving us the remaining amount of map that renders
+    //   offscreen. The user is then not allowed to scroll to dimensions that exceed that overflow value.
+    // */
+    // if (currY < -(mapImageHeight - nearbyViewportHeight)) { // Case: viewport width exceeds the top most bounds of base map image
+    //   newY = -(mapImageHeight - nearbyViewportHeight);
+    // } else if (currY > 0 ) { // Case: viewport width exceeds the bottom most bounds of base map image
+    //   newY = 0;
+    // } else { // Case: Y coordinate is within acceptable bounds of base map image
+    //   newY = currY;
+    // }
+    //
+    // if (currX < -(mapImageWidth - nearbyViewportWidth)) { // Case: viewport width exceeds the right most bounds of base map image
+    //   newX = -(mapImageWidth - nearbyViewportWidth);
+    // } else if (currX > 0) { // Case: viewport width exceeds the left most bounds of base map image
+    //   newX = 0;
+    // } else { // Case: X coordinate is within acceptable bounds of base map image
+    //   newX = currX;
+    // }
+    //
+    // return {
+    //   x: newX,
+    //   y: newY
+    // };
     return {
-      x: newX,
-      y: newY
+      x : pos.x,
+      y : pos.y
     };
   }
 }
@@ -736,6 +743,7 @@ function _drawNearbyView(nearby) {
         that.lastTouchedPin.draw(); // Update stroke on last touched pin
         that.lastTouchedPin.attrs.pinIcon.draw();
       }
+      that.animateToPin(touchedPin);
       /* Redraw the pin that has been touched to show the user that
         is what they're looking at */
       touchedPin.strokeEnabled(true);
@@ -760,7 +768,7 @@ function _drawNearbyView(nearby) {
   /* close the panel if the map is tapped */
   that.stage.on('tap click dragmove', function(e) {
       var node = e.target;
-      if((node.className === 'Image' && !node.attrs.icon) || node.nodeType === "Layer") {
+      if ((node.className === 'Image' && !node.attrs.icon) || node.nodeType === "Layer") {
           that.closeFloatingMenu();
       }
 
@@ -796,12 +804,34 @@ function _drawNearbyView(nearby) {
   // }, false);
 }
 
+function _animateToPin(pin) {
+  var backgroundLayer = this.backgroundLayer;
+  var pinX = pin.getX();
+  var pinY = pin.getY();
+  var animTime = 300;
+  var centeredPinX = pinX //+ window.innerWidth / 2;
+  var centeredPinY = pinY //+ ((window.innerHeight * VERTICAL_VIEWPORT_SCALE) / 2);
+  var anim = new Konva.Animation(function(frame) {
+    if (frame.time > animTime) {
+      anim.stop();
+    }
+    // backgroundLayer.setX(centeredPinX);
+    // backgroundLayer.setY(centeredPinY);
+    var currX = Math.min(centeredPinX * (frame.time / animTime), pinX);
+    var currY = Math.min(centeredPinY * (frame.time / animTime), pinY);
+    backgroundLayer.setX(currX);
+    backgroundLayer.setY(currX);
+  }, backgroundLayer);
+  anim.start();
+}
+
 VisualMap.prototype.hideAllPins = _hideAllPins;
 VisualMap.prototype.hidePinsOf = _hidePinsOf;
 VisualMap.prototype.showPinsOf = _showPinsOf;
 VisualMap.prototype.clearLastTouchedPin = _clearLastTouchedPin;
 VisualMap.prototype.drawMapForFloor = _drawMapForFloor;
 VisualMap.prototype.drawNearbyView = _drawNearbyView;
+VisualMap.prototype.animateToPin = _animateToPin;
 
 module.exports = VisualMap;
 
