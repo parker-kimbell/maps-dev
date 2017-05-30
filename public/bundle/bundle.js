@@ -579,7 +579,7 @@ function getDistance(p1, p2) {
 /*
   Returns the function used to control the scroll area for the current map image
 */
-function _generateNearbyBoundFunc(mapImageWidth, mapImageHeight) {
+function _generateNearbyBoundFunc(mapImageWidth, mapImageHeight, offsetXPin, offsetYPin) {
 
   var nearbyViewportWidth = window.innerWidth;
   /*
@@ -628,16 +628,16 @@ function _generateNearbyBoundFunc(mapImageWidth, mapImageHeight) {
       */
       if (currY < -(mapImageHeight - nearbyViewportHeight)) { // Case: viewport width exceeds the top most bounds of base map image
         newY = -(mapImageHeight - nearbyViewportHeight);
-      } else if (currY > 0 ) { // Case: viewport width exceeds the bottom most bounds of base map image
-        newY = 0;
+      } else if (currY > offsetYPin ) { // Case: viewport width exceeds the bottom most bounds of base map image
+        newY = offsetYPin;
       } else { // Case: Y coordinate is within acceptable bounds of base map image
         newY = currY;
       }
 
       if (currX < -(mapImageWidth - nearbyViewportWidth)) { // Case: viewport width exceeds the right most bounds of base map image
         newX = -(mapImageWidth - nearbyViewportWidth);
-      } else if (currX > 0) { // Case: viewport width exceeds the left most bounds of base map image
-        newX = 0;
+      } else if (currX > offsetXPin) { // Case: viewport width exceeds the left most bounds of base map image
+        newX = offsetXPin;
       } else { // Case: X coordinate is within acceptable bounds of base map image
         newX = currX;
       }
@@ -676,7 +676,16 @@ function _drawNearbyView(nearby) {
 
   var mapImageWidth = editorConfig.ResourcesWidth*scaleX;
   var mapImageHeight = editorConfig.ResourcesHeight*scaleY;
-  that.getNearbyBounds = _generateNearbyBoundFunc(mapImageWidth, mapImageHeight);
+
+  var fontSize = 40;
+
+  var offsetXImage = fontSize - (fontSize * 0.66);
+  var offsetYImage = fontSize - (fontSize * 0.08);
+
+  var offsetXPin = fontSize - (fontSize * 0.60);
+  var offsetYPin = fontSize - (fontSize * 0.02);
+
+  that.getNearbyBounds = _generateNearbyBoundFunc(mapImageWidth, mapImageHeight, offsetXPin, offsetYPin);
   that.backgroundLayer = new Konva.Layer({
     draggable : true,
     x : 0,
@@ -711,14 +720,6 @@ function _drawNearbyView(nearby) {
   };
 
   imageObj.src = that.cmsUrl + nearby.MapImage.image;
-
-  var fontSize = 40;
-
-  var offsetXImage = fontSize - (fontSize * 0.66);
-  var offsetYImage = fontSize - (fontSize * 0.08);
-
-  var offsetXPin = fontSize - (fontSize * 0.60);
-  var offsetYPin = fontSize - (fontSize * 0.02);
 
   $.each(nearby.Map.NearbyPin, function(i, pinData) {
     var pinIcon = new Konva.Image({
@@ -776,8 +777,9 @@ function _drawNearbyView(nearby) {
       /* TODO: figure out what this is doing */
       // $('.layer_name').html(pinData.NearbyLayer.Name);
       $('.layer_name div').html(pinData.Title);
-      $('.panel_body').html(pinData.Body);
-      $('.panel_location').html(pinData.Location);
+      // $('.panel_body').html(pinData.Body);
+      $('.panel_body').html(pinData.Location + "<br/><br/>" + pinData.Body);
+      // $('.panel_location').html(pinData.Location);
       that.openFloatingMenu();
     });
     that.backgroundLayer.add(pin);
@@ -823,23 +825,28 @@ function _drawNearbyView(nearby) {
   // }, false);
 }
 
+/*
+  centers a tapped pin in nearby maps view
+*/
 function _animateToPin(pin) {
   var backgroundLayer = this.backgroundLayer;
   var pinX = pin.getX();
   var pinY = pin.getY();
-  var animTime = 300;
   var centeredPinX = -pinX + (window.innerWidth / 2);
   var centeredPinY = -pinY + ((window.innerHeight * VERTICAL_VIEWPORT_SCALE) / 3);
   var anim = new Konva.Tween({
     node: this.backgroundLayer,
     x : centeredPinX,
     y : centeredPinY,
-    duration : 0.3, // seconds
+    duration : 0.6, // seconds
     easing : Konva.Easings.EaseOut
   });
   anim.play();
 }
 
+/*
+  sets a nearby map to within legal bounds if set there by centering a pin
+*/
 function _animateToWithinMapBounds() {
   var legalBounds = this.getNearbyBounds({
     x : this.backgroundLayer.getX(),
@@ -849,7 +856,7 @@ function _animateToWithinMapBounds() {
     node: this.backgroundLayer,
     x : legalBounds.x,
     y : legalBounds.y,
-    duration : 0.3, // seconds
+    duration : 0.6, // seconds
     easing : Konva.Easings.EaseOut
   });
   anim.play();
