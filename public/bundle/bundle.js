@@ -41,7 +41,7 @@ function _setupEventHandlers(mapsPayload) {
       });
 
       $('.cancel-meeting-room').on('tap click', function(event) {
-        viewTransitions.revertSearchDisplay();
+        viewTransitions.transitionToSearchDisplayFromMeetingRoomView();
       });
 
       $('#btn_amenities').on('click tap', function(event) {
@@ -66,11 +66,11 @@ function _setupEventHandlers(mapsPayload) {
       $('#btn_search').on('click tap', viewTransitions.transitionToSearch);
 
       $('.cancel-search, .active-search-bar-container div:last-child').on('click tap', function() {
-        if ($('.dark-table').css('display') !== 'none') {
+        if ($('.dark-table').css('display') !== 'none') { // Case: We're moving from the meeting room display to the floor view
           viewTransitions.transitionFromMeetingRoomSearch.call(that);
           that.hidePinsOf(that.meetingRoomLayerId);
-        } else {
-          viewTransitions.revertSearchDisplay();
+        } else { // Case: we're moving to meeting room search from already displaying a meeting room
+          viewTransitions.transitionToSearchDisplayFromMeetingRoomView();
           roomSearch.searchTable();
         }
       });
@@ -103,7 +103,7 @@ function _setupEventHandlers(mapsPayload) {
       });
 
       $('#active_search_input').on('input', function() {
-        viewTransitions.revertSearchDisplay();
+        viewTransitions.transitionToSearchDisplayFromMeetingRoomView();
         roomSearch.searchTable();
       });
 
@@ -516,7 +516,7 @@ function _drawMapForFloor(floor, mapsPayload) {
     if (pinData.LayerId === that.meetingRoomLayerId) {
       newCell = $('<tr><td><div>' + pinData.Title + '</div></td></tr>');
       searchTable.append(newCell);
-      newCell.on('click tap', function() {
+      newCell.on('click tap', function(event) {
         that.hideAllPins();
         pin.show();
         pinIcon.show();
@@ -524,6 +524,7 @@ function _drawMapForFloor(floor, mapsPayload) {
         viewTransitions.prepareForMeetingRoomDisplay();
         that.setAmenitiesButtonTo(null);
         pin.fire('tap');
+        event.stopPropagation();
       });
     }
 
@@ -1073,12 +1074,14 @@ function _closeAllModals() {
 
 function _hideMapStage() {
   $('.buttons').css('visibility', 'hidden');
+  $('#nearby_toggle').css('visibility', 'hidden');
   $('#map').css('visibility', 'hidden');
 }
 
 function _showMapAndButtonStage() {
   $('.buttons').css('visibility', 'visible');
   $('#map').css('visibility', 'visible');
+  $('#nearby_toggle').css('visibility', 'visible');
 }
 
 function _prepareForMeetingRoomDisplay() {
@@ -1109,7 +1112,7 @@ function _toggleAmenitiesModal() {
   }
 }
 
-function _setSelectActive() {
+function _enableLocationSelect() {
   $('#floor_select').removeClass('inactive-dropdown');
   $('#location_select').removeClass('inactive-dropdown');
 }
@@ -1119,8 +1122,8 @@ function _setSelectInactive() {
   $('#location_select').addClass('inactive-dropdown');
 }
 
-/* Hide the single pin map and reveal the */
-function _revertSearchDisplay() {
+/* Hide the single pin map and reveal meeting room search */
+function _transitionToSearchDisplayFromMeetingRoomView() {
   $('#map').css('visibility', 'hidden');
   $('.buttons').css('visibility', 'hidden');
   $('.dark-table').show();
@@ -1138,7 +1141,7 @@ function _transitionFromMeetingRoomSearch() {
   _closeAllModals();
   _showMapAndButtonStage();
   _hideAndClearSearch();
-  _setSelectActive();
+  _enableLocationSelect();
 }
 
 function _transitionToSearch() {
@@ -1329,7 +1332,7 @@ module.exports = {
   closeAmenitiesModal : _closeAmenitiesModal,
   transitionToSearch : _transitionToSearch,
   transitionFromMeetingRoomSearch : _transitionFromMeetingRoomSearch,
-  revertSearchDisplay : _revertSearchDisplay,
+  transitionToSearchDisplayFromMeetingRoomView : _transitionToSearchDisplayFromMeetingRoomView,
   prepareForMeetingRoomDisplay : _prepareForMeetingRoomDisplay,
   toggleAmenitiesModal : _toggleAmenitiesModal,
   transitionToNearbyView : _transitionToNearbyView,

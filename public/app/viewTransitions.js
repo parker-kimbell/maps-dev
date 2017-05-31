@@ -23,12 +23,14 @@ function _closeAllModals() {
 
 function _hideMapStage() {
   $('.buttons').css('visibility', 'hidden');
+  $('#nearby_toggle').css('visibility', 'hidden');
   $('#map').css('visibility', 'hidden');
 }
 
 function _showMapAndButtonStage() {
   $('.buttons').css('visibility', 'visible');
   $('#map').css('visibility', 'visible');
+  $('#nearby_toggle').css('visibility', 'visible');
 }
 
 function _prepareForMeetingRoomDisplay() {
@@ -59,7 +61,7 @@ function _toggleAmenitiesModal() {
   }
 }
 
-function _setSelectActive() {
+function _enableLocationSelect() {
   $('#floor_select').removeClass('inactive-dropdown');
   $('#location_select').removeClass('inactive-dropdown');
 }
@@ -69,8 +71,8 @@ function _setSelectInactive() {
   $('#location_select').addClass('inactive-dropdown');
 }
 
-/* Hide the single pin map and reveal the */
-function _revertSearchDisplay() {
+/* Hide the single pin map and reveal meeting room search */
+function _transitionToSearchDisplayFromMeetingRoomView() {
   $('#map').css('visibility', 'hidden');
   $('.buttons').css('visibility', 'hidden');
   $('.dark-table').show();
@@ -88,7 +90,7 @@ function _transitionFromMeetingRoomSearch() {
   _closeAllModals();
   _showMapAndButtonStage();
   _hideAndClearSearch();
-  _setSelectActive();
+  _enableLocationSelect();
 }
 
 function _transitionToSearch() {
@@ -279,7 +281,7 @@ module.exports = {
   closeAmenitiesModal : _closeAmenitiesModal,
   transitionToSearch : _transitionToSearch,
   transitionFromMeetingRoomSearch : _transitionFromMeetingRoomSearch,
-  revertSearchDisplay : _revertSearchDisplay,
+  transitionToSearchDisplayFromMeetingRoomView : _transitionToSearchDisplayFromMeetingRoomView,
   prepareForMeetingRoomDisplay : _prepareForMeetingRoomDisplay,
   toggleAmenitiesModal : _toggleAmenitiesModal,
   transitionToNearbyView : _transitionToNearbyView,

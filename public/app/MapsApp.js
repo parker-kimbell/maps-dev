@@ -40,7 +40,7 @@ function _setupEventHandlers(mapsPayload) {
       });
 
       $('.cancel-meeting-room').on('tap click', function(event) {
-        viewTransitions.revertSearchDisplay();
+        viewTransitions.transitionToSearchDisplayFromMeetingRoomView();
       });
 
       $('#btn_amenities').on('click tap', function(event) {
@@ -65,11 +65,11 @@ function _setupEventHandlers(mapsPayload) {
       $('#btn_search').on('click tap', viewTransitions.transitionToSearch);
 
       $('.cancel-search, .active-search-bar-container div:last-child').on('click tap', function() {
-        if ($('.dark-table').css('display') !== 'none') {
+        if ($('.dark-table').css('display') !== 'none') { // Case: We're moving from the meeting room display to the floor view
           viewTransitions.transitionFromMeetingRoomSearch.call(that);
           that.hidePinsOf(that.meetingRoomLayerId);
-        } else {
-          viewTransitions.revertSearchDisplay();
+        } else { // Case: we're moving to meeting room search from already displaying a meeting room
+          viewTransitions.transitionToSearchDisplayFromMeetingRoomView();
           roomSearch.searchTable();
         }
       });
@@ -102,7 +102,7 @@ function _setupEventHandlers(mapsPayload) {
       });
 
       $('#active_search_input').on('input', function() {
-        viewTransitions.revertSearchDisplay();
+        viewTransitions.transitionToSearchDisplayFromMeetingRoomView();
         roomSearch.searchTable();
       });
 

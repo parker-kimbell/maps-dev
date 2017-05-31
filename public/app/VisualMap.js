@@ -109,7 +109,7 @@ function _drawMapForFloor(floor, mapsPayload) {
     if (pinData.LayerId === that.meetingRoomLayerId) {
       newCell = $('<tr><td><div>' + pinData.Title + '</div></td></tr>');
       searchTable.append(newCell);
-      newCell.on('click tap', function() {
+      newCell.on('click tap', function(event) {
         that.hideAllPins();
         pin.show();
         pinIcon.show();
@@ -117,6 +117,7 @@ function _drawMapForFloor(floor, mapsPayload) {
         viewTransitions.prepareForMeetingRoomDisplay();
         that.setAmenitiesButtonTo(null);
         pin.fire('tap');
+        event.stopPropagation();
       });
     }
 
