@@ -246,6 +246,12 @@ function _transitionToFloorViewFromNearby(callback) {
   var nearbyToggleElemTrans = _getNearbyToggleTransition(REVERT);
   nearbyToggleElemTrans[NEARBY_TOGGLE].o.complete = function() {
     $('#nearby_toggle').css('left', "");
+
+    $('#container').velocity({
+      left: '300%'
+    }, {
+      duration : 1250
+    });
     callback();
   }
   $.Velocity.RunSequence(floorViewElemTrans);
