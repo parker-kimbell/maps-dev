@@ -362,31 +362,9 @@ function _drawNearbyView(nearby) {
         stroke : 'white',
         strokeWidth : '3',
         strokeEnabled : false,
-        icon : true
+        icon : true,
+        isBuilding : true
       });
-      pin.attrs.pinIcon = pin;
-
-      pin.on('tap click', function(event) {
-        if (event.evt) event.evt.stopPropagation();
-        var touchedPin = event.target;
-        if (that.lastTouchedPin) {
-          that.lastTouchedPin.strokeEnabled(false);
-          that.lastTouchedPin.draw(); // Update stroke on last touched pin
-          that.lastTouchedPin.attrs.pinIcon.draw();
-        }
-        that.animateToPin(touchedPin);
-        /* Redraw the pin that has been touched to show the user that
-          is what they're looking at */
-        touchedPin.strokeEnabled(true);
-        touchedPin.moveToTop();
-        that.lastTouchedPin = touchedPin;
-        touchedPin.draw();
-        touchedPin.attrs.pinIcon.draw();
-        $('.layer_name div').html(pinData.Title);
-        $('.panel_body').html(pinData.Location + "<br/><br/>" + pinData.Body);
-        that.openFloatingMenu();
-      });
-
       that.backgroundLayer.add(pin);
 
     } else { // Case: we have an image/text combo, so build out the associated logic
