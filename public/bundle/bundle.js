@@ -763,7 +763,10 @@ function _drawNearbyView(nearby) {
   $.each(nearby.Map.NearbyPin, function(i, pinData) {
     if (pinData.IsBuilding) { // Case: this pin represents the location of a PwC building, so build out the special case that this represents
       var youAreHereIcon = new Image();
-      youAreHereIcon.src = '/assets/you-are-here.png'
+      youAreHereIcon.src = '/assets/you-are-here.png';
+      youAreHereIcon.onload = function() {
+        pin.draw();
+      };
       var pin = new Konva.Image({
         x: ((editorConfig.ResourcesWidth * scaleX)* pinData.PositionX) - offsetYouAreHereX,
         y: ((editorConfig.ResourcesHeight * scaleY)* pinData.PositionY) - offsetYouAreHereY,
@@ -906,6 +909,7 @@ function _animateToPin(pin) {
   sets a nearby map to within legal bounds if set there by centering a pin
 */
 function _animateToWithinMapBounds() {
+  if (!this.getNearbyBounds) return;
   var legalBounds = this.getNearbyBounds({
     x : this.backgroundLayer.getX(),
     y : this.backgroundLayer.getY()
