@@ -86,13 +86,17 @@ function _setupEventHandlers(mapsPayload) {
       $('#nearby_toggle').on('click tap', function() {
         if ($(this).hasClass('nearby-btn')) { // Case: we're moving to the nearby view
           that.inNearbyMaps = true;
-          var nearbyHash = that.extractNearbyPayload(_extractHashComponents());
+          $('#input_prevention').addClass('block-input-while-animating');
+          var nearbyData = that.extractNearbyPayload(_extractHashComponents());
           viewTransitions.transitionToNearbyView(function() {
-            that.updateNearbyMapState(nearbyHash)
+            that.updateNearbyMapState(nearbyData);
           });
         } else { // Case: we're moving to the floor view
           that.inNearbyMaps = false;
+          that.setAmenitiesButtonTo(null);
+          $('#input_prevention').addClass('block-input-while-animating');
           viewTransitions.transitionToFloorViewFromNearby(function() {
+            $('#input_prevention').removeClass('block-input-while-animating');
             that.initMapsApp(that.mapsPayload);
           });
         }
@@ -746,7 +750,10 @@ function _drawNearbyView(nearby) {
       left : '0px',
       right : '0px'
     }, {
-      duration : 1250
+      duration : 1250,
+      complete : function() {
+        $('#input_prevention').removeClass('block-input-while-animating');
+      }
     });
   };
 
@@ -776,7 +783,6 @@ function _drawNearbyView(nearby) {
         touchedPin.draw();
       });
       that.backgroundLayer.add(pin);
-
     } else { // Case: we have an image/text combo, so build out the associated logic
       var pinIcon = new Konva.Image({
         x: ((editorConfig.ResourcesWidth * scaleX)* pinData.PositionX) - offsetXImage,
@@ -828,13 +834,8 @@ function _drawNearbyView(nearby) {
         that.lastTouchedPin = touchedPin;
         touchedPin.draw();
         touchedPin.attrs.pinIcon.draw();
-
-        /* TODO: figure out what this is doing */
-        // $('.layer_name').html(pinData.NearbyLayer.Name);
         $('.layer_name div').html(pinData.Title);
-        // $('.panel_body').html(pinData.Body);
         $('.panel_body').html(pinData.Location + "<br/><br/>" + pinData.Body);
-        // $('.panel_location').html(pinData.Location);
         that.openFloatingMenu();
       });
       that.backgroundLayer.add(pin);
@@ -1181,12 +1182,12 @@ function _transitionToNearbyView(callback) {
     var transitionNearbyButton = _getNearbyToggleTransition();
     transitionNearbyButton[0].o.complete = callback;
     $.Velocity.RunSequence(transitionNearbyButton);
-  }, rootDelay + 500);
+  }, rootDelay + 200);
 
   setTimeout(function() {
     var transitionUnneededElements = _getFloorElementTransition();
     $.Velocity.RunSequence(transitionUnneededElements);
-  }, rootDelay + 500);
+  }, rootDelay + 200);
 
 }
 
@@ -1267,24 +1268,34 @@ function _getFloorElementTransition(revert) {
       o : {
         duration : 'slow',
         sequenceQueue : false,
+        complete : function() {
+          if (revert) {
+            $('#floor').css({
+              position : "",
+              left : ""
+            });
+          }
+        }
       }
     }
   ];
 }
 
 function _transitionToFloorViewFromNearby(callback) {
+  _closeAllModals();
   var REVERT = true;
   var AMEN_BUTTON = 1;
   var NEARBY_TOGGLE = 0;
   $('.filter > ul').css('margin-top', '');
   $('.layer_name > img').removeClass('close-modal-dark-bg');
   $('#location_select').removeClass('nearby-dropdown').addClass('dropdown');
-  $('#floor').css({
-    position: ''
-  });
-  /* move elements needed for floor view back on screen */
+  /* retrieve all transition sequence configured
+    as much as possible for revert to floor view */
   var floorViewElemTrans = _getFloorElementTransition(REVERT);
   var sharedViewElemTrans = _getSharedElementTransition(REVERT);
+  var nearbyToggleElemTrans = _getNearbyToggleTransition(REVERT);
+
+  /* Remaining configuration for proper revert */
   sharedViewElemTrans[AMEN_BUTTON].p['margin-top'] = "2%";
   sharedViewElemTrans[AMEN_BUTTON].o.complete = function() {
     $('#btn_amenities').css({
@@ -1292,21 +1303,20 @@ function _transitionToFloorViewFromNearby(callback) {
       'margin-top' : ""
     });
   };
-  var nearbyToggleElemTrans = _getNearbyToggleTransition(REVERT);
   nearbyToggleElemTrans[NEARBY_TOGGLE].o.complete = function() {
     $('#nearby_toggle').css('left', "");
-
-    $('#container').velocity({
-      left: '300%'
-    }, {
-      duration : 1250
-    });
-    callback();
   }
+
+  $('#container').velocity({
+    left: '300%'
+  }, {
+    duration : 1250
+  });
   $.Velocity.RunSequence(floorViewElemTrans);
   $.Velocity.RunSequence(sharedViewElemTrans);
   $('#nearby_toggle').removeClass('nearby-btn-cancel').addClass('nearby-btn');
   $.Velocity.RunSequence(nearbyToggleElemTrans);
+  callback();
 }
 
 

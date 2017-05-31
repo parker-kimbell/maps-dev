@@ -601,3 +601,11 @@ option, select {
   font-size : 1.8em;
   line-height: 2em;
 }
+.block-input-while-animating {
+  position : absolute;
+  left : 0;
+  right : 0;
+  bottom : 0;
+  top : 0;
+  z-index: 100000;
+}

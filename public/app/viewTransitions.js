@@ -132,12 +132,12 @@ function _transitionToNearbyView(callback) {
     var transitionNearbyButton = _getNearbyToggleTransition();
     transitionNearbyButton[0].o.complete = callback;
     $.Velocity.RunSequence(transitionNearbyButton);
-  }, rootDelay + 500);
+  }, rootDelay + 200);
 
   setTimeout(function() {
     var transitionUnneededElements = _getFloorElementTransition();
     $.Velocity.RunSequence(transitionUnneededElements);
-  }, rootDelay + 500);
+  }, rootDelay + 200);
 
 }
 
@@ -218,24 +218,34 @@ function _getFloorElementTransition(revert) {
       o : {
         duration : 'slow',
         sequenceQueue : false,
+        complete : function() {
+          if (revert) {
+            $('#floor').css({
+              position : "",
+              left : ""
+            });
+          }
+        }
       }
     }
   ];
 }
 
 function _transitionToFloorViewFromNearby(callback) {
+  _closeAllModals();
   var REVERT = true;
   var AMEN_BUTTON = 1;
   var NEARBY_TOGGLE = 0;
   $('.filter > ul').css('margin-top', '');
   $('.layer_name > img').removeClass('close-modal-dark-bg');
   $('#location_select').removeClass('nearby-dropdown').addClass('dropdown');
-  $('#floor').css({
-    position: ''
-  });
-  /* move elements needed for floor view back on screen */
+  /* retrieve all transition sequence configured
+    as much as possible for revert to floor view */
   var floorViewElemTrans = _getFloorElementTransition(REVERT);
   var sharedViewElemTrans = _getSharedElementTransition(REVERT);
+  var nearbyToggleElemTrans = _getNearbyToggleTransition(REVERT);
+
+  /* Remaining configuration for proper revert */
   sharedViewElemTrans[AMEN_BUTTON].p['margin-top'] = "2%";
   sharedViewElemTrans[AMEN_BUTTON].o.complete = function() {
     $('#btn_amenities').css({
@@ -243,21 +253,20 @@ function _transitionToFloorViewFromNearby(callback) {
       'margin-top' : ""
     });
   };
-  var nearbyToggleElemTrans = _getNearbyToggleTransition(REVERT);
   nearbyToggleElemTrans[NEARBY_TOGGLE].o.complete = function() {
     $('#nearby_toggle').css('left', "");
-
-    $('#container').velocity({
-      left: '300%'
-    }, {
-      duration : 1250
-    });
-    callback();
   }
+
+  $('#container').velocity({
+    left: '300%'
+  }, {
+    duration : 1250
+  });
   $.Velocity.RunSequence(floorViewElemTrans);
   $.Velocity.RunSequence(sharedViewElemTrans);
   $('#nearby_toggle').removeClass('nearby-btn-cancel').addClass('nearby-btn');
   $.Velocity.RunSequence(nearbyToggleElemTrans);
+  callback();
 }
 
 

@@ -85,13 +85,17 @@ function _setupEventHandlers(mapsPayload) {
       $('#nearby_toggle').on('click tap', function() {
         if ($(this).hasClass('nearby-btn')) { // Case: we're moving to the nearby view
           that.inNearbyMaps = true;
-          var nearbyHash = that.extractNearbyPayload(_extractHashComponents());
+          $('#input_prevention').addClass('block-input-while-animating');
+          var nearbyData = that.extractNearbyPayload(_extractHashComponents());
           viewTransitions.transitionToNearbyView(function() {
-            that.updateNearbyMapState(nearbyHash)
+            that.updateNearbyMapState(nearbyData);
           });
         } else { // Case: we're moving to the floor view
           that.inNearbyMaps = false;
+          that.setAmenitiesButtonTo(null);
+          $('#input_prevention').addClass('block-input-while-animating');
           viewTransitions.transitionToFloorViewFromNearby(function() {
+            $('#input_prevention').removeClass('block-input-while-animating');
             that.initMapsApp(that.mapsPayload);
           });
         }

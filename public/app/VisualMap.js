@@ -343,7 +343,10 @@ function _drawNearbyView(nearby) {
       left : '0px',
       right : '0px'
     }, {
-      duration : 1250
+      duration : 1250,
+      complete : function() {
+        $('#input_prevention').removeClass('block-input-while-animating');
+      }
     });
   };
 
@@ -373,7 +376,6 @@ function _drawNearbyView(nearby) {
         touchedPin.draw();
       });
       that.backgroundLayer.add(pin);
-
     } else { // Case: we have an image/text combo, so build out the associated logic
       var pinIcon = new Konva.Image({
         x: ((editorConfig.ResourcesWidth * scaleX)* pinData.PositionX) - offsetXImage,
@@ -425,13 +427,8 @@ function _drawNearbyView(nearby) {
         that.lastTouchedPin = touchedPin;
         touchedPin.draw();
         touchedPin.attrs.pinIcon.draw();
-
-        /* TODO: figure out what this is doing */
-        // $('.layer_name').html(pinData.NearbyLayer.Name);
         $('.layer_name div').html(pinData.Title);
-        // $('.panel_body').html(pinData.Body);
         $('.panel_body').html(pinData.Location + "<br/><br/>" + pinData.Body);
-        // $('.panel_location').html(pinData.Location);
         that.openFloatingMenu();
       });
       that.backgroundLayer.add(pin);
