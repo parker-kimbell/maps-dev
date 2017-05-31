@@ -85,12 +85,13 @@ function _setupEventHandlers(mapsPayload) {
 
       $('.nearby-btn').on('click tap', function() {
         that.inNearbyMaps = true;
-        viewTransitions.transitionToNearbyView();
-        that.updateNearbyMapState(that.extractNearbyPayload(_extractHashComponents()));
+        var nearbyHash = that.extractNearbyPayload(_extractHashComponents());
+        viewTransitions.transitionToNearbyView(function() {
+          that.updateNearbyMapState(nearbyHash)
+        });
       });
 
-      $('.buttons').delegate('.nearby-btn-cancel', 'click tap', function() {
-        debugger;
+      $('.nearby-btn-cancel').on('click tap', function() {
         that.inNearbyMaps = false;
         viewTransitions.transitionToFloorViewFromNearby();
 
@@ -1156,7 +1157,7 @@ function _openFloatingMenu() {
 
 /* Transitions for Nearby */
 
-function _transitionToNearbyView() {
+function _transitionToNearbyView(callback) {
   $('.filter > ul').css('margin-top', '33%');
   $('.layer_name > img').addClass('close-modal-dark-bg');
   _closeAllModals();
@@ -1167,47 +1168,98 @@ function _transitionToNearbyView() {
   $('.btn-amenities').css({
     top : '1.5%'
   });
-  /* Begin anims */
+
   var rootDelay = 100;
-  /* Move needed components to necessary positions */
-  $('#location_select').velocity({
-    width: '44%',
-    height: '8%',
-    top : '12%'
-  }, {
-    delay : rootDelay
-  });
-  $('.btn-amenities').velocity({
-    top: '12%',
-    height: '8%',
-  }, {
-    delay : rootDelay + 100
-  });
+  setTimeout(function() {
+    var transitionNeedednElements = _getNeededNearbyElementTransition();
+
+    $.Velocity.RunSequence(transitionNeedednElements);
+  }, rootDelay);
+
   setTimeout(function() {
     $('.nearby-btn').removeClass('nearby-btn').addClass('nearby-btn-cancel');
-    $('.nearby-btn-cancel').velocity({
-      left : '5%',
-      'font-size': '1.2em'
-    });
-  }, rootDelay + 300);
-  setTimeout(function() {
-    /* Move unneeded components offscreen */
-    $('#floor_select').velocity({
-      'margin-left' : "300%",
-    }, {
-      easing : 'easeInSine',
-      duration : 'slow',
-    });
-    $('#btn_search').velocity({
-      'margin-left' : "300%",
-    }, {
-      easing : 'easeInSine',
-      duration : 'slow'
-    });
-    $('#floor').velocity({
-      left: '100%'
-    });
+    var transitionNearbyButton = [
+      {
+        e : $('#toggle_nearby'),
+        p : {
+          left : '5%',
+          'font-size': '1.2em'
+        },
+        o : {
+          duration : 400,
+          complete : callback
+        }
+      }
+    ];
+    $.Velocity.RunSequence(transitionNearbyButton);
   }, rootDelay + 500);
+
+  setTimeout(function() {
+    var transitionUnneededElements = _getUnneededNearbyElementTransition();
+    $.Velocity.RunSequence(transitionUnneededElements);
+  }, rootDelay + 500);
+
+}
+
+function _getNeededNearbyElementTransition() {
+  return [
+    {
+      e : $('#location_select'),
+      p : {
+        width: '44%',
+        height: '8%',
+        top : '12%'
+      },
+      o : {
+
+      }
+    },
+    {
+      e : $('.btn-amenities'),
+      p : {
+        top: '12%',
+        height: '8%'
+      },
+      o : {
+        sequenceQueue : false
+      }
+    }
+  ];
+}
+
+function _getUnneededNearbyElementTransition() {
+   return [
+    {
+      e : $('#floor_select'),
+      p : {
+        'margin-left' : "300%",
+      },
+      o : {
+        duration : 'slow',
+        sequenceQueue : false
+      }
+    },
+    {
+      e : $('#btn_search'),
+      p : {
+        'margin-left' : "300%",
+      },
+      o : {
+        duration : 'slow',
+        sequenceQueue : false
+      }
+    },
+    {
+      e : $('#floor'),
+      p : {
+        left: '100%'
+      },
+      o : {
+        duration : 'slow',
+        sequenceQueue : false,
+      }
+    }
+  ];
 }
 
 

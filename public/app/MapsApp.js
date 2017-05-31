@@ -84,12 +84,13 @@ function _setupEventHandlers(mapsPayload) {
 
       $('.nearby-btn').on('click tap', function() {
         that.inNearbyMaps = true;
-        viewTransitions.transitionToNearbyView();
-        that.updateNearbyMapState(that.extractNearbyPayload(_extractHashComponents()));
+        var nearbyHash = that.extractNearbyPayload(_extractHashComponents());
+        viewTransitions.transitionToNearbyView(function() {
+          that.updateNearbyMapState(nearbyHash)
+        });
       });
 
-      $('.buttons').delegate('.nearby-btn-cancel', 'click tap', function() {
-        debugger;
+      $('.nearby-btn-cancel').on('click tap', function() {
         that.inNearbyMaps = false;
         viewTransitions.transitionToFloorViewFromNearby();
 
