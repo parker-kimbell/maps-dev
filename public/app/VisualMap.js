@@ -307,8 +307,8 @@ function _drawNearbyView(nearby) {
   var offsetXImage = fontSize - (fontSize * 0.66);
   var offsetYImage = fontSize - (fontSize * 0.08);
 
-  var offsetYouAreHereX = fontSize - (fontSize * 0.45);
-  var offsetYouAreHereY = fontSize - (fontSize * 0.08);
+  var offsetYouAreHereX = fontSize - (fontSize * 0.43);
+  var offsetYouAreHereY = fontSize + (fontSize * 0.19);
 
   var offsetXPin = fontSize - (fontSize * 0.60);
   var offsetYPin = fontSize - (fontSize * 0.02);
@@ -359,7 +359,32 @@ function _drawNearbyView(nearby) {
         scaleX : fontSize / 90,
         scaleY : fontSize / 90,
         image : youAreHereIcon,
+        stroke : 'white',
+        strokeWidth : '3',
+        strokeEnabled : false,
         icon : true
+      });
+      pin.attrs.pinIcon = pin;
+
+      pin.on('tap click', function(event) {
+        if (event.evt) event.evt.stopPropagation();
+        var touchedPin = event.target;
+        if (that.lastTouchedPin) {
+          that.lastTouchedPin.strokeEnabled(false);
+          that.lastTouchedPin.draw(); // Update stroke on last touched pin
+          that.lastTouchedPin.attrs.pinIcon.draw();
+        }
+        that.animateToPin(touchedPin);
+        /* Redraw the pin that has been touched to show the user that
+          is what they're looking at */
+        touchedPin.strokeEnabled(true);
+        touchedPin.moveToTop();
+        that.lastTouchedPin = touchedPin;
+        touchedPin.draw();
+        touchedPin.attrs.pinIcon.draw();
+        $('.layer_name div').html(pinData.Title);
+        $('.panel_body').html(pinData.Location + "<br/><br/>" + pinData.Body);
+        that.openFloatingMenu();
       });
 
       that.backgroundLayer.add(pin);
