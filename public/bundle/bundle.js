@@ -701,6 +701,9 @@ function _drawNearbyView(nearby) {
   var offsetXImage = fontSize - (fontSize * 0.66);
   var offsetYImage = fontSize - (fontSize * 0.08);
 
+  var offsetYouAreHereX = fontSize - (fontSize * 0.45);
+  var offsetYouAreHereY = fontSize - (fontSize * 0.08);
+
   var offsetXPin = fontSize - (fontSize * 0.60);
   var offsetYPin = fontSize - (fontSize * 0.02);
 
@@ -741,68 +744,83 @@ function _drawNearbyView(nearby) {
   imageObj.src = that.cmsUrl + nearby.MapImage.image;
   this.buildLayersModalForFloor(that.nearbyMapsPayload.layers, nearby.Map.NearbyPin);
   $.each(nearby.Map.NearbyPin, function(i, pinData) {
-    var pinIcon = new Konva.Image({
-      x: ((editorConfig.ResourcesWidth * scaleX)* pinData.PositionX) - offsetXImage,
-      y: ((editorConfig.ResourcesHeight * scaleY)* pinData.PositionY) - offsetYImage,
-      image: that.nearbyLayerIcons[pinData.LayerId],
-      scaleX : fontSize / 90,
-      scaleY : fontSize / 90,
-      icon : true
-    });
+    if (pinData.IsBuilding) { // Case: this pin represents the location of a PwC building, so build out the special case that this represents
+      var youAreHereIcon = new Image();
+      youAreHereIcon.src = '/assets/you-are-here.png'
+      var pin = new Konva.Image({
+        x: ((editorConfig.ResourcesWidth * scaleX)* pinData.PositionX) - offsetYouAreHereX,
+        y: ((editorConfig.ResourcesHeight * scaleY)* pinData.PositionY) - offsetYouAreHereY,
+        scaleX : fontSize / 90,
+        scaleY : fontSize / 90,
+        image : youAreHereIcon,
+        icon : true
+      });
 
-    var pinX = ((editorConfig.ResourcesWidth * scaleX)* pinData.PositionX) - offsetXPin;
-    var pinY = ((editorConfig.ResourcesHeight * scaleY)* pinData.PositionY) - offsetYPin;
-    var pin = new Konva.Text({
-      x: pinX,
-      y: pinY,
-      fill: 'rgb(232,66,102)',
-      text: '\ue807',
-      fontSize: 40,
-      stroke : 'white',
-      strokeWidth : '3',
-      strokeEnabled : false,
-      fontFamily: 'pwcmobileappicons',
-      shadowColor: 'black',
-      shadowBlur: 10,
-      shadowOffset: {x : 5, y : 5},
-      shadowOpacity: 0.5,
-      layerid: pinData.LayerId,
-      pinIcon: pinIcon
-    });
+      that.backgroundLayer.add(pin);
 
-    pinIcon.on('tap click', function(event) {
-      event.evt.stopPropagation();
-      pin.fire(event.type, pin);
-    });
+    } else { // Case: we have an image/text combo, so build out the associated logic
+      var pinIcon = new Konva.Image({
+        x: ((editorConfig.ResourcesWidth * scaleX)* pinData.PositionX) - offsetXImage,
+        y: ((editorConfig.ResourcesHeight * scaleY)* pinData.PositionY) - offsetYImage,
+        image: that.nearbyLayerIcons[pinData.LayerId],
+        scaleX : fontSize / 90,
+        scaleY : fontSize / 90,
+        icon : true
+      });
+      var pinX = ((editorConfig.ResourcesWidth * scaleX)* pinData.PositionX) - offsetXPin;
+      var pinY = ((editorConfig.ResourcesHeight * scaleY)* pinData.PositionY) - offsetYPin;
+      var pin = new Konva.Text({
+        x: pinX,
+        y: pinY,
+        fill: 'rgb(232,66,102)',
+        text: '\ue807',
+        fontSize: 40,
+        stroke : 'white',
+        strokeWidth : '3',
+        strokeEnabled : false,
+        fontFamily: 'pwcmobileappicons',
+        shadowColor: 'black',
+        shadowBlur: 10,
+        shadowOffset: {x : 5, y : 5},
+        shadowOpacity: 0.5,
+        layerid: pinData.LayerId,
+        pinIcon: pinIcon
+      });
 
-    pin.on('tap click', function(event) {
-      if (event.evt) event.evt.stopPropagation();
-      var touchedPin = event.target;
-      if (that.lastTouchedPin) {
-        that.lastTouchedPin.strokeEnabled(false);
-        that.lastTouchedPin.draw(); // Update stroke on last touched pin
-        that.lastTouchedPin.attrs.pinIcon.draw();
-      }
-      that.animateToPin(touchedPin);
-      /* Redraw the pin that has been touched to show the user that
-        is what they're looking at */
-      touchedPin.strokeEnabled(true);
-      touchedPin.moveToTop();
-      pinIcon.moveToTop();
-      that.lastTouchedPin = touchedPin;
-      touchedPin.draw();
-      touchedPin.attrs.pinIcon.draw();
+      pinIcon.on('tap click', function(event) {
+        event.evt.stopPropagation();
+        pin.fire(event.type, pin);
+      });
 
-      /* TODO: figure out what this is doing */
-      // $('.layer_name').html(pinData.NearbyLayer.Name);
-      $('.layer_name div').html(pinData.Title);
-      // $('.panel_body').html(pinData.Body);
-      $('.panel_body').html(pinData.Location + "<br/><br/>" + pinData.Body);
-      // $('.panel_location').html(pinData.Location);
-      that.openFloatingMenu();
-    });
-    that.backgroundLayer.add(pin);
-    that.backgroundLayer.add(pinIcon);
+      pin.on('tap click', function(event) {
+        if (event.evt) event.evt.stopPropagation();
+        var touchedPin = event.target;
+        if (that.lastTouchedPin) {
+          that.lastTouchedPin.strokeEnabled(false);
+          that.lastTouchedPin.draw(); // Update stroke on last touched pin
+          that.lastTouchedPin.attrs.pinIcon.draw();
+        }
+        that.animateToPin(touchedPin);
+        /* Redraw the pin that has been touched to show the user that
+          is what they're looking at */
+        touchedPin.strokeEnabled(true);
+        touchedPin.moveToTop();
+        pinIcon.moveToTop();
+        that.lastTouchedPin = touchedPin;
+        touchedPin.draw();
+        touchedPin.attrs.pinIcon.draw();
+
+        /* TODO: figure out what this is doing */
+        // $('.layer_name').html(pinData.NearbyLayer.Name);
+        $('.layer_name div').html(pinData.Title);
+        // $('.panel_body').html(pinData.Body);
+        $('.panel_body').html(pinData.Location + "<br/><br/>" + pinData.Body);
+        // $('.panel_location').html(pinData.Location);
+        that.openFloatingMenu();
+      });
+      that.backgroundLayer.add(pin);
+      that.backgroundLayer.add(pinIcon);
+    }
   });
 
   /* close the panel if the map is tapped */
