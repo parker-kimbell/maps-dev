@@ -766,6 +766,7 @@ function _drawNearbyView(nearby) {
       youAreHereIcon.src = '/assets/you-are-here.png';
       youAreHereIcon.onload = function() {
         pin.draw();
+        that.animateToPin(pin);
       };
       var pin = new Konva.Image({
         x: ((editorConfig.ResourcesWidth * scaleX)* pinData.PositionX) - offsetYouAreHereX,
@@ -778,13 +779,6 @@ function _drawNearbyView(nearby) {
         strokeEnabled : false,
         icon : true,
         isBuilding : true
-      });
-      /* Only move 'you are here' pin to top when touched*/
-      pin.on('tap click', function(event) {
-        if (event.evt) event.evt.stopPropagation();
-        var touchedPin = event.target;
-        touchedPin.moveToTop();
-        touchedPin.draw();
       });
       that.backgroundLayer.add(pin);
     } else { // Case: we have an image/text combo, so build out the associated logic
