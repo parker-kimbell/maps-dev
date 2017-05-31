@@ -82,18 +82,19 @@ function _setupEventHandlers(mapsPayload) {
         event.stopPropagation();
       });
 
-      $('.nearby-btn').on('click tap', function() {
-        that.inNearbyMaps = true;
-        var nearbyHash = that.extractNearbyPayload(_extractHashComponents());
-        viewTransitions.transitionToNearbyView(function() {
-          that.updateNearbyMapState(nearbyHash)
-        });
-      });
-
-      $('.nearby-btn-cancel').on('click tap', function() {
-        that.inNearbyMaps = false;
-        viewTransitions.transitionToFloorViewFromNearby();
-
+      $('#nearby_toggle').on('click tap', function() {
+        if ($(this).hasClass('nearby-btn')) { // Case: we're moving to the nearby view
+          that.inNearbyMaps = true;
+          var nearbyHash = that.extractNearbyPayload(_extractHashComponents());
+          viewTransitions.transitionToNearbyView(function() {
+            that.updateNearbyMapState(nearbyHash)
+          });
+        } else { // Case: we're moving to the floor view
+          that.inNearbyMaps = false;
+          viewTransitions.transitionToFloorViewFromNearby(function() {
+            that.initMapsApp(that.mapsPayload);
+          });
+        }
       });
 
       $('#active_search_input').on('input', function() {

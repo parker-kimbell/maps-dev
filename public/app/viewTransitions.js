@@ -112,65 +112,59 @@ function _openFloatingMenu() {
 function _transitionToNearbyView(callback) {
   $('.filter > ul').css('margin-top', '33%');
   $('.layer_name > img').addClass('close-modal-dark-bg');
-  _closeAllModals();
   $('#location_select').removeClass('dropdown').addClass('nearby-dropdown');
   $('#floor').css({
     position: 'absolute'
   });
+  _closeAllModals();
   $('.btn-amenities').css({
     top : '1.5%'
   });
 
   var rootDelay = 100;
   setTimeout(function() {
-    var transitionNeedednElements = _getNeededNearbyElementTransition();
-
+    var transitionNeedednElements = _getSharedElementTransition();
     $.Velocity.RunSequence(transitionNeedednElements);
   }, rootDelay);
 
   setTimeout(function() {
     $('.nearby-btn').removeClass('nearby-btn').addClass('nearby-btn-cancel');
-    var transitionNearbyButton = [
-      {
-        e : $('#toggle_nearby'),
-        p : {
-          left : '5%',
-          'font-size': '1.2em'
-        },
-        o : {
-          duration : 400,
-          complete : callback
-        }
-      }
-    ];
+    var transitionNearbyButton = _getNearbyToggleTransition();
+    transitionNearbyButton[0].o.complete = callback;
     $.Velocity.RunSequence(transitionNearbyButton);
   }, rootDelay + 500);
 
   setTimeout(function() {
-    var transitionUnneededElements = _getUnneededNearbyElementTransition();
+    var transitionUnneededElements = _getFloorElementTransition();
     $.Velocity.RunSequence(transitionUnneededElements);
   }, rootDelay + 500);
 
 }
 
-function _getNeededNearbyElementTransition() {
+function _getSharedElementTransition(revert) {
   return [
     {
       e : $('#location_select'),
       p : {
-        width: '44%',
-        height: '8%',
-        top : '12%'
+        width: revert ? "100%" : '44%',
+        height: revert ? "40%" : '8%',
+        top : revert ? "" : '12%'
       },
       o : {
-
-      }
+        complete : function() {
+          if (revert) $('#location_select').css({
+            top : "",
+            height : "",
+            width : ""
+          });
+          }
+        }
     },
     {
       e : $('.btn-amenities'),
       p : {
-        top: '12%',
-        height: '8%'
+        top: revert ? "" : '12%',
+        height: revert ? "6%" : '8%'
       },
       o : {
         sequenceQueue : false
@@ -179,12 +173,27 @@ function _getNeededNearbyElementTransition() {
   ];
 }
 
-function _getUnneededNearbyElementTransition() {
+function _getNearbyToggleTransition(revert) {
+  return [
+    {
+      e : $('#nearby_toggle'),
+      p : {
+        left : revert ? "" : '5%',
+        'font-size': revert ? "1.0em" : '1.2em'
+      },
+      o : {
+        duration : 400,
+      }
+    }
+  ];
+}
+
+function _getFloorElementTransition(revert) {
    return [
     {
       e : $('#floor_select'),
       p : {
-        'margin-left' : "300%",
+        'margin-left' : revert ? "" : "300%"
       },
       o : {
         duration : 'slow',
@@ -194,7 +203,7 @@ function _getUnneededNearbyElementTransition() {
     {
       e : $('#btn_search'),
       p : {
-        'margin-left' : "300%",
+        'margin-left' : revert ? "5%" : "300%"
       },
       o : {
         duration : 'slow',
@@ -204,7 +213,7 @@ function _getUnneededNearbyElementTransition() {
     {
       e : $('#floor'),
       p : {
-        left: '100%'
+        left: revert ? "" : '100%'
       },
       o : {
         duration : 'slow',
@@ -212,6 +221,37 @@ function _getUnneededNearbyElementTransition() {
       }
     }
   ];
+}
+
+function _transitionToFloorViewFromNearby(callback) {
+  var REVERT = true;
+  var AMEN_BUTTON = 1;
+  var NEARBY_TOGGLE = 0;
+  $('.filter > ul').css('margin-top', '');
+  $('.layer_name > img').removeClass('close-modal-dark-bg');
+  $('#location_select').removeClass('nearby-dropdown').addClass('dropdown');
+  $('#floor').css({
+    position: ''
+  });
+  /* move elements needed for floor view back on screen */
+  var floorViewElemTrans = _getFloorElementTransition(REVERT);
+  var sharedViewElemTrans = _getSharedElementTransition(REVERT);
+  sharedViewElemTrans[AMEN_BUTTON].p['margin-top'] = "2%";
+  sharedViewElemTrans[AMEN_BUTTON].o.complete = function() {
+    $('#btn_amenities').css({
+      'top' : "",
+      'margin-top' : ""
+    });
+  };
+  var nearbyToggleElemTrans = _getNearbyToggleTransition(REVERT);
+  nearbyToggleElemTrans[NEARBY_TOGGLE].o.complete = function() {
+    $('#nearby_toggle').css('left', "");
+    callback();
+  }
+  $.Velocity.RunSequence(floorViewElemTrans);
+  $.Velocity.RunSequence(sharedViewElemTrans);
+  $('#nearby_toggle').removeClass('nearby-btn-cancel').addClass('nearby-btn');
+  $.Velocity.RunSequence(nearbyToggleElemTrans);
 }
 
 
@@ -227,5 +267,6 @@ module.exports = {
   revertSearchDisplay : _revertSearchDisplay,
   prepareForMeetingRoomDisplay : _prepareForMeetingRoomDisplay,
   toggleAmenitiesModal : _toggleAmenitiesModal,
-  transitionToNearbyView : _transitionToNearbyView
+  transitionToNearbyView : _transitionToNearbyView,
+  transitionToFloorViewFromNearby : _transitionToFloorViewFromNearby
 };
