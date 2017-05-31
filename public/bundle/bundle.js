@@ -89,6 +89,13 @@ function _setupEventHandlers(mapsPayload) {
         that.updateNearbyMapState(that.extractNearbyPayload(_extractHashComponents()));
       });
 
+      $('.buttons').delegate('.nearby-btn-cancel', 'click tap', function() {
+        debugger;
+        that.inNearbyMaps = false;
+        viewTransitions.transitionToFloorViewFromNearby();
+
+      });
+
       $('#active_search_input').on('input', function() {
         viewTransitions.revertSearchDisplay();
         roomSearch.searchTable();
@@ -758,6 +765,13 @@ function _drawNearbyView(nearby) {
         strokeEnabled : false,
         icon : true,
         isBuilding : true
+      });
+      /* Only move 'you are here' pin to top when touched*/
+      pin.on('tap click', function(event) {
+        if (event.evt) event.evt.stopPropagation();
+        var touchedPin = event.target;
+        touchedPin.moveToTop();
+        touchedPin.draw();
       });
       that.backgroundLayer.add(pin);
 

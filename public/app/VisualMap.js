@@ -365,6 +365,13 @@ function _drawNearbyView(nearby) {
         icon : true,
         isBuilding : true
       });
+      /* Only move 'you are here' pin to top when touched*/
+      pin.on('tap click', function(event) {
+        if (event.evt) event.evt.stopPropagation();
+        var touchedPin = event.target;
+        touchedPin.moveToTop();
+        touchedPin.draw();
+      });
       that.backgroundLayer.add(pin);
 
     } else { // Case: we have an image/text combo, so build out the associated logic

@@ -88,6 +88,13 @@ function _setupEventHandlers(mapsPayload) {
         that.updateNearbyMapState(that.extractNearbyPayload(_extractHashComponents()));
       });
 
+      $('.buttons').delegate('.nearby-btn-cancel', 'click tap', function() {
+        debugger;
+        that.inNearbyMaps = false;
+        viewTransitions.transitionToFloorViewFromNearby();
+
+      });
+
       $('#active_search_input').on('input', function() {
         viewTransitions.revertSearchDisplay();
         roomSearch.searchTable();
