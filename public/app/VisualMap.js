@@ -165,22 +165,32 @@ function _drawMapForFloor(floor, mapsPayload) {
 
 function _showPinsOf(category) {
   var allpins = this.stage.find('Text');
+  var showingPins = [];
   allpins.each(function(p) {
     if(p.attrs.layerid === category) {
         p.show();
         p.attrs.pinIcon.show();
+        showingPins.push(p);
     }
   });
   this.stage.draw();
+  /*
+    If only one pin was shown, store it so we can fire
+    it when needed
+  */
+  if (showingPins.length === 1) {
+    return showingPins[0];
+  }
+
 }
 
 function _hidePinsOf(category) {
   var allpins = this.stage.find('Text');
   allpins.each(function(p) {
-      if(p.attrs.layerid === category) {
-        p.hide();
-        p.attrs.pinIcon.hide();
-      }
+    if (p.attrs.layerid === category) {
+      p.hide();
+      p.attrs.pinIcon.hide();
+    }
   });
   this.stage.draw();
 }
@@ -426,7 +436,8 @@ function _drawNearbyView(nearby) {
         touchedPin.draw();
         touchedPin.attrs.pinIcon.draw();
         $('.layer_name div').html(pinData.Title);
-        $('.panel_body').html(pinData.Location + "<br/><br/>" + pinData.Body);
+        var locationInfo = pinData.Location ? pinData.Location + "<br/><br/>" : "";
+        $('.panel_body').html(locationInfo + pinData.Body);
         that.openFloatingMenu();
       });
       that.backgroundLayer.add(pin);

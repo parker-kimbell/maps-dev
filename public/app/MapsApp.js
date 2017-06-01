@@ -15,6 +15,15 @@ var MapsApp = function() {
   this.nearbyMapsPayload = null;
 };
 
+// Handles closing the amenity modal and firing any single amenity pins
+function _closeAmenitiesModal() {
+  viewTransitions.closeAmenitiesModal();
+  if (this.pinToFire) { // If we've only found one pin of a particular category, fire its touch event on menu close
+    this.pinToFire.fire('tap');
+    this.pinToFire = null;
+  }
+}
+
 function _setupEventHandlers(mapsPayload) {
   var that = this;
   $(function () {
@@ -36,7 +45,7 @@ function _setupEventHandlers(mapsPayload) {
 
       $('.amenities-modal-close').on('tap click', function(event) {
         event.stopPropagation();
-        viewTransitions.closeAmenitiesModal();
+        that.closeAmenitiesModal();
       });
 
       $('.cancel-meeting-room').on('tap click', function(event) {
@@ -51,14 +60,14 @@ function _setupEventHandlers(mapsPayload) {
       $('body').on('click tap', function(event) {
         if ($('.filter').css('display') !== 'none') {
           event.stopPropagation();
-          viewTransitions.closeAmenitiesModal();
+          that.closeAmenitiesModal();
         }
       });
 
       $('.filter').on('click tap', function(event) {
         if ($('.filter').css('display') !== 'none') {
           event.stopPropagation();
-          viewTransitions.closeAmenitiesModal();
+          that.closeAmenitiesModal();
         }
       });
 
@@ -331,7 +340,10 @@ function _buildLayersModalForFloor(layers, floorPins) {
       that.hideAllPins();
       $(this).parent().addClass('on');
       var categoryId = $(this).data('categoryid');
-      that.showPinsOf(categoryId);
+      var onlyOnePinOfCategory = that.showPinsOf(categoryId);
+      if (onlyOnePinOfCategory) {
+        that.pinToFire = onlyOnePinOfCategory;
+      }
       that.setAmenitiesButtonTo(categoryId);
     }
   });
@@ -400,5 +412,6 @@ MapsApp.prototype.extractNearbyPayload = _extractNearbyPayload;
 MapsApp.prototype.retrieveNearbyMaps = _retrieveNearbyMaps;
 MapsApp.prototype.initNearbyLayerIcons = _initNearbyLayerIcons;
 MapsApp.prototype.updateNearbyMapState = _updateNearbyMapState;
+MapsApp.prototype.closeAmenitiesModal = _closeAmenitiesModal;
 
 module.exports = new MapsApp();

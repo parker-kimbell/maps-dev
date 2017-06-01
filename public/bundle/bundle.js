@@ -16,6 +16,15 @@ var MapsApp = function() {
   this.nearbyMapsPayload = null;
 };
 
+// Handles closing the amenity modal and firing any single amenity pins
+function _closeAmenitiesModal() {
+  viewTransitions.closeAmenitiesModal();
+  if (this.pinToFire) { // If we've only found one pin of a particular category, fire its touch event on menu close
+    this.pinToFire.fire('tap');
+    this.pinToFire = null;
+  }
+}
+
 function _setupEventHandlers(mapsPayload) {
   var that = this;
   $(function () {
@@ -37,7 +46,7 @@ function _setupEventHandlers(mapsPayload) {
 
       $('.amenities-modal-close').on('tap click', function(event) {
         event.stopPropagation();
-        viewTransitions.closeAmenitiesModal();
+        that.closeAmenitiesModal();
       });
 
       $('.cancel-meeting-room').on('tap click', function(event) {
@@ -52,14 +61,14 @@ function _setupEventHandlers(mapsPayload) {
       $('body').on('click tap', function(event) {
         if ($('.filter').css('display') !== 'none') {
           event.stopPropagation();
-          viewTransitions.closeAmenitiesModal();
+          that.closeAmenitiesModal();
         }
       });
 
       $('.filter').on('click tap', function(event) {
         if ($('.filter').css('display') !== 'none') {
           event.stopPropagation();
-          viewTransitions.closeAmenitiesModal();
+          that.closeAmenitiesModal();
         }
       });
 
@@ -332,7 +341,10 @@ function _buildLayersModalForFloor(layers, floorPins) {
       that.hideAllPins();
       $(this).parent().addClass('on');
       var categoryId = $(this).data('categoryid');
-      that.showPinsOf(categoryId);
+      var onlyOnePinOfCategory = that.showPinsOf(categoryId);
+      if (onlyOnePinOfCategory) {
+        that.pinToFire = onlyOnePinOfCategory;
+      }
       that.setAmenitiesButtonTo(categoryId);
     }
   });
@@ -401,6 +413,7 @@ MapsApp.prototype.extractNearbyPayload = _extractNearbyPayload;
 MapsApp.prototype.retrieveNearbyMaps = _retrieveNearbyMaps;
 MapsApp.prototype.initNearbyLayerIcons = _initNearbyLayerIcons;
 MapsApp.prototype.updateNearbyMapState = _updateNearbyMapState;
+MapsApp.prototype.closeAmenitiesModal = _closeAmenitiesModal;
 
 module.exports = new MapsApp();
 
@@ -572,22 +585,32 @@ function _drawMapForFloor(floor, mapsPayload) {
 
 function _showPinsOf(category) {
   var allpins = this.stage.find('Text');
+  var showingPins = [];
   allpins.each(function(p) {
     if(p.attrs.layerid === category) {
         p.show();
         p.attrs.pinIcon.show();
+        showingPins.push(p);
     }
   });
   this.stage.draw();
+  /*
+    If only one pin was shown, store it so we can fire
+    it when needed
+  */
+  if (showingPins.length === 1) {
+    return showingPins[0];
+  }
+
 }
 
 function _hidePinsOf(category) {
   var allpins = this.stage.find('Text');
   allpins.each(function(p) {
-      if(p.attrs.layerid === category) {
-        p.hide();
-        p.attrs.pinIcon.hide();
-      }
+    if (p.attrs.layerid === category) {
+      p.hide();
+      p.attrs.pinIcon.hide();
+    }
   });
   this.stage.draw();
 }
@@ -833,7 +856,8 @@ function _drawNearbyView(nearby) {
         touchedPin.draw();
         touchedPin.attrs.pinIcon.draw();
         $('.layer_name div').html(pinData.Title);
-        $('.panel_body').html(pinData.Location + "<br/><br/>" + pinData.Body);
+        var locationInfo = pinData.Location ? pinData.Location + "<br/><br/>" : "";
+        $('.panel_body').html(locationInfo + pinData.Body);
         that.openFloatingMenu();
       });
       that.backgroundLayer.add(pin);
