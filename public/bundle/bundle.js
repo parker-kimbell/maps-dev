@@ -566,6 +566,8 @@ function _drawMapForFloor(floor, mapsPayload) {
     /* Add this new pin to the Konva pinGroup, so that we can place them as one action */
     that.backgroundLayer.add(pin);
     that.backgroundLayer.add(pinIcon);
+    pin.hide();
+    pinIcon.hide();
   }); /* End pin each */
   /* close the panel if the map is tapped */
   that.stage.on('tap click', function(e) {
@@ -578,9 +580,6 @@ function _drawMapForFloor(floor, mapsPayload) {
   });
 
   this.stage.add(that.backgroundLayer);
-
-  /* Hide pins by default */
-  // this.hideAllPins();
 }
 
 function _showPinsOf(category) {
@@ -862,6 +861,8 @@ function _drawNearbyView(nearby) {
       });
       that.backgroundLayer.add(pin);
       that.backgroundLayer.add(pinIcon);
+      pin.hide();
+      pinIcon.hide();
     }
   });
 
@@ -875,33 +876,6 @@ function _drawNearbyView(nearby) {
   });
 
   that.stage.add(that.backgroundLayer);
-
-  /* setup zoom */
-  // that.stage.getContent().addEventListener('touchmove', function(evt) {
-  //   var touch1 = evt.touches[0];
-  //   var touch2 = evt.touches[1];
-  //   if(touch1 && touch2) {
-  //      var dist = getDistance({
-  //          x: touch1.clientX,
-  //          y: touch1.clientY
-  //      }, {
-  //          x: touch2.clientX,
-  //          y: touch2.clientY
-  //      });
-  //      if(!lastDist) {
-  //          lastDist = dist;
-  //      }
-  //      var scale = that.stage.getScaleX() * dist / lastDist;
-  //      that.stage.scaleX(scale);
-  //      that.stage.scaleY(scale);
-  //      that.stage.draw();
-  //      lastDist = dist;
-  //   }
-  //  }, false);
-  //
-  // that.stage.getContent().addEventListener('touchend', function() {
-  //   lastDist = 0;
-  // }, false);
 }
 
 /*
