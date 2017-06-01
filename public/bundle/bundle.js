@@ -624,13 +624,6 @@ function _hideAllPins() {
   this.stage.draw();
 }
 
-var lastDist = 0;
-var startScale = 1;
-function getDistance(p1, p2) {
-    return Math.sqrt(Math.pow((p2.x - p1.x), 2) + Math.pow((p2.y - p1.y), 2));
-}
-
-
 /*
   Returns the function used to control the scroll area for the current map image
 */
@@ -1159,7 +1152,7 @@ function _openFloatingMenu() {
 /* Transitions for Nearby */
 
 function _transitionToNearbyView(callback) {
-  $('.filter > ul').css('margin-top', '33%');
+  $('.filter > ul').css('margin-top', '38%');
   $('.layer_name > img').addClass('close-modal-dark-bg');
   $('#location_select').removeClass('dropdown').addClass('nearby-dropdown');
   $('#floor').css({
